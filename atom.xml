@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-05-16T13:36:57.299Z</updated>
+  <updated>2020-12-02T11:59:24.061Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -17,18 +17,18 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>《从0到1：CTFer成长之路》:Web-XSS闯关</title>
-    <link href="http://lxh3ng.github.io/2021/05/16/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-xss-chuang-guan/"/>
-    <id>http://lxh3ng.github.io/2021/05/16/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-xss-chuang-guan/</id>
-    <published>2021-05-16T13:10:49.000Z</published>
-    <updated>2021-05-16T13:36:57.299Z</updated>
+    <title>SQL：使用exp进行SQL报错注入</title>
+    <link href="http://lxh3ng.github.io/2020/12/02/sql-shi-yong-exp-jin-xing-sql-bao-cuo-zhu-ru/"/>
+    <id>http://lxh3ng.github.io/2020/12/02/sql-shi-yong-exp-jin-xing-sql-bao-cuo-zhu-ru/</id>
+    <published>2020-12-02T11:56:43.853Z</published>
+    <updated>2020-12-02T11:59:24.061Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/16/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-xss-chuang-guan/1b8f9194262029569eac25fe2fe0bcd.png&quot;</summary>
+    <summary type="html">&lt;h1 id=&quot;一、注入数据：&quot;&gt;&lt;a href=&quot;#一、注入数据：&quot; class=&quot;headerlink&quot; title=&quot;一、注入数据：&quot;&gt;&lt;/a&gt;一、注入数据：&lt;/h1&gt;&lt;p&gt;当涉及到注入时，我们使用否定查询来造成“&lt;code&gt;DOUBLE value is out of</summary>
         
       
     
@@ -38,460 +38,378 @@
   </entry>
   
   <entry>
-    <title>PHP:镜像反射</title>
-    <link href="http://lxh3ng.github.io/2021/05/15/php-jing-xiang-fan-she/"/>
-    <id>http://lxh3ng.github.io/2021/05/15/php-jing-xiang-fan-she/</id>
-    <published>2021-05-15T13:54:13.000Z</published>
-    <updated>2021-05-15T15:44:25.966Z</updated>
+    <title>SQL:sqlilabs less-1-4:union注入</title>
+    <link href="http://lxh3ng.github.io/2020/11/26/sql-sqlilabs-less-1-4-union-zhu-ru/"/>
+    <id>http://lxh3ng.github.io/2020/11/26/sql-sqlilabs-less-1-4-union-zhu-ru/</id>
+    <published>2020-11-26T13:50:20.747Z</published>
+    <updated>2021-03-17T15:34:53.331Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;反射是什么？&quot;&gt;&lt;a href=&quot;#反射是什么？&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;p&gt;爆数据的顺序就是①schema_name ②table_name</summary>
         
       
     
     
     
-    
-    <category term="PHP" scheme="http://lxh3ng.github.io/tags/PHP/"/>
     
   </entry>
   
   <entry>
-    <title>Flask-ssti模板注入</title>
-    <link href="http://lxh3ng.github.io/2021/05/14/flask-ssti-mo-ban-zhu-ru/"/>
-    <id>http://lxh3ng.github.io/2021/05/14/flask-ssti-mo-ban-zhu-ru/</id>
-    <published>2021-05-14T15:26:00.000Z</published>
-    <updated>2021-05-15T06:03:15.849Z</updated>
+    <title>C语言：变量的生存期和存储类型</title>
+    <link href="http://lxh3ng.github.io/2020/11/26/c-yu-yan-bian-liang-de-sheng-cun-qi-he-cun-chu-lei-xing/"/>
+    <id>http://lxh3ng.github.io/2020/11/26/c-yu-yan-bian-liang-de-sheng-cun-qi-he-cun-chu-lei-xing/</id>
+    <published>2020-11-26T12:33:34.000Z</published>
+    <updated>2020-11-26T13:02:10.808Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h3 id=&quot;ssti漏洞成因&quot;&gt;&lt;a href=&quot;#ssti漏洞成因&quot; class=&quot;headerlink&quot; title=&quot;ssti漏洞成因&quot;&gt;&lt;/a&gt;ssti漏洞成因&lt;/h3&gt;&lt;p&gt;ssti服务端模板注入，ssti主要为python的一些框架 jinja2 mako</summary>
+    <summary type="html">&lt;p&gt;一、变量的生存期&lt;/p&gt;
+&lt;p&gt;C程序占用的存储空间可以分为程序区、静态存储区、动态存储区3个部分&lt;/p&gt;
+&lt;p&gt;程序区用于存放程序；静态存储区是在程序开始执行时就分配的固定存储单元，如全局变量；动态存储区是在函数调用过程中进行分配的存储单元，如函数形参、自动变量、函数调用</summary>
         
       
     
     
     
-    
-    <category term="ssti" scheme="http://lxh3ng.github.io/tags/ssti/"/>
     
   </entry>
   
   <entry>
-    <title>《从0到1：CTFer成长之路》:Web-afr_3</title>
-    <link href="http://lxh3ng.github.io/2021/05/14/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-3/"/>
-    <id>http://lxh3ng.github.io/2021/05/14/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-3/</id>
-    <published>2021-05-14T07:36:18.000Z</published>
-    <updated>2021-05-14T15:06:46.493Z</updated>
+    <title>SQL：联合注入</title>
+    <link href="http://lxh3ng.github.io/2020/11/24/sql-lian-he-zhu-ru/"/>
+    <id>http://lxh3ng.github.io/2020/11/24/sql-lian-he-zhu-ru/</id>
+    <published>2020-11-24T14:45:11.624Z</published>
+    <updated>2020-12-03T13:11:24.468Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;pre&gt;&lt;code&gt;article?name=../../../etc/passwd&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;p&gt;操作是这样：&lt;/p&gt;
+&lt;p&gt;?id=-1’union select 1,group_concat(schema_name),3 from information_schema.schemata–+&lt;br&gt;Your Login</summary>
         
       
     
     
     
-    
-    <category term="《从0到1：CTFer成长之路》" scheme="http://lxh3ng.github.io/tags/%E3%80%8A%E4%BB%8E0%E5%88%B01%EF%BC%9ACTFer%E6%88%90%E9%95%BF%E4%B9%8B%E8%B7%AF%E3%80%8B/"/>
     
   </entry>
   
   <entry>
-    <title>Bugku:Web-Flask_FileUpload</title>
-    <link href="http://lxh3ng.github.io/2021/05/13/bugku-web-flask-fileupload/"/>
-    <id>http://lxh3ng.github.io/2021/05/13/bugku-web-flask-fileupload/</id>
-    <published>2021-05-13T09:59:46.000Z</published>
-    <updated>2021-05-12T15:03:21.656Z</updated>
+    <title>SQL：在SQL server的注入</title>
+    <link href="http://lxh3ng.github.io/2020/11/24/sql-zai-sql-server-de-zhu-ru/"/>
+    <id>http://lxh3ng.github.io/2020/11/24/sql-zai-sql-server-de-zhu-ru/</id>
+    <published>2020-11-24T08:53:39.640Z</published>
+    <updated>2020-12-02T12:48:41.378Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;F12看到可以上传py脚本，&lt;/p&gt;
-&lt;p&gt;上传jpg格式的&lt;/p&gt;
-&lt;p&gt;py脚本：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;import os
-os.system(&#39;cat /flag&#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;在源代码中查看flag&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;p&gt;一、测试SQL注入的存在：&lt;/p&gt;
+&lt;p&gt;测试步骤如下：&lt;/p&gt;
+&lt;p&gt;1.数字型注入&lt;/p&gt;
+&lt;p&gt;①HTTP://&lt;a</summary>
         
       
     
     
     
-    
-    <category term="Bugku" scheme="http://lxh3ng.github.io/tags/Bugku/"/>
     
   </entry>
   
   <entry>
-    <title>《从0到1：CTFer成长之路》:Web-afr_1</title>
-    <link href="http://lxh3ng.github.io/2021/05/13/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-1/"/>
-    <id>http://lxh3ng.github.io/2021/05/13/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-1/</id>
-    <published>2021-05-13T04:23:00.000Z</published>
-    <updated>2021-05-14T13:49:19.018Z</updated>
+    <title>C语言：四舍五入两种方法</title>
+    <link href="http://lxh3ng.github.io/2020/11/22/c-yu-yan-si-she-wu-ru-liang-chong-fang-fa/"/>
+    <id>http://lxh3ng.github.io/2020/11/22/c-yu-yan-si-she-wu-ru-liang-chong-fang-fa/</id>
+    <published>2020-11-22T12:38:30.163Z</published>
+    <updated>2020-12-02T12:45:32.982Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/13/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-1/b7901b4aa9628d957db9d6cafe1ed4a.png&quot;</summary>
+    <summary type="html">&lt;p&gt;a的第n位四舍五入&lt;/p&gt;
+&lt;p&gt;一、&lt;/p&gt;
+&lt;p&gt;a = (int)(pow(10,n) * a + 0.5) / pow(10,n);&lt;/p&gt;
+&lt;p&gt;以1.23456为例&lt;/p&gt;
+&lt;p&gt;a = (int）(1000.0 * a + 0.5) /</summary>
         
       
     
     
     
-    
-    <category term="《从0到1：CTFer成长之路》" scheme="http://lxh3ng.github.io/tags/%E3%80%8A%E4%BB%8E0%E5%88%B01%EF%BC%9ACTFer%E6%88%90%E9%95%BF%E4%B9%8B%E8%B7%AF%E3%80%8B/"/>
     
   </entry>
   
   <entry>
-    <title>Bugku:Web18-秋名山司机</title>
-    <link href="http://lxh3ng.github.io/2021/05/12/bugku-web18-qiu-ming-shan-si-ji/"/>
-    <id>http://lxh3ng.github.io/2021/05/12/bugku-web18-qiu-ming-shan-si-ji/</id>
-    <published>2021-05-12T12:38:43.000Z</published>
-    <updated>2021-05-12T15:55:08.800Z</updated>
+    <title>C语言：宏定义</title>
+    <link href="http://lxh3ng.github.io/2020/11/17/c-yu-yan-hong-ding-yi/"/>
+    <id>http://lxh3ng.github.io/2020/11/17/c-yu-yan-hong-ding-yi/</id>
+    <published>2020-11-17T13:25:46.081Z</published>
+    <updated>2020-12-02T12:45:24.088Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/12/bugku-web18-qiu-ming-shan-si-ji/bdaaaa4f138f0bda35a9995faec2961.png&quot;</summary>
+    <summary type="html">&lt;p&gt;5.6.1  无参宏定义&lt;/p&gt;
+&lt;p&gt;无参宏定义即定义一个没有参数的宏。&lt;/p&gt;
+&lt;p&gt;#define 标识符 字符串&lt;/p&gt;
+&lt;p&gt;5.6.2  带参宏定义&lt;/p&gt;
+&lt;p&gt;在宏定义中的参数称为形式参数，在调用带参宏时给出的参数称为实际参数&lt;/p&gt;
+&lt;p&gt;#define</summary>
         
       
     
     
     
-    
-    <category term="Bugku" scheme="http://lxh3ng.github.io/tags/Bugku/"/>
     
   </entry>
   
   <entry>
-    <title>Bugku:Web-Simple_SSTI_2</title>
-    <link href="http://lxh3ng.github.io/2021/05/11/bugku-web-simple-ssti-2/"/>
-    <id>http://lxh3ng.github.io/2021/05/11/bugku-web-simple-ssti-2/</id>
-    <published>2021-05-11T15:46:01.000Z</published>
-    <updated>2021-05-11T10:31:59.041Z</updated>
+    <title>C语言：函数数据类型</title>
+    <link href="http://lxh3ng.github.io/2020/11/06/c-yu-yan-han-shu-shu-ju-lei-xing/"/>
+    <id>http://lxh3ng.github.io/2020/11/06/c-yu-yan-han-shu-shu-ju-lei-xing/</id>
+    <published>2020-11-05T16:07:38.505Z</published>
+    <updated>2020-12-02T12:45:07.010Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;pre&gt;&lt;code&gt;?flag={{%20config.__class__.__init__.__globals__[%27os%27].popen(%27ls%20../%27).read()%20}}&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;?flag={{%20c</summary>
+    <summary type="html">&lt;h1 id=&quot;C-数据类型&quot;&gt;&lt;a href=&quot;#C-数据类型&quot; class=&quot;headerlink&quot; title=&quot;C 数据类型&quot;&gt;&lt;/a&gt;C 数据类型&lt;/h1&gt;&lt;p&gt;在 C</summary>
         
       
     
     
     
-    
-    <category term="Bugku" scheme="http://lxh3ng.github.io/tags/Bugku/"/>
     
   </entry>
   
   <entry>
-    <title>Bugku:Web-game1</title>
-    <link href="http://lxh3ng.github.io/2021/05/10/bugku-web-game1/"/>
-    <id>http://lxh3ng.github.io/2021/05/10/bugku-web-game1/</id>
-    <published>2021-05-10T14:39:02.000Z</published>
-    <updated>2021-05-11T10:35:23.198Z</updated>
+    <title>C语言：程序的控制结构</title>
+    <link href="http://lxh3ng.github.io/2020/11/05/c-yu-yan-cheng-xu-de-kong-zhi-jie-gou/"/>
+    <id>http://lxh3ng.github.io/2020/11/05/c-yu-yan-cheng-xu-de-kong-zhi-jie-gou/</id>
+    <published>2020-11-05T15:58:01.436Z</published>
+    <updated>2020-12-02T12:44:47.782Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/10/bugku-web-game1/ab49a807989a44b6ab79af366fd02be.png&quot; alt=&quot;ab49a807989a44b6ab79af366fd02be&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;h1 id=&quot;循环&quot;&gt;&lt;a href=&quot;#循环&quot; class=&quot;headerlink&quot;</summary>
         
       
     
     
     
-    
-    <category term="Bugku" scheme="http://lxh3ng.github.io/tags/Bugku/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-SomeWords</title>
-    <link href="http://lxh3ng.github.io/2021/05/09/i-chun-qiu-web-somewords/"/>
-    <id>http://lxh3ng.github.io/2021/05/09/i-chun-qiu-web-somewords/</id>
-    <published>2021-05-09T09:23:48.000Z</published>
-    <updated>2021-05-11T10:32:05.178Z</updated>
+    <title>C语言：运算符和结合性</title>
+    <link href="http://lxh3ng.github.io/2020/11/05/c-yu-yan-yun-suan-fu-he-jie-he-xing/"/>
+    <id>http://lxh3ng.github.io/2020/11/05/c-yu-yan-yun-suan-fu-he-jie-he-xing/</id>
+    <published>2020-11-05T15:33:23.522Z</published>
+    <updated>2020-12-02T12:46:09.849Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;pre&gt;&lt;code&gt;?id=updatexml(1,concat(0x7e,(select f14g from f14g),0x7e),1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;p&gt;一、（自左向右）&lt;/p&gt;
+&lt;p&gt;[ ]数组下标&lt;/p&gt;
+&lt;p&gt;（ ）圆括号&lt;/p&gt;
+&lt;p&gt;.  成员选择&lt;/p&gt;
+&lt;p&gt;-&amp;gt; </summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-upload(svn泄露)</title>
-    <link href="http://lxh3ng.github.io/2021/05/08/i-chun-qiu-web-upload-svn-xie-lu/"/>
-    <id>http://lxh3ng.github.io/2021/05/08/i-chun-qiu-web-upload-svn-xie-lu/</id>
-    <published>2021-05-08T04:33:55.000Z</published>
-    <updated>2021-05-11T10:35:11.598Z</updated>
+    <title>C语言：字符串处理函数</title>
+    <link href="http://lxh3ng.github.io/2020/11/05/c-yu-yan-zi-fu-chuan-chu-li-han-shu/"/>
+    <id>http://lxh3ng.github.io/2020/11/05/c-yu-yan-zi-fu-chuan-chu-li-han-shu/</id>
+    <published>2020-11-05T14:12:49.979Z</published>
+    <updated>2020-12-02T12:46:17.899Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;SVN源码泄露漏洞&quot;&gt;&lt;a href=&quot;#SVN源码泄露漏洞&quot; class=&quot;headerlink&quot; title=&quot;SVN源码泄露漏洞&quot;&gt;&lt;/a&gt;SVN源码泄露漏洞&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
+    <summary type="html">&lt;p&gt;C语言 （3）字符串处理函数 &lt;/p&gt;
+&lt;p&gt;C语言提供了丰富的字符串处理函数，用来实现对字符串的输入、输出、合并、修改、比较、转换和复制等功能。&lt;br&gt;(1)字符串输入函数gets()&lt;br&gt;语法格式&lt;br&gt;        gets(字符数组名)&lt;br&gt;功能&lt;br&gt;  </summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-时间</title>
-    <link href="http://lxh3ng.github.io/2021/05/07/i-chun-qiu-web-shi-jian/"/>
-    <id>http://lxh3ng.github.io/2021/05/07/i-chun-qiu-web-shi-jian/</id>
-    <published>2021-05-07T07:29:09.000Z</published>
-    <updated>2021-05-11T10:35:06.295Z</updated>
+    <title>c语言：运算符和表达式（2）</title>
+    <link href="http://lxh3ng.github.io/2020/10/22/c-yu-yan-yun-suan-fu-he-biao-da-shi-2/"/>
+    <id>http://lxh3ng.github.io/2020/10/22/c-yu-yan-yun-suan-fu-he-biao-da-shi-2/</id>
+    <published>2020-10-22T15:13:06.096Z</published>
+    <updated>2020-12-02T12:45:47.533Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;pre&gt;&lt;code&gt;&amp;lt;?php 
-header(&quot;content-type:text/html;charset=utf-8&quot;);
-&#39;天下武功唯快不破&#39;;
-setcookie(&#39;token&#39;,&#39;hello&#39;);   
-show_source(__FILE__);
-if</summary>
+    <summary type="html">&lt;p&gt;五·位运算符和位运算表达式&lt;/p&gt;
+&lt;p&gt;​    操作符  名称  优先  结合 对象&lt;/p&gt;
+&lt;p&gt;~  按位取反  1 ←  单&lt;/p&gt;
+&lt;p&gt;《  按位左移  2  →  双&lt;/p&gt;
+&lt;p&gt;  》按位右移  3  →  双&lt;/p&gt;
+&lt;p&gt;&amp;amp;  按位与  4</summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-OneThink</title>
-    <link href="http://lxh3ng.github.io/2021/05/06/i-chun-qiu-web-onethink/"/>
-    <id>http://lxh3ng.github.io/2021/05/06/i-chun-qiu-web-onethink/</id>
-    <published>2021-05-06T15:10:08.000Z</published>
-    <updated>2021-05-11T10:34:53.497Z</updated>
+    <title>c语言：运算符和表达式（1）</title>
+    <link href="http://lxh3ng.github.io/2020/10/22/c-yu-yan-yun-suan-fu-he-biao-da-shi-1/"/>
+    <id>http://lxh3ng.github.io/2020/10/22/c-yu-yan-yun-suan-fu-he-biao-da-shi-1/</id>
+    <published>2020-10-22T14:27:57.412Z</published>
+    <updated>2020-12-02T12:46:00.619Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;OneThink1-0文件缓存漏洞利用&quot;&gt;&lt;a href=&quot;#OneThink1-0文件缓存漏洞利用&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;p&gt;一·算术运算符&lt;/p&gt;
+&lt;p&gt;​    1.自增和自减运算符（自左向右）&lt;/p&gt;
+&lt;p&gt;​     ++i 在使用变量之前 先使i的值加一&lt;/p&gt;
+&lt;p&gt;​     –i   在使用变量之前 先使i的值减一&lt;/p&gt;
+&lt;p&gt;​     ++ </summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-zone</title>
-    <link href="http://lxh3ng.github.io/2021/05/05/i-chun-qiu-web-zone/"/>
-    <id>http://lxh3ng.github.io/2021/05/05/i-chun-qiu-web-zone/</id>
-    <published>2021-05-05T08:02:48.000Z</published>
-    <updated>2021-05-11T10:34:48.092Z</updated>
+    <title>博客更新三步</title>
+    <link href="http://lxh3ng.github.io/2020/10/14/bo-ke-geng-xin-san-bu/"/>
+    <id>http://lxh3ng.github.io/2020/10/14/bo-ke-geng-xin-san-bu/</id>
+    <published>2020-10-14T10:42:40.656Z</published>
+    <updated>2020-10-14T10:45:03.002Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/05/i-chun-qiu-web-zone/5bd4424eb057a35becb1bcdefa1e513.png&quot; alt=&quot;5bd4424eb057a35becb1bcdefa1e513&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;在博客根目录下 hexo new post “文章标题”&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hexo g&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hexo</summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-fuzz</title>
-    <link href="http://lxh3ng.github.io/2021/05/04/i-chun-qiu-web-fuzz/"/>
-    <id>http://lxh3ng.github.io/2021/05/04/i-chun-qiu-web-fuzz/</id>
-    <published>2021-05-04T04:24:41.000Z</published>
-    <updated>2021-05-11T10:34:37.118Z</updated>
+    <title>PHP：基本语法（2）</title>
+    <link href="http://lxh3ng.github.io/2020/10/14/php-ji-ben-yu-fa-2/"/>
+    <id>http://lxh3ng.github.io/2020/10/14/php-ji-ben-yu-fa-2/</id>
+    <published>2020-10-14T10:38:45.477Z</published>
+    <updated>2020-12-02T12:46:43.783Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;尝试到?name=123有响应&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2021/05/04/i-chun-qiu-web-fuzz/54ac388556a196af663d2ff92856dbf.png&quot;</summary>
+    <summary type="html">&lt;p&gt;1.PHP 逻辑运算符&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;运算符    名称    描述    实例&lt;br&gt;x and y    与    如果 x 和 y 都为 true，则返回 true    x=6 y=3 (x &amp;lt; 10 and y &amp;gt; 1) 返回</summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-Hash</title>
-    <link href="http://lxh3ng.github.io/2021/05/03/i-chun-qiu-web-hash/"/>
-    <id>http://lxh3ng.github.io/2021/05/03/i-chun-qiu-web-hash/</id>
-    <published>2021-05-02T16:26:57.000Z</published>
-    <updated>2021-05-11T10:34:43.036Z</updated>
+    <title>PHP：基本语法（1）</title>
+    <link href="http://lxh3ng.github.io/2020/10/14/php-ji-ben-yu-fa-1/"/>
+    <id>http://lxh3ng.github.io/2020/10/14/php-ji-ben-yu-fa-1/</id>
+    <published>2020-10-14T10:08:37.994Z</published>
+    <updated>2020-12-02T12:46:59.951Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/03/i-chun-qiu-web-hash/db497ae3ef59f08ca53247fcccdaf07.png&quot;</summary>
+    <summary type="html">&lt;p&gt;&lt;strong&gt;1.PHP脚本以&amp;lt;?php开始，&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;以?&amp;gt;结束&lt;/p&gt;
+&lt;p&gt;php中的每个代码行都必须以分号结束，用于把指令集区分开来。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.PHP变量&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;变量是用于存储</summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
   <entry>
-    <title>i春秋:Web-fuzzing</title>
-    <link href="http://lxh3ng.github.io/2021/05/02/i-chun-qiu-web-fuzzing/"/>
-    <id>http://lxh3ng.github.io/2021/05/02/i-chun-qiu-web-fuzzing/</id>
-    <published>2021-05-02T11:03:27.000Z</published>
-    <updated>2021-05-11T10:34:30.764Z</updated>
+    <title>PHP：介绍</title>
+    <link href="http://lxh3ng.github.io/2020/10/08/php-jie-shao/"/>
+    <id>http://lxh3ng.github.io/2020/10/08/php-jie-shao/</id>
+    <published>2020-10-08T00:44:55.676Z</published>
+    <updated>2020-12-02T12:47:45.251Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;![805a9f457750436f8de5ac8442cd01b](C:/Users/H3ng/AppData/Local/Temp/WeChat Files/e9a4ed1c33280a6351407e4ff28f074.png)&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;h2 id=&quot;PHP-是什么？&quot;&gt;&lt;a href=&quot;#PHP-是什么？&quot; class=&quot;headerlink&quot; title=&quot;PHP 是什么？&quot;&gt;&lt;/a&gt;PHP 是什么？&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;PHP（全称：PHP：Hypertext</summary>
         
       
     
     
     
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-EXEC</title>
-    <link href="http://lxh3ng.github.io/2021/05/01/i-chun-qiu-web-exec/"/>
-    <id>http://lxh3ng.github.io/2021/05/01/i-chun-qiu-web-exec/</id>
-    <published>2021-05-01T14:35:59.000Z</published>
-    <updated>2021-05-11T10:34:24.731Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-Vld</title>
-    <link href="http://lxh3ng.github.io/2021/04/30/i-chun-qiu-web-vld/"/>
-    <id>http://lxh3ng.github.io/2021/04/30/i-chun-qiu-web-vld/</id>
-    <published>2021-04-30T13:56:11.000Z</published>
-    <updated>2021-05-11T10:34:58.701Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;扫描后台发现index.php,txt&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Finding entry points
-Branch analysis from position: 0
-Jump found. Position 1 = 23, Position 2 =</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-再见CMS</title>
-    <link href="http://lxh3ng.github.io/2021/04/29/i-chun-qiu-web-zai-jian-cms/"/>
-    <id>http://lxh3ng.github.io/2021/04/29/i-chun-qiu-web-zai-jian-cms/</id>
-    <published>2021-04-29T15:35:18.000Z</published>
-    <updated>2021-05-11T10:34:04.898Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/04/29/i-chun-qiu-web-zai-jian-cms/435a24540be807e64702b513922440a.png&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
