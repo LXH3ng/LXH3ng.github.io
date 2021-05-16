@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C语言：函数数据类型 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="C 数据类型在 C 语言中，数据类型指的是用于声明不同类型的变量或函数的一个广泛的系统。变量的类型决定了变量存储占用的空间，以及如何解释存储的位模式。
+C 中的类型可分为以下几种：
+
+
+
+序号
+类型,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">C语言：函数数据类型</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">C语言：函数数据类型</h1>
+        <div class="stuff">
+            <span>十一月 06, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="C-数据类型"><a href="#C-数据类型" class="headerlink" title="C 数据类型"></a>C 数据类型</h1><p>在 C 语言中，数据类型指的是用于声明不同类型的变量或函数的一个广泛的系统。变量的类型决定了变量存储占用的空间，以及如何解释存储的位模式。</p>
+<p>C 中的类型可分为以下几种：</p>
+<table>
+<thead>
+<tr>
+<th align="left">序号</th>
+<th align="left">类型与描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left"><strong>基本类型：</strong> 它们是算术类型，包括两种类型：整数类型和浮点类型。</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left"><strong>枚举类型：</strong> 它们也是算术类型，被用来定义在程序中只能赋予其一定的离散整数值的变量。</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left"><strong>void 类型：</strong> 类型说明符 <em>void</em> 表明没有可用的值。</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left"><strong>派生类型：</strong> 它们包括：指针类型、数组类型、结构类型、共用体类型和函数类型。</td>
+</tr>
+</tbody></table>
+<p>数组类型和结构类型统称为聚合类型。函数的类型指的是函数返回值的类型。在本章节接下来的部分我们将介绍基本类型，其他几种类型会在后边几个章节中进行讲解。</p>
+<h2 id="整数类型"><a href="#整数类型" class="headerlink" title="整数类型"></a>整数类型</h2><p>下表列出了关于标准整数类型的存储大小和值范围的细节：</p>
+<table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">存储大小</th>
+<th align="left">值范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">char</td>
+<td align="left">1 字节</td>
+<td align="left">-128 到 127 或 0 到 255</td>
+</tr>
+<tr>
+<td align="left">unsigned char</td>
+<td align="left">1 字节</td>
+<td align="left">0 到 255</td>
+</tr>
+<tr>
+<td align="left">signed char</td>
+<td align="left">1 字节</td>
+<td align="left">-128 到 127</td>
+</tr>
+<tr>
+<td align="left">int</td>
+<td align="left">2 或 4 字节</td>
+<td align="left">-32,768 到 32,767 或 -2,147,483,648 到 2,147,483,647</td>
+</tr>
+<tr>
+<td align="left">unsigned int</td>
+<td align="left">2 或 4 字节</td>
+<td align="left">0 到 65,535 或 0 到 4,294,967,295</td>
+</tr>
+<tr>
+<td align="left">short</td>
+<td align="left">2 字节</td>
+<td align="left">-32,768 到 32,767</td>
+</tr>
+<tr>
+<td align="left">unsigned short</td>
+<td align="left">2 字节</td>
+<td align="left">0 到 65,535</td>
+</tr>
+<tr>
+<td align="left">long</td>
+<td align="left">4 字节</td>
+<td align="left">-2,147,483,648 到 2,147,483,647</td>
+</tr>
+<tr>
+<td align="left">unsigned long</td>
+<td align="left">4 字节</td>
+<td align="left">0 到 4,294,967,295</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注意，各种类型的存储大小与系统位数有关，但目前通用的以64位系统为主。</p>
+</blockquote>
+<p>为了得到某个类型或某个变量在特定平台上的准确大小，您可以使用 <strong>sizeof</strong> 运算符。表达式 <em>sizeof(type)</em> 得到对象或类型的存储字节大小。下面的实例演示了获取 int 类型的大小：</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>#include &lt;stdio.h&gt; #include &lt;limits.h&gt;  int main() {   printf(“int 存储大小 : %lu \n”, sizeof(int));      return 0; }</p>
+<p><strong>%lu</strong> 为 32 位无符号整数，详细说明查看 <a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-printf.html">C 库函数 - printf()</a>。</p>
+<p>当您在 Linux 上编译并执行上面的程序时，它会产生下列结果：</p>
+<pre><code>int 存储大小 : 4 </code></pre>
+<h2 id="浮点类型"><a href="#浮点类型" class="headerlink" title="浮点类型"></a>浮点类型</h2><p>下表列出了关于标准浮点类型的存储大小、值范围和精度的细节：</p>
+<table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">存储大小</th>
+<th align="left">值范围</th>
+<th align="left">精度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">float</td>
+<td align="left">4 字节</td>
+<td align="left">1.2E-38 到 3.4E+38</td>
+<td align="left">6 位小数</td>
+</tr>
+<tr>
+<td align="left">double</td>
+<td align="left">8 字节</td>
+<td align="left">2.3E-308 到 1.7E+308</td>
+<td align="left">15 位小数</td>
+</tr>
+<tr>
+<td align="left">long double</td>
+<td align="left">16 字节</td>
+<td align="left">3.4E-4932 到 1.1E+4932</td>
+<td align="left">19 位小数</td>
+</tr>
+</tbody></table>
+<p>头文件 float.h 定义了宏，在程序中可以使用这些值和其他有关实数二进制表示的细节。下面的实例将输出浮点类型占用的存储空间以及它的范围值：</p>
+<h2 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h2><p>#include &lt;stdio.h&gt; #include &lt;float.h&gt;  int main() {   printf(“float 存储最大字节数 : %lu \n”, sizeof(float));   printf(“float 最小值: %E\n”, FLT_MIN );   printf(“float 最大值: %E\n”, FLT_MAX );   printf(“精度值: %d\n”, FLT_DIG );      return 0; }</p>
+<p><strong>%E</strong> 为以指数形式输出单、双精度实数，详细说明查看 <a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-printf.html">C 库函数 - printf()</a>。</p>
+<p>当您在 Linux 上编译并执行上面的程序时，它会产生下列结果：</p>
+<pre><code>float 存储最大字节数 : 4 
+float 最小值: 1.175494E-38
+float 最大值: 3.402823E+38
+精度值: 6</code></pre>
+<h2 id="void-类型"><a href="#void-类型" class="headerlink" title="void 类型"></a>void 类型</h2><p>void 类型指定没有可用的值。它通常用于以下三种情况下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">序号</th>
+<th align="left">类型与描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left"><strong>函数返回为空</strong> C 中有各种函数都不返回值，或者您可以说它们返回空。不返回值的函数的返回类型为空。例如 <strong>void exit (int status);</strong></td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left"><strong>函数参数为空</strong> C 中有各种函数不接受任何参数。不带参数的函数可以接受一个 void。例如 <strong>int rand(void);</strong></td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left"><strong>指针指向 void</strong> 类型为 void * 的指针代表对象的地址，而不是类型。例如，内存分配函数 <strong>void *malloc( size_t size );</strong> 返回指向 void 的指针，可以转换为任何数据类型。</td>
+</tr>
+</tbody></table>
+<p>如果现在您还是无法完全理解 void 类型，不用太担心，在后续的章节中我们将会详细讲解这些概念。</p>
+<p> <a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-basic-syntax.html">C 基本语法</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-variables.html">C 变量</a> </p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">C 数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">整数类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.2.</span> <span class="toc-text">实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%AE%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">浮点类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B-1"><span class="toc-number">1.4.</span> <span class="toc-text">实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#void-%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.5.</span> <span class="toc-text">void 类型</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

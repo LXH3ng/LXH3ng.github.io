@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bugku:Web40-git泄露 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="git信息泄露漏洞当前大量开发人员使用git进行版本控制，对站点自动部署。如果配置不当，可能会将.git文件夹直接部署到线上环境。这就引起了git泄露漏洞。
+危害攻击者可以利用该漏洞下载git文件夹,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Bugku:Web40-git泄露</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Bugku:Web40-git泄露</h1>
+        <div class="stuff">
+            <span>四月 14, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Bugku/" rel="tag">Bugku</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="git信息泄露漏洞"><a href="#git信息泄露漏洞" class="headerlink" title="git信息泄露漏洞"></a>git信息泄露漏洞</h2><p>当前大量开发人员使用git进行版本控制，对站点自动部署。如果配置不当，可能会将.git文件夹直接部署到线上环境。这就引起了git泄露漏洞。</p>
+<h3 id="危害"><a href="#危害" class="headerlink" title="危害"></a>危害</h3><p>攻击者可以利用该漏洞下载git文件夹里的所有内容。如果文件夹内有敏感信息比如站点源码、数据库账户密码等，攻击者可能直接控制服务器。</p>
+<h3 id="Git介绍"><a href="#Git介绍" class="headerlink" title="Git介绍"></a>Git介绍</h3><p>Git作为大家熟悉的，深受欢迎的版本控制工具，和其他同类工具有很多不同之处：</p>
+<ul>
+<li>Git始终保存快照而不是文件差异。</li>
+<li>任何数据存储前始终使用SHA-1计算校验和，保证内容完整性。</li>
+<li>使用分布式仓库设计，让大多数操作都在本地进行，保证了使用效率。几乎所有操作都是向数据库增加数据，提交之后就很难丢失数据。它的本质更像一个内容寻址（content-addressable）文件系统，并在此之上提供了一个版本控制系统的用户界面。</li>
+</ul>
+<p>Git 有三种状态，你的文件可能处于其中之一：已修改（modified）、已暂存（staged）、已提交（committed）。由此引出三个逻辑区域，他们和文件状态以及部分对应操作的关系如下图。<br><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\git介绍.png" alt="git介绍"></p>
+<p>Git对象<br>在Git系统中有四中类型的对象，所有的Git操作都是基于这四种类型的对象。</p>
+<ul>
+<li><p>“blob”，这种对象用来保存文件的内容。</p>
+</li>
+<li><p>“tree”，可以理解成一个对象关系树，它管理一些”tree”和“blob”对象。</p>
+</li>
+<li><p>“commit”，指向一个”tree”，它用来标记项目某一个特定时间点的状态。它包括以下关于时间点的元数据，如时间戳、最近一次提交的作者、指向上次提交、</p>
+</li>
+<li><p>“tag”，给某个提交增添一个标记。</p>
+<p>git对象之间的个关系如下图</p>
+<p><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\Git对象.png" alt="Git对象"></p>
+</li>
+</ul>
+<h4 id="SHA1哈希值"><a href="#SHA1哈希值" class="headerlink" title="SHA1哈希值"></a>SHA1哈希值</h4><p>在Git系统中，每个Git对象都通过哈希值来代表这个对象。哈希值是通过SHA1算法计算出来的，长度为40个字符（40-digit）。</p>
+<h4 id="git目录"><a href="#git目录" class="headerlink" title=".git目录"></a>.git目录</h4><ul>
+<li>config - 包含一些配置选项</li>
+<li>description - 仓库的描述信息，主要给gitweb等git托管系统使用</li>
+<li>HEAD - 指定当前分支,映射到ref引用，能够找到下一次commit的前一次哈希值</li>
+<li>hooks - 存放可在某些指令前后触发运行的钩子脚本（hook scripts），默认包含一些脚本样例</li>
+<li>index - 这个文件就是我们前面提到的暂存区（stage），是一个二进制文件</li>
+<li>info - 存放仓库的信息</li>
+<li>objects - 存储所有Git的数据对象,对象的SHA1哈希值的前两位是文件夹名称，后38位作为对象文件名</li>
+<li>refs - 存储各个分支指向的目标提交</li>
+<li>branches - 还没发现有什么用处</li>
+</ul>
+<h3 id="Git基本操作"><a href="#Git基本操作" class="headerlink" title="Git基本操作"></a>Git基本操作</h3><p>对照这张图来理解两段提交，工作区(working tree)，暂存区（stage/index）和 branch之间的关系<br><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\git基本操作.png" alt="git基本操作"></p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令:"></a>常用命令:</h3><ul>
+<li><p>git ls-files -u显示冲突的文件，-s是显示标记为冲突已解决的文件</p>
+</li>
+<li><p>git diff 对比工作区和stage文件的差异</p>
+</li>
+<li><p>git diff –cached 对比stage和branch之间的差异</p>
+</li>
+<li><p>git ls-files –stage 检查保存在stage的文件</p>
+</li>
+<li><p>git log 显示到HEAD所指向的commit为止的所有commit记录 。</p>
+</li>
+<li><p>git reset HEAD <file></file></p>
+</li>
+<li><p>git reset –hard HEAD放弃工作区和index的改动,HEAD指针仍然指向当前的commit.</p>
+<h3 id="实际操作流程"><a href="#实际操作流程" class="headerlink" title="实际操作流程"></a>实际操作流程</h3></li>
+</ul>
+<h4 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h4><p>此命令初始化一个新本地仓库，它在工作目录下数据目录生成一个名为.git的隐藏文件夹。git会将所有的文件，目录，提交等转化为git对象，压缩存储在这个文件夹当中。<br>git init 命令后面不加参数表示把当前目录变为仓库,如下表示在当前目录下创建test仓库<br>![git init](D:\blog\source_posts\Bugku：Web40-git泄露\git init.png)</p>
+<h4 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h4><p>创建一个test1.txt文件，git status查看当前状态,此时test.txt文件位于工作目录<br>![git add](D:\blog\source_posts\Bugku：Web40-git泄露\git add.png)<br>通过git add跟踪这个文件,把test.txt文件放到暂存区.(可以使用git rm –cached命令来取消暂存)<br>![git rm –cached](D:\blog\source_posts\Bugku：Web40-git泄露\git rm –cached.png)</p>
+<h4 id="git-commit"><a href="#git-commit" class="headerlink" title="git commit"></a>git commit</h4><p>在暂存区的文件使用git commit提交到版本库(数据目录)中<br>-m参数表示提交的注释,如果不使用-m参数那么会跳出页面提示主动输入注释<br>![git commit](D:\blog\source_posts\Bugku：Web40-git泄露\git commit.png)<br>修改test.txt文件<br><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\修改text文件.png" alt="修改text文件"></p>
+<p>修改后，通过查看git status可以看到文件状态被改变了。根据提示知道文件已被修改，但是未提交修改到版本库中。<br>![git status](D:\blog\source_posts\Bugku：Web40-git泄露\git status.png)</p>
+<p>git diff,对比工作区和暂存区文件的差异,查看文件被修改的地方<br>![git diff](D:\blog\source_posts\Bugku：Web40-git泄露\git diff.png)</p>
+<p>确认修改无误后提交到版本库的方法和提交初始文件一样,需要先提交到暂存区,然后提交到版本库.<br><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\提交到版本库.png" alt="提交到版本库"><br>再修改一次文件<br><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\再修改一次文件.png" alt="再修改一次文件"></p>
+<p>提交<br><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\提交.png" alt="提交"><br>git log 查看下历史记录,HEAD我的理解就是指针,指到最后提交的版本<br>![git log](D:\blog\source_posts\Bugku：Web40-git泄露\git log.png)<br>git reset –hard,回退版本<br>回退到上一个版本,gei reset –hard HEAD^<br>![git reset –hard](D:\blog\source_posts\Bugku：Web40-git泄露\git reset –hard.png)</p>
+<p>厉害了,可以看到HEAD指针也指到了第一次修改的版本,第二次修改的版本看不到了<br>但是我要是因为操作失误怎么追回地二次修改的版本呢,可以使用git reset –hard 版本号追回<br>git reflog获取版本号,得到第二次修改版本号为5edcc89<br>![git reflog](D:\blog\source_posts\Bugku：Web40-git泄露\git reflog.png)</p>
+<p>get reset –hard 5edcc89恢复<br>![get reset –hard 5edcc89](D:\blog\source_posts\Bugku：Web40-git泄露\get reset –hard 5edcc89.png)</p>
+<p>我后面测试使用comit后面一串很长的字符,这里理解为对象sha1字符串吧.也可以回退到那个版本</p>
+<p><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\回退到那个版本.png" alt="回退到那个版本"></p>
+<p>可以把工作区修改的文件git add提交到暂存区，也可以使用git checkout — test1.txt 把工作区的修改撤销，这样，文件就会回退到上一次提交时的状态。<br>![git checkout — test1.txt](D:\blog\source_posts\Bugku：Web40-git泄露\git checkout — test1.txt.png)</p>
+<h3 id="Git信息泄露原理"><a href="#Git信息泄露原理" class="headerlink" title="Git信息泄露原理"></a>Git信息泄露原理</h3><ul>
+<li>通过泄露的.git文件夹下的文件，还原重建工程源代码</li>
+<li>解析.git/index文件，找到工程中所有的（文件名，文件sha1）</li>
+<li>去.git/objects文件夹下下载对应的文件</li>
+<li>zlib解压文件，按原始的目录结构写入源代码<br>（危害：渗透测试人员、攻击者，可以进一步代码审计，挖掘：文件上传，sql注入等安全漏洞）</li>
+</ul>
+<h3 id="GitHack工具使用"><a href="#GitHack工具使用" class="headerlink" title="GitHack工具使用"></a>GitHack工具使用</h3><p>GitHack会按照上面的原理自动恢复<br><img src="/2021/04/14/bugku-web40-git-xie-lu/blog/source_posts\Bugku：Web40-git泄露\GitHack工具使用.png" alt="GitHack工具使用"></p>
+<h2 id="Web40"><a href="#Web40" class="headerlink" title="Web40"></a>Web40</h2><p>发现有/.git/目录，应该是git泄露了。</p>
+<p>wget -r <a target="_blank" rel="noopener" href="http://ip_address/.git">http://ip_address/.git</a>　　:递归下载该网站目录下的文件及文件夹</p>
+<p>之后进入文件夹使用</p>
+<p>git reflog:查看执行的命令日志</p>
+<p><a target="_blank" rel="noopener" href="https://img2020.cnblogs.com/blog/2156042/202101/2156042-20210121170625249-528964650.png"><img src="https://img2020.cnblogs.com/blog/2156042/202101/2156042-20210121170625249-528964650.png" alt="img"></a></p>
+<p> 看到flag is here？那就只能一个一个试了，试了第二个的时候，找到了</p>
+<p>使用git show commit_id 命令查看commit</p>
+<p><a target="_blank" rel="noopener" href="https://img2020.cnblogs.com/blog/2156042/202101/2156042-20210121171515615-627590262.png"><img src="https://img2020.cnblogs.com/blog/2156042/202101/2156042-20210121171515615-627590262.png" alt="img"></a></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tac2664/p/14309112.html">https://www.cnblogs.com/tac2664/p/14309112.html</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#git%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.</span> <span class="toc-text">git信息泄露漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B1%E5%AE%B3"><span class="toc-number">1.1.</span> <span class="toc-text">危害</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Git%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">Git介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SHA1%E5%93%88%E5%B8%8C%E5%80%BC"><span class="toc-number">1.2.1.</span> <span class="toc-text">SHA1哈希值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git%E7%9B%AE%E5%BD%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">.git目录</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Git%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-number">1.3.</span> <span class="toc-text">Git基本操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">1.4.</span> <span class="toc-text">常用命令:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.5.</span> <span class="toc-text">实际操作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#git-init"><span class="toc-number">1.5.1.</span> <span class="toc-text">git init</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git-add"><span class="toc-number">1.5.2.</span> <span class="toc-text">git add</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git-commit"><span class="toc-number">1.5.3.</span> <span class="toc-text">git commit</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Git%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E5%8E%9F%E7%90%86"><span class="toc-number">1.6.</span> <span class="toc-text">Git信息泄露原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitHack%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8"><span class="toc-number">1.7.</span> <span class="toc-text">GitHack工具使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web40"><span class="toc-number">2.</span> <span class="toc-text">Web40</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

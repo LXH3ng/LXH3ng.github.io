@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PHP：基本语法（1） - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="1.PHP脚本以&amp;lt;?php开始，
+以?&amp;gt;结束
+php中的每个代码行都必须以分号结束，用于把指令集区分开来。
+2.PHP变量
+变量是用于存储信息的”容器”:
+实例
+
+
+在PHP中，这些字母,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">PHP：基本语法（1）</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">PHP：基本语法（1）</h1>
+        <div class="stuff">
+            <span>十月 14, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p><strong>1.PHP脚本以&lt;?php开始，</strong></p>
+<p>以?&gt;结束</p>
+<p>php中的每个代码行都必须以分号结束，用于把指令集区分开来。</p>
+<p><strong>2.PHP变量</strong></p>
+<p>变量是用于存储信息的”容器”:</p>
+<p>实例</p>
+<!--?php
+
+$x=5;
+
+$y=6;
+
+$z=$x+$y;
+
+echo $z;
+
+?-->
+
+<p>在PHP中，这些字母被称为变量。变量是用于存储数据的容器。</p>
+<p>PHP 变量规则：</p>
+<p>变量以 $ 符号开始，后面跟着变量的名称<br>变量名必须以字母或者下划线字符开始<br>变量名只能包含字母数字字符以及下划线（A-z、0-9 和 _ ）<br>变量名不能包含空格<br>变量名是区分大小写的（$y 和 $Y 是两个不同的变量）</p>
+<p><strong>3.PHP变量作用域</strong></p>
+<p>变量的作用域是脚本中变量可被引用的部分</p>
+<p>PHP有四种不同的变量作用域：</p>
+<p>local  global  static  parameter</p>
+<p>局部和全局作用域<br>在所有函数外部定义的变量，拥有全局作用域。除了函数外，全局变量可以被脚本中的任何部分访问，要在一个函数中访问一个全局变量，需要使用 global 关键字。</p>
+<p>在 PHP 函数内部声明的变量是局部变量，仅能在函数内部访问</p>
+<p>Static 作用域<br>当一个函数完成时，它的所有变量通常都会被删除。然而，有时候您希望某个局部变量不要被删除。</p>
+<p>要做到这一点，请在您第一次声明变量时使用 static 关键字：</p>
+<p>实例<br>&lt;?php<br>function myTest()<br>{<br>  static $x=0;<br>  echo $x;<br>  $x++;<br>  echo PHP_EOL;  // 换行符<br>}</p>
+<p>myTest();<br>myTest();<br>myTest();<br>?&gt;</p>
+<p><strong>4.PHP 并置运算符</strong><br>在 PHP 中，只有一个字符串运算符。</p>
+<p>并置运算符 (.) 用于把两个字符串值连接起来。</p>
+<p>下面的实例演示了如何将两个字符串变量连接在一起：</p>
+<p>实例<br><!--?php 
+$txt1="Hello world!"; 
+$txt2="What a nice day!"; 
+echo $txt1 . " " . $txt2; 
+?--><br>上面的代码将输出：Hello world! What a nice day!</p>
+<p><strong>5.PHP strlen() 函数</strong><br>有时知道字符串值的长度是很有用的。</p>
+<p>strlen() 函数返回字符串的长度（字节数）。</p>
+<p>下面的实例返回字符串 “Hello world!” 的长度：</p>
+<p>实例<br><!--?php 
+echo strlen("Hello world!"); 
+?--></p>
+<p>上面的代码将输出12</p>
+<p><strong>6.PHP strpos() 函数</strong><br>strpos() 函数用于在字符串内查找一个字符或一段指定的文本。</p>
+<p>如果在字符串中找到匹配，该函数会返回第一个匹配的字符位置。如果未找到匹配，则返回 FALSE。</p>
+<p>下面的实例在字符串 “Hello world!” 中查找文本 “world”：</p>
+<p>实例<br><!--?php 
+echo strpos("Hello world!","world"); 
+?--></p>
+<p>运行实例 »<br>上面的代码将输出：6</p>
+<p>提示：在上面的实例中，字符串 “world” 的位置是 6。<strong>之所以是 6 而不是 7 的原因是，字符串中第一个字符的位置是 0，而不是 1。</strong></p>
+<p><strong>7.PHP 算术运算符</strong><br>运算符    名称                            描述                           实例                  结果<br>x + y       加                                 x 和 y 的和                2 + 2                4<br>x - y        减                                 x 和 y 的差                5 - 2                 3<br>x * y       乘                                 x 和 y 的积                5 * 2                10<br>x / y        除                                 x 和 y 的商               15 / 5                3<br>x % y      模（除法的余数）      x 除以 y 的余数        5 % 2                1<br>- x           取反                             x 取反                       <!--?php              -2
+                                                                                      $x =2;
+                                                                                      echo -$x;
+                                                                                      ?--><br>a . b        并置                            连接两个字符串    “Hi” . “Ha”        HiHa</p>
+<p><strong>8.PHP 赋值运算符</strong><br>在 PHP 中，基本的赋值运算符是 “=”。它意味着左操作数被设置为右侧表达式的值。也就是说，”$x = 5” 的值是 5。</p>
+<p>运算符    等同于         描述<br>x = y       x = y            左操作数被设置为右侧表达式的值<br>x += y     x = x + y      加<br>x -= y      x = x - y       减<br>x *= y     x = x * y      乘<br>x /= y      x = x / y      除<br>x %= y    x = x % y     模（除法的余数）<br>a .= b    a = a . b        连接两个字符串<br>以下实例演示了使用不同赋值运算符得到的不同结果：</p>
+<p>实例<br>&lt;?php<br>$x=10;<br>echo $x; // 输出10</p>
+<p>$y=20;<br>$y += 100;<br>echo $y; // 输出120</p>
+<p>$z=50;<br>$z -= 25;<br>echo $z; // 输出25</p>
+<p>$i=5;<br>$i *= 6;<br>echo $i; // 输出30</p>
+<p>$j=10;<br>$j /= 5;<br>echo $j; // 输出2</p>
+<p>$k=15;<br>$k %= 4;<br>echo $k; // 输出3<br>?&gt;</p>
+<p><strong>9.PHP 递增/递减运算符</strong><br>运算符    名称        描述<br>++ x        预递增    x 加 1，然后返回 x<br>x ++        后递增    返回 x，然后 x 加 1<br>– x          预递减    x 减 1，然后返回 x<br>x –          后递减    返回 x，然后 x 减 1<br>以下实例演示了使用递增/递减运算符得到的结果：</p>
+<p>实例<br>&lt;?php<br>$x=10;<br>echo ++$x; // 输出11</p>
+<p>$y=10;<br>echo $y++; // 输出10</p>
+<p>$z=5;<br>echo –$z; // 输出4</p>
+<p>$i=5;<br>echo $i–; // 输出5<br>?&gt;</p>
+<p><strong>10.PHP 比较运算符</strong><br>比较操作符可以让您比较两个值：</p>
+<p>运算符        名称              描述                                                                                 实例<br>x == y         等于              如果 x 等于 y，则返回 true                                           5==8 返回 false<br>x === y       绝对等于      如果 x 等于 y，且它们类型相同，则返回 true            5===”5” 返回 false<br>x != y          不等于          如果 x 不等于 y，则返回 true                                       5!=8 返回 true<br>x &lt;&gt; y         不等于          如果 x 不等于 y，则返回 true                                       5&lt;&gt;8 返回 true<br>x !== y        绝对不等于  如果 x 不等于 y，或它们类型不相同，则返回 true     5!==”5” 返回 true<br>x &gt; y           大于              如果 x 大于 y，则返回 true                                           5&gt;8 返回 false<br>x &lt; y           小于              如果 x 小于 y，则返回 true                                           5&lt;8 返回 true<br>x &gt;= y         大于等于      如果 x 大于或者等于 y，则返回 true                            5&gt;=8 返回 false<br>x &lt;= y         小于等于      如果 x 小于或者等于 y，则返回 true                            5&lt;=8 返回 true<br>以下实例演示了使用一些比较运算符得到的不同结果：</p>
+<p>实例<br>&lt;?php<br>$x=100;<br>$y=”100”;</p>
+<p>var_dump($x == $y);<br>echo “ <br>“;<br>var_dump($x === $y);<br>echo “ <br>“;<br>var_dump($x != $y);<br>echo “ <br>“;<br>var_dump($x !== $y);<br>echo “ <br>“;</p>
+<p>$a=50;<br>$b=90;</p>
+<p>var_dump($a &gt; $b);<br>echo “<br>“;<br>var_dump($a &lt; $b);<br>?&gt;</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

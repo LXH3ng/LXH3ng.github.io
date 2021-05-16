@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL:约束攻击 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="基于约束的SQL攻击前言
+值得庆幸的是如今开发者在构建网站时，已经开始注重安全问题了。绝大部分开发者都意识到SQL注入漏洞的存在，在本文我想与读者共同去探讨另一种与SQL数据库相关的漏洞，其危害与S,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL:约束攻击</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL:约束攻击</h1>
+        <div class="stuff">
+            <span>四月 04, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="基于约束的SQL攻击"><a href="#基于约束的SQL攻击" class="headerlink" title="基于约束的SQL攻击"></a>基于约束的SQL攻击</h2><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><blockquote>
+<p>值得庆幸的是如今开发者在构建网站时，已经开始注重安全问题了。绝大部分开发者都意识到SQL注入漏洞的存在，在本文我想与读者共同去探讨另一种与SQL数据库相关的漏洞，其危害与SQL注入不相上下，但却不太常见。接下来，我将为读者详细展示这种攻击手法，以及相应的防御策略。</p>
+</blockquote>
+<p>注意：本文不是讲述SQL注入攻击</p>
+<h4 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h4><p>最近，我遇到了一个有趣的代码片段，开发者尝试各种方法来确保数据库的安全访问。当新用户尝试注册时，将运行以下代码：</p>
+<pre><code>&lt;?php
+// Checking whether a user with the same username exists
+$username = mysql_real_escape_string($_GET['username']);
+$password = mysql_real_escape_string($_GET['password']);
+$query = "SELECT *
+          FROM users
+          WHERE username='$username'";
+$res = mysql_query($query, $database);
+if($res) {
+  if(mysql_num_rows($res) &gt; 0) {
+    // User exists, exit gracefully
+    .
+    .
+  }
+  else {
+    // If not, only then insert a new entry
+    $query = "INSERT INTO users(username, password)
+              VALUES ('$username','$password')";
+    .
+    .
+  }
+}</code></pre>
+<p>使用以下代码验证登录信息：</p>
+<pre><code>&lt;?php
+$username = mysql_real_escape_string($_GET['username']);
+$password = mysql_real_escape_string($_GET['password']);
+$query = "SELECT username FROM users
+          WHERE username='$username'
+              AND password='$password' ";
+$res = mysql_query($query, $database);
+if($res) {
+  if(mysql_num_rows($res) &gt; 0){
+      $row = mysql_fetch_assoc($res);
+      return $row['username'];
+  }
+}
+return Null;</code></pre>
+<p>安全考虑:</p>
+<blockquote>
+<ul>
+<li>过滤用户输入参数了吗？ – 完成检查</li>
+<li>使用单引号（’）来增加安全性了吗？ – 完成检查</li>
+</ul>
+</blockquote>
+<p>按理说应该不会出错了啊？</p>
+<p>然而，攻击者依然能够以任意用户身份进行登录！</p>
+<h4 id="攻击手法"><a href="#攻击手法" class="headerlink" title="攻击手法"></a>攻击手法</h4><p>在谈论这种攻击手法之前，首先我们需要了解几个关键知识点。</p>
+<ol>
+<li><p>在SQL中执行字符串处理时，字符串末尾的空格符将会被删除。换句话说“vampire”等同于“vampire  ”，对于绝大多数情况来说都是成立的（诸如WHERE子句中的字符串或INSERT语句中的字符串）例如以下语句的查询结果，与使用用户名“vampire”进行查询时的结果是一样的。</p>
+<pre><code>SELECT * FROM users WHERE username='vampire     ';</code></pre>
+<p>但也存在异常情况，最好的例子就是LIKE子句了。注意，对尾部空白符的这种修剪操作，主要是在“字符串比较”期间进行的。这是因为，SQL会在<a target="_blank" rel="noopener" href="https://support.microsoft.com/en-in/kb/316626">内部</a>使用空格来填充字符串，以便在比较之前使其它们的长度保持一致。</p>
+</li>
+<li><p>在所有的INSERT查询中，SQL都会根据varchar(n)来限制字符串的最大长度。也就是说，如果字符串的长度大于“n”个字符的话，那么仅使用字符串的前“n”个字符。比如特定列的长度约束为“5”个字符，那么在插入字符串“vampire”时，实际上只能插入字符串的前5个字符，即“vampi”。</p>
+</li>
+</ol>
+<p>现在，让我们建立一个测试数据库来演示具体攻击过程。</p>
+<pre><code>vampire@linux:~$ mysql -u root -p
+mysql&gt; CREATE DATABASE testing;
+Query OK, 1 row affected (0.03 sec)
+mysql&gt; USE testing;
+Database changed</code></pre>
+<p>接着创建一个数据表users，其包含username和password列，并且字段的最大长度限制为25个字符。然后，我将向username字段插入“vampire”，向password字段插入“my_password”。</p>
+<pre><code>mysql&gt; CREATE TABLE users (
+    -&gt;   username varchar(25),
+    -&gt;   password varchar(25)
+    -&gt; );
+Query OK, 0 rows affected (0.09 sec)
+mysql&gt; INSERT INTO users
+    -&gt; VALUES('vampire', 'my_password');
+Query OK, 1 row affected (0.11 sec)
+mysql&gt; SELECT * FROM users;
++----------+-------------+
+| username | password    |
++----------+-------------+
+| vampire  | my_password |
++----------+-------------+
+1 row in set (0.00 sec)</code></pre>
+<p>为了展示尾部空白字符的修剪情况，我们可以键入下列命令：</p>
+<pre><code>mysql&gt; SELECT * FROM users
+    -&gt; WHERE username='vampire       ';
++----------+-------------+
+| username | password    |
++----------+-------------+
+| vampire  | my_password |
++----------+-------------+
+1 row in set (0.00 sec)</code></pre>
+<p>现在我们假设一个存在漏洞的网站使用了前面提到的PHP代码来处理用户的注册及登录过程。为了侵入任意用户的帐户（在本例中为“vampire”），只需要使用用户名“vampire[许多空白符]1”和一个随机密码进行注册即可。对于选择的用户名，前25个字符应该只包含vampire和空白字符，这样做将有助于绕过检查特定用户名是否已存在的查询。</p>
+<pre><code>mysql&gt; SELECT * FROM users
+    -&gt; WHERE username='vampire                   1';
+Empty set (0.00 sec)</code></pre>
+<p>需要注意的是，在执行SELECT查询语句时，SQL是不会将字符串缩短为25个字符的。因此，这里将使用完整的字符串进行搜索，所以不会找到匹配的结果。接下来，当执行INSERT查询语句时，它只会插入前25个字符。</p>
+<pre><code>mysql&gt;   INSERT INTO users(username, password)
+    -&gt; VALUES ('vampire                   1', 'random_pass');
+Query OK, 1 row affected, 1 warning (0.05 sec)
+mysql&gt; SELECT * FROM users
+    -&gt; WHERE username='vampire';
++---------------------------+-------------+
+| username                  | password    |
++---------------------------+-------------+
+| vampire                   | my_password |
+| vampire                   | random_pass |
++---------------------------+-------------+
+2 rows in set (0.00 sec)</code></pre>
+<p>很好，现在我们检索“vampire”的，将返回两个独立用户。注意，第二个用户名实际上是“vampire”加上尾部的18个空格。现在，如果使用用户名“vampire”和密码“random_pass”登录的话，则所有搜索该用户名的SELECT查询都将返回第一个数据记录，也就是原始的数据记录。这样的话，攻击者就能够以原始用户身份登录。这个攻击已经在MySQL和SQLite上成功通过测试。我相信在其他情况下依旧适用。</p>
+<h4 id="防御手段"><a href="#防御手段" class="headerlink" title="防御手段"></a>防御手段</h4><p>毫无疑问，在进行软件开发时，需要对此类安全漏洞引起注意。我们可采取以下几项措施进行防御：</p>
+<ol>
+<li>将要求或者预期具有唯一性的那些列加上UNIQUE约束。实际上这是一个涉及软件开发的重要规则，即使你的代码有维持其完整性的功能，也应该恰当的定义数据。由于’username’列具有UNIQUE约束，所以不能插入另一条记录。将会检测到两个相同的字符串，并且INSERT查询将失败。</li>
+<li>最好使用’id’作为数据库表的主键。并且数据应该通过程序中的id进行跟踪</li>
+<li>为了更加安全，还可以用手动调整输入参数的限制长度（依照数据库设置）</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/124537.html">https://www.freebuf.com/articles/web/124537.html</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E7%BA%A6%E6%9D%9F%E7%9A%84SQL%E6%94%BB%E5%87%BB"><span class="toc-number">1.</span> <span class="toc-text">基于约束的SQL攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.0.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.0.2.</span> <span class="toc-text">背景介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%89%8B%E6%B3%95"><span class="toc-number">1.0.3.</span> <span class="toc-text">攻击手法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E6%89%8B%E6%AE%B5"><span class="toc-number">1.0.4.</span> <span class="toc-text">防御手段</span></a></li></ol></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

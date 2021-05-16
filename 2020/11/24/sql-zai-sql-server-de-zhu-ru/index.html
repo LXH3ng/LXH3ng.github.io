@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL：在SQL server的注入 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="一、测试SQL注入的存在：
+测试步骤如下：
+1.数字型注入
+①HTTP://www.xxser.com/test.php?id=8&#39;
+SQL语句为: select * from table wher,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL：在SQL server的注入</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL：在SQL server的注入</h1>
+        <div class="stuff">
+            <span>十一月 24, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>一、测试SQL注入的存在：</p>
+<p>测试步骤如下：</p>
+<p>1.数字型注入</p>
+<p>①HTTP://<a target="_blank" rel="noopener" href="http://www.xxser.com/test.php?id=8'">www.xxser.com/test.php?id=8'</a></p>
+<p>SQL语句为: select * from table where id=8’，这样的语句肯定会出错，导致脚本程序无法从数据库中正常获取数据，从而使原来的页面出现异常。</p>
+<p>②HTTP://<a target="_blank" rel="noopener" href="http://www.xxser.com/test.php?id=8">www.xxser.com/test.php?id=8</a> and 1=1</p>
+<p>SQL语句为select * from table where id=8 and 1=1,语句执行正常，返回数据与原始请求无任何差异。</p>
+<p>③HTTP://<a target="_blank" rel="noopener" href="http://www.xxser.com/test.php?id=8">www.xxser.com/test.php?id=8</a> and 1=2</p>
+<p>SQL语句变为 select * from table where id=8 and 1=2 ,语句执行正常，但却无法查询出数据，因为“ and 1=2 ”始终为假。所以返回数据与原始请求有差异。</p>
+<p>如果以上三个步骤全部满足，则程序就可能存在SQL注入漏洞。</p>
+<p>强类型语言在这方面比弱类型语言有优势。</p>
+<p>2.字符型注入</p>
+<p>当输入参数为字符串时，称为字符型。数字型与字符型注入最大的区别在于:数字类型不需要单引号闭合，而字符串类型般要使用单引号来闭合。</p>
+<p>字符型注入最关键的是如何闭合SQL语句以及注释多余的代码。</p>
+<p>当查询内容为字符串时，SQL代码如下:</p>
+<p>select * from  table where username =’admin’</p>
+<p>当攻击者进行SQL注入时，如果输入“admin and 1=1”，则无法进行注入。因为“admin and1=1”会被数据库当作查询的字符串，SQL语句如下:</p>
+<p>select * from table where username =’admin and 1=1’</p>
+<p>这时想要进行注入，则必须注意字符串闭合问题。如果输入”admin’ and1=1–“就可以继续注入，SQL语句如下:</p>
+<p>select ★from table where username =’admin’ and 1=1 –’</p>
+<p>只要是字符串类型注入，都必须闭合单引号以及注释多余的代码。例如，update 语句: update Person set username =’username ‘,set password= ‘password’ where id=1</p>
+<p>现在对该SQL语句进行注入，就需要闭合单引号，可以在username或password处插入语 句为“’+(select @@version)+’”，最终执行的SQL语句为:</p>
+<p>update person set username=’username’ , set password=’ ‘+ (select@@version)+ ‘ ‘ where id=1 </p>
+<p>利用两次单引号闭合才完成SQL注入。</p>
+<p>二、order by 语句判断数据表列数，例如：</p>
+<p>order by 3不报错，order by 4 报错 ，则数据表有三列</p>
+<p>注：常用表视图：</p>
+<p>![76A13B7656A8D4B40651E87F62988610](D:\blog\source_posts\SQL注入-1(SQL server)\76A13B7656A8D4B40651E87F62988610.png)</p>
+<p>三：UNION查询：</p>
+<p>联合查询敏感信息</p>
+<p>如果得知列数为4，可以使用以下语句继续注入：</p>
+<p>id=5 union select ‘x’,null,null,null from sysobject where xtype=’U’</p>
+<p>如果第一列数据类型不匹配，数据库将会报错，这时可以继续递归查询，知道语句正常执行为止。</p>
+<p>id=5 union select null,’x’,null,null from sysobject where xtype=’U’</p>
+<p>id=5 union select null,null,’x’,null from sysobject where xtype=’U’</p>
+<p>语句执行正常，代表数据类型兼容，就可以将x替换为SQL语句，查询敏感信息。</p>
+<p>四、使用系统函数：</p>
+<p>select suser_name():返回用户的登录标识名；</p>
+<p>select user_name():基于指定的标识号返回数据库用户名；</p>
+<p>select db_name():返回数据库名称；</p>
+<p>select is_member(‘db_owner’):是否为数据库角色；</p>
+<p>select convert(int,’5’):数据类型转换。</p>
+<p>注：SQL server常用函数：</p>
+<p>![E6530B94DE1FE160A7E73BE22883E2C2](D:\blog\source_posts\SQL注入-1(SQL server)\E6530B94DE1FE160A7E73BE22883E2C2.png)</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

