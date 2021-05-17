@@ -104,6 +104,71 @@ class Person {
 <p>1.常量 Contants<br> 2.属性 Property Names<br> 3.方法 Method Names静态<br> 4.属性 Static Properties<br> 5.命名空间 Namespace<br> 6.Person类是否为final或者abstract<br> 7.Person类是否有某个方法</p>
 <p>接下来反射它，只要把类名”Person”传递给ReflectionClass就可以了：</p>
 <p>代码如下:</p>
+<pre><code>$class = new ReflectionClass('Person'); // 建立 Person这个类的反射类  
+$instance  = $class-&gt;newInstanceArgs($args); // 相当于实例化Person 类 </code></pre>
+<p>1）获取属性(Properties)：</p>
+<p>代码如下:</p>
+<pre><code>$properties = $class-&gt;getProperties();
+foreach ($properties as $property) {
+ echo $property-&gt;getName() . "\n";
+}
+// 输出:
+// _allowDynamicAttributes
+// id
+// name
+// biography</code></pre>
+<p>默认情况下，ReflectionClass会获取到所有的属性，private 和 protected的也可以。如果只想获取到private属性，就要额外传个参数：</p>
+<p>代码如下:</p>
+<pre><code>$private_properties = $class-&gt;getProperties(ReflectionProperty::IS_PRIVATE);</code></pre>
+<p>可用参数列表：</p>
+<p>代码如下:</p>
+<pre><code>ReflectionProperty::IS_STATIC
+ReflectionProperty::IS_PUBLIC
+ReflectionProperty::IS_PROTECTED
+ReflectionProperty::IS_PRIVATE</code></pre>
+<p>通过$property-&gt;getName()可以得到属性名。</p>
+<p>2）获取注释：</p>
+<p>通过getDocComment可以得到写给property的注释。</p>
+<p>代码如下:</p>
+<pre><code>foreach ($properties as $property) {
+ if ($property-&gt;isProtected()) {
+  $docblock = $property-&gt;getDocComment();
+  preg_match('/ type\=([a-z_]*) /', $property-&gt;getDocComment(), $matches);
+  echo $matches[1] . "\n";
+ }
+}
+// Output:
+// primary_autoincrement
+// varchar
+// text</code></pre>
+<p>3）获取类的方法</p>
+<p>代码如下:</p>
+<pre><code>getMethods()       来获取到类的所有methods。
+hasMethod(string)  是否存在某个方法
+getMethod(string)  获取方法</code></pre>
+<p>4）执行类的方法：</p>
+<p>代码如下:</p>
+<pre><code>$instance-&gt;getName(); // 执行Person 里的方法getName
+// 或者：
+$method = $class-&gt;getmethod('getName'); // 获取Person 类中的getName方法
+$method-&gt;invoke($instance);    // 执行getName 方法
+// 或者：
+$method = $class-&gt;getmethod('setName'); // 获取Person 类中的setName方法
+$method-&gt;invokeArgs($instance, array('snsgou.com'));</code></pre>
+<p>二、通过ReflectionMethod，我们可以得到Person类的某个方法的信息：</p>
+<p>1.是否“public”、“protected”、“private” 、“static”类型<br> 2.方法的参数列表<br> 3.方法的参数个数<br> 4.反调用类的方法</p>
+<p>代码如下:</p>
+<pre><code>// 执行detail方法
+$method = new ReflectionMethod('Person', 'test');
+
+
+if ($method-&gt;isPublic() &amp;&amp; !$method-&gt;isStatic()) {
+ echo 'Action is right';
+}
+echo $method-&gt;getNumberOfParameters(); // 参数个数
+echo $method-&gt;getParameters(); // 参数对象数组</code></pre>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u013416034/article/details/105933637/">https://blog.csdn.net/u013416034/article/details/105933637/</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/luyaran/article/details/84339363">https://blog.csdn.net/luyaran/article/details/84339363</a></p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
