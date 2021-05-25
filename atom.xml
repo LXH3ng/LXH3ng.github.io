@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-05-24T14:35:34.779Z</updated>
+  <updated>2021-05-25T16:01:19.096Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Web:目录遍历漏洞</title>
+    <link href="http://lxh3ng.github.io/2021/05/25/web-mu-lu-bian-li-lou-dong/"/>
+    <id>http://lxh3ng.github.io/2021/05/25/web-mu-lu-bian-li-lou-dong/</id>
+    <published>2021-05-25T14:50:15.000Z</published>
+    <updated>2021-05-25T16:01:19.096Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;什么是目录遍历？&quot;&gt;&lt;a href=&quot;#什么是目录遍历？&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Web:文件包含漏洞</title>
@@ -449,29 +470,6 @@ if</summary>
         
     <summary type="html">&lt;p&gt;尝试到?name=123有响应&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;/2021/05/04/i-chun-qiu-web-fuzz/54ac388556a196af663d2ff92856dbf.png&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-Hash</title>
-    <link href="http://lxh3ng.github.io/2021/05/03/i-chun-qiu-web-hash/"/>
-    <id>http://lxh3ng.github.io/2021/05/03/i-chun-qiu-web-hash/</id>
-    <published>2021-05-02T16:26:57.000Z</published>
-    <updated>2021-05-11T10:34:43.036Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/03/i-chun-qiu-web-hash/db497ae3ef59f08ca53247fcccdaf07.png&quot;</summary>
         
       
     
