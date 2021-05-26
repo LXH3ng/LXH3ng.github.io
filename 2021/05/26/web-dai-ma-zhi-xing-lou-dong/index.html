@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Web:代码执行漏洞 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="简述代码执行漏洞：PHP代码执行漏洞可以将代码注入到应用中，最终到webserver去执行。该漏洞主要存在于eval()、assert()、preg_replace()、call_user_func,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Web:代码执行漏洞</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Web:代码执行漏洞</h1>
+        <div class="stuff">
+            <span>五月 26, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="简述代码执行漏洞："><a href="#简述代码执行漏洞：" class="headerlink" title="简述代码执行漏洞："></a>简述代码执行漏洞：</h2><p>PHP代码执行漏洞可以将代码注入到应用中，最终到webserver去执行。该漏洞主要存在于eval()、assert()、preg_replace()、call_user_func()、array_map()以及动态函数中。</p>
+<h4 id="1-eval和assert函数"><a href="#1-eval和assert函数" class="headerlink" title="1.eval和assert函数"></a>1.eval和assert函数</h4><p> eval()函数是将输入的字符串当做PHP代码执行，assert()会检查指定的 assertion 并在结果为 FALSE 时采取适当的行动。</p>
+<h5 id="示例代码1："><a href="#示例代码1：" class="headerlink" title="示例代码1："></a>示例代码1：</h5><pre><code>&lt;?php
+$a='wjw';
+$b='xy';
+eval('$a=$b;');/assert('$a=$b;');
+var_dump($a);
+?&gt;</code></pre>
+<p><strong>示例代码2：</strong></p>
+<pre><code>&lt;?php
+eval('phpinfo();');/assert('phpinfo();');
+?&gt;</code></pre>
+<h4 id="2-preg-replace函数"><a href="#2-preg-replace函数" class="headerlink" title="2.preg_replace函数"></a>2.preg_replace函数</h4><p>此函数的作用是对一个字符串进行正则处理（具体函数功能自行搜索）</p>
+<pre><code>mixed preg_replace ( mixed $ pattern , mixed $ replacement , mixed $ subject [, int $ limit = -1 [, int &amp;$ count ]] )</code></pre>
+<p>preg_replace函数的代码执行需要存在/e参数</p>
+<h5 id="示例代码："><a href="#示例代码：" class="headerlink" title="示例代码："></a>示例代码：</h5><pre><code>&lt;?php
+preg_replace("/ \[(.*)\]/e",'\\1',$_GET['str']);
+?&gt;</code></pre>
+<p>将显示PHP版本信息</p>
+<h3 id="3-调用函数过滤不严"><a href="#3-调用函数过滤不严" class="headerlink" title="3.调用函数过滤不严"></a>3.调用函数过滤不严</h3><p>call_user_func()和array_map()等函数具有调用其他函数的功能，用call_user_func()函数来举例，函数的作用是调用第一个参数(函数)，将第二个参数作为要调用的函数的参数</p>
+<pre><code>call_user_func ( callable $callback [, mixed $parameter [, mixed $… ]] )</code></pre>
+<p> <strong>测试代码</strong></p>
+<pre><code>&lt;?php
+$b="phpinfo()";
+call_user_func($_GET['a'],$b);
+?&gt;</code></pre>
+<h2 id="4-动态函数执行"><a href="#4-动态函数执行" class="headerlink" title="4.动态函数执行"></a>4.动态函数执行</h2><p>动态函数的写法为”变量(参数)”</p>
+<h5 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码:"></a>示例代码:</h5><pre><code>&lt;?php
+$_GET['a']($_GET['b']);
+?&gt;
+123</code></pre>
+<p>GET请求参数a，作为函数，而b作为函数的参数，执行结果也是php的版本信息</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">简述代码执行漏洞：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-eval%E5%92%8Cassert%E5%87%BD%E6%95%B0"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.eval和assert函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%811%EF%BC%9A"><span class="toc-number">1.0.1.1.</span> <span class="toc-text">示例代码1：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-preg-replace%E5%87%BD%E6%95%B0"><span class="toc-number">1.0.2.</span> <span class="toc-text">2.preg_replace函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">示例代码：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0%E8%BF%87%E6%BB%A4%E4%B8%8D%E4%B8%A5"><span class="toc-number">1.1.</span> <span class="toc-text">3.调用函数过滤不严</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%8A%A8%E6%80%81%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C"><span class="toc-number">2.</span> <span class="toc-text">4.动态函数执行</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-number">2.0.0.1.</span> <span class="toc-text">示例代码:</span></a></li></ol></li></ol></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

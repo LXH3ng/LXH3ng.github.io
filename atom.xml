@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-05-25T16:01:19.096Z</updated>
+  <updated>2021-05-26T15:45:50.270Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,48 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Web:命令执行漏洞</title>
+    <link href="http://lxh3ng.github.io/2021/05/26/web-ming-ling-zhi-xing-lou-dong/"/>
+    <id>http://lxh3ng.github.io/2021/05/26/web-ming-ling-zhi-xing-lou-dong/</id>
+    <published>2021-05-26T15:30:39.000Z</published>
+    <updated>2021-05-26T15:45:50.270Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;命令执行漏洞原理&quot;&gt;&lt;a href=&quot;#命令执行漏洞原理&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Web:代码执行漏洞</title>
+    <link href="http://lxh3ng.github.io/2021/05/26/web-dai-ma-zhi-xing-lou-dong/"/>
+    <id>http://lxh3ng.github.io/2021/05/26/web-dai-ma-zhi-xing-lou-dong/</id>
+    <published>2021-05-26T14:46:17.000Z</published>
+    <updated>2021-05-26T15:30:15.544Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;简述代码执行漏洞：&quot;&gt;&lt;a href=&quot;#简述代码执行漏洞：&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Web:目录遍历漏洞</title>
@@ -422,54 +464,6 @@ if</summary>
         
         
     <summary type="html">&lt;h2 id=&quot;OneThink1-0文件缓存漏洞利用&quot;&gt;&lt;a href=&quot;#OneThink1-0文件缓存漏洞利用&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-zone</title>
-    <link href="http://lxh3ng.github.io/2021/05/05/i-chun-qiu-web-zone/"/>
-    <id>http://lxh3ng.github.io/2021/05/05/i-chun-qiu-web-zone/</id>
-    <published>2021-05-05T08:02:48.000Z</published>
-    <updated>2021-05-11T10:34:48.092Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/05/i-chun-qiu-web-zone/5bd4424eb057a35becb1bcdefa1e513.png&quot; alt=&quot;5bd4424eb057a35becb1bcdefa1e513&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-fuzz</title>
-    <link href="http://lxh3ng.github.io/2021/05/04/i-chun-qiu-web-fuzz/"/>
-    <id>http://lxh3ng.github.io/2021/05/04/i-chun-qiu-web-fuzz/</id>
-    <published>2021-05-04T04:24:41.000Z</published>
-    <updated>2021-05-11T10:34:37.118Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;尝试到?name=123有响应&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2021/05/04/i-chun-qiu-web-fuzz/54ac388556a196af663d2ff92856dbf.png&quot;</summary>
         
       
     
