@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Web:逻辑漏洞 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="逻辑漏洞在我理解中，逻辑漏洞是指由于程序逻辑输入管控不严，导致程序不能够正常处理或处理错误，一般出现在登录注册、密码找回、信息查看、交易支付金额等。
+我将所有逻辑漏洞的问题分为前端和后端两个部分，总,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Web:逻辑漏洞</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Web:逻辑漏洞</h1>
+        <div class="stuff">
+            <span>五月 27, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h2 id="逻辑漏洞"><a href="#逻辑漏洞" class="headerlink" title="逻辑漏洞"></a>逻辑漏洞</h2><p>在我理解中，逻辑漏洞是指由于程序逻辑输入管控不严，导致程序不能够正常处理或处理错误，一般出现在登录注册、密码找回、信息查看、交易支付金额等。</p>
+<p><strong>我将所有逻辑漏洞的问题分为前端和后端两个部分，总体思路都是先测试前端再测试后端。**</strong>在我理解中其实就是能突破规则限制的就是漏洞【像不可修改的通过抓包可以修改了】。**</p>
+<h3 id="一、注册处"><a href="#一、注册处" class="headerlink" title="一、注册处"></a>一、注册处</h3><p>注册功能可能出现任意用户注册、短信轰炸等问题。</p>
+<p>配合思维导图（此处以常见的手机注册举例，同理其他注册也可以套用该模型）。</p>
+<p><img src="https://image.3001.net/images/20190213/1550027987_5c638cd399b69.png!small" alt="img"></p>
+<p>框里面是对每一个步骤的解释，框右边是总结的流程。（先不管图片验证码的原因是因为就算图片验证码可绕过，厂商也会因为该漏洞危害小而忽略）</p>
+<h4 id="1、前端"><a href="#1、前端" class="headerlink" title="1、前端"></a>1、前端</h4><p>首先是前端，打开burpsuite，将整个注册流程走一遍，将每个步骤的包都右键标上不同颜色。</p>
+<p>就像这样：</p>
+<p><img src="https://image.3001.net/images/20190213/1550029287_5c6391e7b31f9.png!small" alt="img">查看每个返回包有没有返回手机验证码或者存在true、false之类的判断语句，尝试将false修改为true，成功注册的话就绕过了前端验证。</p>
+<p>这样可以拦截该请求返回包：</p>
+<p><img src="https://image.3001.net/images/20190214/1550122177_5c64fcc1a0720.png!small" alt="img"></p>
+<h4 id="2、短信轰炸"><a href="#2、短信轰炸" class="headerlink" title="2、短信轰炸"></a>2、短信轰炸</h4><p>尝试重放发送验证码的包，查看手机是否在短时间内收到了多条短信，是的话则存在短信轰炸漏洞，这是因为后端没有对发送手机短信做时间限制。</p>
+<h4 id="3、修改发送包手机号"><a href="#3、修改发送包手机号" class="headerlink" title="3、修改发送包手机号"></a><img src="https://image.3001.net/images/20190213/1550029681_5c6393716d14b.png!small" alt="img">3、修改发送包手机号</h4><p>最后是修改发送包的手机号，首先用自己的手机收到正确验证码，在点击注册时拦截包将手机号改为其他手机号，如果成功的话就注册了别人的手机号，这是因为后端仅验证了验证码是否是正确的而没有验证验证码是否与手机匹配。</p>
+<p><img src="https://image.3001.net/images/20190214/1550121679_5c64facf4d378.png!small" alt="img"></p>
+<p>流程小结</p>
+<blockquote>
+<p>1、前端判断【回显及判断】</p>
+<p>2、短信轰炸</p>
+<p>3、修改发送包手机号</p>
+<p>【邮箱注册】4、修改发送包邮箱尝试覆盖注册</p>
+</blockquote>
+<p>以上是手机注册的大概框架流程，同理其他注册类型也可以对比测试。</p>
+<h3 id="二、登录处"><a href="#二、登录处" class="headerlink" title="二、登录处"></a>二、登录处</h3><p>登录处可能出现任意用户登录、验证码可绕过、用户账号可撞库等问题。</p>
+<p>配合思维导图，此处思维导图上说的密码也是手机验证码，因为是以手机验证码登录举例（此处以常见的手机验证码登录举例，同样账号密码登录也可以套用该模型，手机验证码登录的特殊处已用框标记）</p>
+<p><img src="https://image.3001.net/images/20190214/1550117645_5c64eb0d7748c.png!small" alt="img">同样的，也是先测试前端再测试后端。</p>
+<h4 id="1、前端-1"><a href="#1、前端-1" class="headerlink" title="1、前端"></a>1、前端</h4><p>首先对比正确登录和错误登录的包，对比返回包看是否有判断，尝试修改参数绕过前端验证。（这里也是打开burpsuite整个流程走一遍，和上面的注册处测试差不多）</p>
+<h4 id="2、短信轰炸-1"><a href="#2、短信轰炸-1" class="headerlink" title="2、短信轰炸"></a>2、短信轰炸</h4><p>测试短信轰炸与注册处测试步骤一样（一般来说注册处有短信轰炸的话这里也会有）。</p>
+<h4 id="3、验证码爆破"><a href="#3、验证码爆破" class="headerlink" title="3、验证码爆破"></a>3、验证码爆破</h4><p>再然后就是验证码爆破（或绕过），此处验证码包括图片验证码和手机验证码，先测试图片验证码，将使用正确密码登录的包再重放一次，如果回显还是正确登录的话说明并没有对图片验证码进行限制，可以尝试撞库。</p>
+<p>至于手机验证码，通常是尝试爆破，如果网站发到手机上的短信没有写什么在xx时间内有效之类的则有可能没有时间限制，将登录包右键发送至Intruder（即测试器模块）设置好爆破位置后在载荷里选择数值后这样填写。</p>
+<p><img src="https://image.3001.net/images/20190214/1550120969_5c64f8098cf06.png!small" alt="img">通常范围是填写正确验证码所在的范围，爆破出来可以登录用户，漏洞标题也就可以写任意用户登录漏洞。</p>
+<h4 id="4、修改发送包手机号"><a href="#4、修改发送包手机号" class="headerlink" title="4、修改发送包手机号"></a>4、修改发送包手机号</h4><p>修改发送包手机号则和上面注册处修改发送包手机号步骤一样，不同的是上面注册处是为了测试任意用户注册，而这里登录处是为了测试任意用户登录，原理一样目的不同。</p>
+<h4 id="5、修改用户参数"><a href="#5、修改用户参数" class="headerlink" title="5、修改用户参数"></a>5、修改用户参数</h4><p>查看正确登录包的返回包是否有用户id之类的参数，尝试修改该参数。（不嫌麻烦的话可以用两个正确登录的返回包对比）</p>
+<p>拦截该请求的返回包修改返回包中的用户参数。</p>
+<p>流程小结</p>
+<blockquote>
+<p>1、前端判断【回显及判断】</p>
+<p>2、短信轰炸</p>
+<p>3、验证码爆破</p>
+<p>4、修改发送包手机号</p>
+<p>5、尝试修改用户参数【注意token等参数】</p>
+</blockquote>
+<h3 id="三、密码找回处"><a href="#三、密码找回处" class="headerlink" title="三、密码找回处"></a>三、密码找回处</h3><p>密码找回处可能出现任意用户密码找回、验证码可绕过等问题。</p>
+<p>密码找回处的思维导图，此处以手机验证码找回为例。</p>
+<p><img src="https://image.3001.net/images/20190215/1550198850_5c6628422d72a.png!small" alt="img">这里也是先前端再后端。</p>
+<h4 id="1、前端-2"><a href="#1、前端-2" class="headerlink" title="1、前端"></a>1、前端</h4><p>前端测试与前面一致，无非就是修改返回包看是否能跳过验证步骤，此处也就略过。</p>
+<h4 id="2、验证码爆破"><a href="#2、验证码爆破" class="headerlink" title="2、验证码爆破"></a>2、验证码爆破</h4><p>第2步之所以没有写短信轰炸是因为前面注册和登录已经测试过了。</p>
+<p>验证码爆破与上面登录处的验证码爆破操作一致。</p>
+<h4 id="3、修改发送包手机号-1"><a href="#3、修改发送包手机号-1" class="headerlink" title="3、修改发送包手机号"></a>3、修改发送包手机号</h4><p>这里与上面注册处的修改发送包手机号操作一致，也就不多说了。</p>
+<p>流程小结（其实精华都在思维导图上，其他的都是做解释，在最后我会把思维导图整体放上来）</p>
+<blockquote>
+<p>1、前端判断【回显及判断】</p>
+<p>2、验证码爆破</p>
+<p>3、修改发送包手机号或邮箱【提交时修改手机号或者修改验证码发送包的手机号】</p>
+<p>4、【邮箱找回】链接尝试修改用户参数【注意token等参数】</p>
+</blockquote>
+<h3 id="四、支付与越权"><a href="#四、支付与越权" class="headerlink" title="四、支付与越权"></a>四、支付与越权</h3><p>这里放上思维导图。</p>
+<p><img src="https://image.3001.net/images/20190215/1550200482_5c662ea2cbd66.png!small" alt="2$1(WJDQ4JDVMZDNN}TB%JD.png">这里之所以没有按先前端再后端的顺序来写，是因为几乎每个网站的支付和越权逻辑都不太一样，使用先前端再后端这样的框架的话就限制了思路。</p>
+<p>在支付和越权这里我认为，只要有参数，都可以修改，都有可能出现问题。</p>
+<p>通常我会使用两个账号来对比测试，这样可以更快发现可疑参数。</p>
+<p>解释（有任何问题都可以留言，我会尽量解答，问题很多的话我会在过段时间的进阶篇里统一归纳整理）：</p>
+<p>支付接口指的是网站支付一般会有像微信支付、支付宝支付这种，一般网站会在支付的发送包里用某个参数标识。</p>
+<p>登录时查看并测试用户信息返回接口指的是，在登录的时候，有的网站有个返回包是一个json数据包，该包内包含了用户敏感信息，此时就可以尝试修改发送包的用户参数，说不定就能获取其他用户的敏感信息。 </p>
+<h2 id="思维导图总览"><a href="#思维导图总览" class="headerlink" title="思维导图总览"></a>思维导图总览</h2><p><img src="/2021/05/27/web-luo-ji-lou-dong/9c4ad34c41464ed8972ca0abe7121b7.png" alt="9c4ad34c41464ed8972ca0abe7121b7"></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/195837.html">https://www.freebuf.com/articles/web/195837.html</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.</span> <span class="toc-text">逻辑漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%B3%A8%E5%86%8C%E5%A4%84"><span class="toc-number">1.1.</span> <span class="toc-text">一、注册处</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%89%8D%E7%AB%AF"><span class="toc-number">1.1.1.</span> <span class="toc-text">1、前端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E7%9F%AD%E4%BF%A1%E8%BD%B0%E7%82%B8"><span class="toc-number">1.1.2.</span> <span class="toc-text">2、短信轰炸</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E4%BF%AE%E6%94%B9%E5%8F%91%E9%80%81%E5%8C%85%E6%89%8B%E6%9C%BA%E5%8F%B7"><span class="toc-number">1.1.3.</span> <span class="toc-text">3、修改发送包手机号</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%99%BB%E5%BD%95%E5%A4%84"><span class="toc-number">1.2.</span> <span class="toc-text">二、登录处</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%89%8D%E7%AB%AF-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">1、前端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E7%9F%AD%E4%BF%A1%E8%BD%B0%E7%82%B8-1"><span class="toc-number">1.2.2.</span> <span class="toc-text">2、短信轰炸</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E9%AA%8C%E8%AF%81%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">1.2.3.</span> <span class="toc-text">3、验证码爆破</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E4%BF%AE%E6%94%B9%E5%8F%91%E9%80%81%E5%8C%85%E6%89%8B%E6%9C%BA%E5%8F%B7"><span class="toc-number">1.2.4.</span> <span class="toc-text">4、修改发送包手机号</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5%E3%80%81%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.5.</span> <span class="toc-text">5、修改用户参数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E%E5%A4%84"><span class="toc-number">1.3.</span> <span class="toc-text">三、密码找回处</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%89%8D%E7%AB%AF-2"><span class="toc-number">1.3.1.</span> <span class="toc-text">1、前端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E9%AA%8C%E8%AF%81%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">1.3.2.</span> <span class="toc-text">2、验证码爆破</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E4%BF%AE%E6%94%B9%E5%8F%91%E9%80%81%E5%8C%85%E6%89%8B%E6%9C%BA%E5%8F%B7-1"><span class="toc-number">1.3.3.</span> <span class="toc-text">3、修改发送包手机号</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%94%AF%E4%BB%98%E4%B8%8E%E8%B6%8A%E6%9D%83"><span class="toc-number">1.4.</span> <span class="toc-text">四、支付与越权</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE%E6%80%BB%E8%A7%88"><span class="toc-number">2.</span> <span class="toc-text">思维导图总览</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

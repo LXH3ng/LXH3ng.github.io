@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-05-26T15:45:50.270Z</updated>
+  <updated>2021-05-27T08:46:35.297Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Web:越权漏洞</title>
+    <link href="http://lxh3ng.github.io/2021/05/27/web-yue-quan-lou-dong/"/>
+    <id>http://lxh3ng.github.io/2021/05/27/web-yue-quan-lou-dong/</id>
+    <published>2021-05-27T08:46:22.000Z</published>
+    <updated>2021-05-27T08:46:35.297Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Web:逻辑漏洞</title>
+    <link href="http://lxh3ng.github.io/2021/05/27/web-luo-ji-lou-dong/"/>
+    <id>http://lxh3ng.github.io/2021/05/27/web-luo-ji-lou-dong/</id>
+    <published>2021-05-27T04:23:35.000Z</published>
+    <updated>2021-05-27T08:57:10.829Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;逻辑漏洞&quot;&gt;&lt;a href=&quot;#逻辑漏洞&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Web:命令执行漏洞</title>
@@ -413,57 +447,6 @@ os.system(&#39;cat /flag&#39;)&lt;/code&gt;&lt;/pre&gt;
         
         
     <summary type="html">&lt;h2 id=&quot;SVN源码泄露漏洞&quot;&gt;&lt;a href=&quot;#SVN源码泄露漏洞&quot; class=&quot;headerlink&quot; title=&quot;SVN源码泄露漏洞&quot;&gt;&lt;/a&gt;SVN源码泄露漏洞&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-时间</title>
-    <link href="http://lxh3ng.github.io/2021/05/07/i-chun-qiu-web-shi-jian/"/>
-    <id>http://lxh3ng.github.io/2021/05/07/i-chun-qiu-web-shi-jian/</id>
-    <published>2021-05-07T07:29:09.000Z</published>
-    <updated>2021-05-11T10:35:06.295Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;pre&gt;&lt;code&gt;&amp;lt;?php 
-header(&quot;content-type:text/html;charset=utf-8&quot;);
-&#39;天下武功唯快不破&#39;;
-setcookie(&#39;token&#39;,&#39;hello&#39;);   
-show_source(__FILE__);
-if</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-OneThink</title>
-    <link href="http://lxh3ng.github.io/2021/05/06/i-chun-qiu-web-onethink/"/>
-    <id>http://lxh3ng.github.io/2021/05/06/i-chun-qiu-web-onethink/</id>
-    <published>2021-05-06T15:10:08.000Z</published>
-    <updated>2021-05-11T10:34:53.497Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;OneThink1-0文件缓存漏洞利用&quot;&gt;&lt;a href=&quot;#OneThink1-0文件缓存漏洞利用&quot; class=&quot;headerlink&quot;</summary>
         
       
     
