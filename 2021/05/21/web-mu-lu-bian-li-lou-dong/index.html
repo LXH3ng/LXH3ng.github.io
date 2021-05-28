@@ -5,12 +5,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Web:代码执行漏洞 - H3ng</title>
+    <title>Web:目录遍历漏洞 - H3ng</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    <meta name="description" content="简述代码执行漏洞：PHP代码执行漏洞可以将代码注入到应用中，最终到webserver去执行。该漏洞主要存在于eval()、assert()、preg_replace()、call_user_func,"> 
+    <meta name="description" content="什么是目录遍历？目录遍历（目录穿越）是一个Web安全漏洞，攻击者可以利用该漏洞读取运行应用程序的服务器上的任意文件。 这可能包括应用程序代码和数据，后端系统的登录信息以及敏感的操作系统文件。
+在某些,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -30,7 +31,7 @@
     <div class="bar" style="width: 0;"></div>
     <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
     <div title="播放/暂停" class="iconfont icon-play"></div>
-    <h3 class="subtitle">Web:代码执行漏洞</h3>
+    <h3 class="subtitle">Web:目录遍历漏洞</h3>
     <div class="social">
         <div>
             <div class="share">
@@ -45,45 +46,40 @@
     <div class="section">
         <div class="article">
     <div class='main'>
-        <h1 class="title">Web:代码执行漏洞</h1>
+        <h1 class="title">Web:目录遍历漏洞</h1>
         <div class="stuff">
-            <span>五月 26, 2021</span>
+            <span>五月 21, 2021</span>
             
 
         </div>
         <div class="content markdown">
-            <h2 id="简述代码执行漏洞："><a href="#简述代码执行漏洞：" class="headerlink" title="简述代码执行漏洞："></a>简述代码执行漏洞：</h2><p>PHP代码执行漏洞可以将代码注入到应用中，最终到webserver去执行。该漏洞主要存在于eval()、assert()、preg_replace()、call_user_func()、array_map()以及动态函数中。</p>
-<h4 id="1-eval和assert函数"><a href="#1-eval和assert函数" class="headerlink" title="1.eval和assert函数"></a>1.eval和assert函数</h4><p> eval()函数是将输入的字符串当做PHP代码执行，assert()会检查指定的 assertion 并在结果为 FALSE 时采取适当的行动。</p>
-<h5 id="示例代码1："><a href="#示例代码1：" class="headerlink" title="示例代码1："></a>示例代码1：</h5><pre><code>&lt;?php
-$a='wjw';
-$b='xy';
-eval('$a=$b;');/assert('$a=$b;');
-var_dump($a);
-?&gt;</code></pre>
-<p><strong>示例代码2：</strong></p>
-<pre><code>&lt;?php
-eval('phpinfo();');/assert('phpinfo();');
-?&gt;</code></pre>
-<h4 id="2-preg-replace函数"><a href="#2-preg-replace函数" class="headerlink" title="2.preg_replace函数"></a>2.preg_replace函数</h4><p>此函数的作用是对一个字符串进行正则处理（具体函数功能自行搜索）</p>
-<pre><code>mixed preg_replace ( mixed $ pattern , mixed $ replacement , mixed $ subject [, int $ limit = -1 [, int &amp;$ count ]] )</code></pre>
-<p>preg_replace函数的代码执行需要存在/e参数</p>
-<h5 id="示例代码："><a href="#示例代码：" class="headerlink" title="示例代码："></a>示例代码：</h5><pre><code>&lt;?php
-preg_replace("/ \[(.*)\]/e",'\\1',$_GET['str']);
-?&gt;</code></pre>
-<p>将显示PHP版本信息</p>
-<h3 id="3-调用函数过滤不严"><a href="#3-调用函数过滤不严" class="headerlink" title="3.调用函数过滤不严"></a>3.调用函数过滤不严</h3><p>call_user_func()和array_map()等函数具有调用其他函数的功能，用call_user_func()函数来举例，函数的作用是调用第一个参数(函数)，将第二个参数作为要调用的函数的参数</p>
-<pre><code>call_user_func ( callable $callback [, mixed $parameter [, mixed $… ]] )</code></pre>
-<p> <strong>测试代码</strong></p>
-<pre><code>&lt;?php
-$b="phpinfo()";
-call_user_func($_GET['a'],$b);
-?&gt;</code></pre>
-<h2 id="4-动态函数执行"><a href="#4-动态函数执行" class="headerlink" title="4.动态函数执行"></a>4.动态函数执行</h2><p>动态函数的写法为”变量(参数)”</p>
-<h5 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码:"></a>示例代码:</h5><pre><code>&lt;?php
-$_GET['a']($_GET['b']);
-?&gt;
-123</code></pre>
-<p>GET请求参数a，作为函数，而b作为函数的参数，执行结果也是php的版本信息</p>
+            <h3 id="什么是目录遍历？"><a href="#什么是目录遍历？" class="headerlink" title="什么是目录遍历？"></a>什么是目录遍历？</h3><p>目录遍历（目录穿越）是一个Web安全漏洞，攻击者可以利用该漏洞读取运行应用程序的服务器上的任意文件。 这可能包括应用程序代码和数据，后端系统的登录信息以及敏感的操作系统文件。</p>
+<p>在某些情况下，攻击者可能能够在服务器上写入任意文件，（如，FFFTP是一款小型的FTP客户端软件。FFFTP客户端没有正确地验证FTP服务器所返回的LIST命令响应中包含有目录遍历序列（斜线）的文件名，如果用户受骗从恶意的FTP服务器下载的目录包含有带有恶意文件名的文件的话，就可能导致向用户系统的任意位置写入文件）从而允许他们修改应用程序数据或行为，并最终完全控制服务器。</p>
+<h3 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h3><p>若web要显示一个商品的图像，有时候开发者会用通过HTML加载，如：</p>
+<pre><code>&lt;img src="/loadImage?filename=214.png"&gt;</code></pre>
+<p>使用filename参数加载图像文件，图片文件位置可能映射在 /var/www/images/ 上，所以真实的路径是 /var/www/images/214.png </p>
+<p>这就导致了攻击者可以读取服务器上的任意文件：</p>
+<pre><code>https://www.*****.com/loadImage?filename=../../../etc/passwd</code></pre>
+<p>filename的参数值与真实路径组合起来就是：</p>
+<pre><code>/var/www/images/../../../etc/passwd</code></pre>
+<p>其等价于：</p>
+<pre><code>/etc/passwd</code></pre>
+<pre><code>在Unix操作系统上，../ 是一个标准的返回上一级路径的语法；
+
+在Windows操作系统上， ../ 和 ..\ 都是返回上一级的语句。</code></pre>
+<p>(1) 加密参数传递的数据；</p>
+<p>在Web应用程序对文件名进行加密之后再提交，比如：“downfile.jsp?filename= ZmFuLnBkZg-  “，在参数filename用的是Base64加密，而攻击者要想绕过，只需简单的将文件名加密后再附加提交即可。所以说，采用一些有规律或者轻易能识别的加密方式，也是存在风险的。</p>
+<p>(2) 编码绕过，</p>
+<p>尝试使用不同的编码转换进行过滤性的绕过，比如Url编码，通过对参数进行Url编码提交，“downfile.jsp?filename= %66%61%6E%2E%70%64%66“来绕过。</p>
+<p>避开过滤</p>
+<p>第一种是过滤文件名参数中是否存在任何路径遍历序列(..)<br>如果程序尝试删除(..)来净化用户输入，可以用<br>….// …./ …./\ ….\<br>进行URL编码<br>点–&gt;%2e 反斜杠–&gt;%2f 正斜杠–&gt;%5c<br>进行16为Unicode编码<br>点–&gt;%u002e 反斜杠–&gt;%u2215 正斜杠–&gt;%u2216<br>进行双倍URL编码<br>点–&gt;%252e 反斜杠–&gt;%u252f 正斜杠–&gt;%u255c<br>进行超长UTF-8 Unicode编码<br>点–&gt;%c0%2e %e0$40%ae %c0ae<br>反斜杠–&gt;%c0af %e0%80af %c0%af<br>正斜杠–&gt;%c0%5c %c0%80%5c</p>
+<p>(3) 目录限定绕过；</p>
+<p>在有些Web应用程序是通过限定目录权限来分离的。当然这样的方法不值得可取的，攻击者可以通过某些特殊的符号“<del>“来绕过。形如这样的提交“downfile.jsp?filename=</del>/../boot”。能过这样一个符号，就可以直接跳转到硬盘目录下了。</p>
+<p>(4) 绕过文件后缀过滤；</p>
+<p>一些Web应用程序在读取文件前，会对提交的文件后缀进行检测，攻击者可以在文件名后放一个空字节的编码，来绕过这样的文件类型的检查。<br>例如：../../../../boot.ini%00.jpg，Web应用程序使用的Api会允许字符串中包含空字符，当实际获取文件名时，则由系统的Api会直接截短，而解析为“../../../../boot.ini”。<br>在类Unix的系统中也可以使用Url编码的换行符，例如：../../../etc/passwd%0a.jpg如果文件系统在获取含有换行符的文件名，会截短为文件名。也可以尝试%20，例如: ../../../index.jsp%20</p>
+<p>(5) 绕过来路验证。<br>Http Referer :    HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
+<p>在一些Web应用程序中，会有对提交参数的来路进行判断的方法，而绕过的方法可以尝试通过在网站留言或者交互的地方提交Url再点击或者直接修改Http Referer即可，这主要是原因Http Referer是由客户端浏览器发送的，服务器是无法控制的，而将此变量当作一个值得信任源是错误的。</p>
+<p>防范遍历路径漏洞<br>在防范遍历路径漏洞的方法中，最有效的是权限的控制，谨慎的处理向文件系统API传递过来的参数路径。主要是因为大多数的目录或者文件权限均没有得到合理的配置，而Web应用程序对文件的读取大多依赖于系统本身的API，在参数传递的过程，如果没有得严谨的控制，则会出现越权现象的出现。在这种情况下，Web应用程序可以采取以下防御方法，最好是组合使用。<br>(1) 数据净化，对网站用户提交过来的文件名进行硬编码或者统一编码，对文件后缀进行白名单控制，对包含了恶意的符号或者空字节进行拒绝。<br>(2) Web应用程序可以使用chrooted环境访问包含被访问文件的目录，或者使用绝对路径+参数来控制访问目录，使其即使是越权或者跨越目录也是在指定的目录下。</p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
@@ -115,7 +111,7 @@ $_GET['a']($_GET['b']);
     </div>
     
         <div class='side'>
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">简述代码执行漏洞：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-eval%E5%92%8Cassert%E5%87%BD%E6%95%B0"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.eval和assert函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%811%EF%BC%9A"><span class="toc-number">1.0.1.1.</span> <span class="toc-text">示例代码1：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-preg-replace%E5%87%BD%E6%95%B0"><span class="toc-number">1.0.2.</span> <span class="toc-text">2.preg_replace函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">示例代码：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0%E8%BF%87%E6%BB%A4%E4%B8%8D%E4%B8%A5"><span class="toc-number">1.1.</span> <span class="toc-text">3.调用函数过滤不严</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%8A%A8%E6%80%81%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C"><span class="toc-number">2.</span> <span class="toc-text">4.动态函数执行</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-number">2.0.0.1.</span> <span class="toc-text">示例代码:</span></a></li></ol></li></ol></li></ol></li></ol>	
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是目录遍历？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">漏洞原理</span></a></li></ol>	
         </div>
     
 </div>
