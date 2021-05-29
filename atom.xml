@@ -34,8 +34,20 @@
     <link href="http://lxh3ng.github.io/2021/05/28/web-ssrf-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/28/web-ssrf-lou-dong/</id>
     <published>2021-05-28T11:31:08.000Z</published>
-    <updated>2021-05-28T11:31:08.874Z</updated>
+    <updated>2021-05-29T17:00:03.444Z</updated>
     
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h5 id=&quot;内容&quot;&gt;&lt;a href=&quot;#内容&quot; class=&quot;headerlink&quot; title=&quot;内容&quot;&gt;&lt;/a&gt;内容&lt;/h5&gt;&lt;pre&gt;&lt;code&gt;SSRF漏洞的危害
+SSRF漏洞的挖掘
+SSRF漏洞的防御
+SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
+&lt;h5</summary>
+        
+      
     
     
     
@@ -47,8 +59,17 @@
     <link href="http://lxh3ng.github.io/2021/05/27/web-csrf-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/27/web-csrf-lou-dong/</id>
     <published>2021-05-27T11:30:37.000Z</published>
-    <updated>2021-05-28T11:32:12.347Z</updated>
+    <updated>2021-05-29T16:57:06.841Z</updated>
     
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;strong&gt;一.CSRF是什么？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;　　CSRF（Cross-site request forgery），中文名称：跨站请求伪造，也被称为：one click attack/session</summary>
+        
+      
     
     
     
@@ -60,8 +81,16 @@
     <link href="http://lxh3ng.github.io/2021/05/26/web-xxe-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/26/web-xxe-lou-dong/</id>
     <published>2021-05-26T11:28:49.000Z</published>
-    <updated>2021-05-28T11:32:08.257Z</updated>
+    <updated>2021-05-29T16:50:50.334Z</updated>
     
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;一、XXE-是什么&quot;&gt;&lt;a href=&quot;#一、XXE-是什么&quot; class=&quot;headerlink&quot; title=&quot;一、XXE 是什么&quot;&gt;&lt;/a&gt;&lt;strong&gt;一、XXE 是什么&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;介绍 XXE 之前，我先来说一下普通的 XML</summary>
+        
+      
     
     
     

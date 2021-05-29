@@ -10,7 +10,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    
+    <meta name="description" content="内容SSRF漏洞的危害
+SSRF漏洞的挖掘
+SSRF漏洞的防御
+SSRF漏洞原理概述
+背景SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -52,7 +56,53 @@
 
         </div>
         <div class="content markdown">
-            
+            <h5 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h5><pre><code>SSRF漏洞的危害
+SSRF漏洞的挖掘
+SSRF漏洞的防御
+SSRF漏洞原理概述</code></pre>
+<h5 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h5><p>SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。一般情况下，SSRF攻击的目标是从外网无法访问的内部系统。</p>
+<h5 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h5><p>很多Web应用都提供了从其他服务器上获取数据的功能。使用用户指定的URL，Web应用可以获取图片，下载文件，读取文件内容等。这个功能如果被恶意使用，可以利用存在缺陷的web应用作为代理攻击远程和本地服务器。</p>
+<h5 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h5><p>服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制。</p>
+<p>大部分的web服务器架构中，web服务器自身都可以访问互联网和服务器所在的内网。<br><img src="https://img-blog.csdnimg.cn/20190704194808189.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MTMzNzE3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h5 id="SSRF可以做什么"><a href="#SSRF可以做什么" class="headerlink" title="SSRF可以做什么"></a>SSRF可以做什么</h5><pre><code>可以对外网服务器所在的内网、本地进行端口扫描，获取一些服务的banner信息 。
+攻击运行在内网或者本地的应用程序。
+对内网web应用进行指纹识别，通过访问默认文件实现 。
+攻击内外网的web应用。sql注入、struct2、redis等。
+利用file协议读取本地文件等。</code></pre>
+<h5 id="SSRF漏洞挖掘"><a href="#SSRF漏洞挖掘" class="headerlink" title="SSRF漏洞挖掘"></a>SSRF漏洞挖掘</h5><p>一. WEB功能上查找<br>由原理可以看出，SSRF是由于服务端获取其他服务器的相关信息的功能中形成的，因此我们大可以列举几种在web 应用中常见的从服务端获取其他服务器信息的的功能。</p>
+<p>1.通过URL地址分享网页内容早期应用中 ，为了更好的用户体验，Web应用在分享功能中，通常会获取目标URL地址网页内容中标签或者&lt;meta name=“description”content=“”/&gt;标签中content的文本内容提供更好的用户体验。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190704195033842.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MTMzNzE3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>2.转码服务<br>转码服务：通过URL地址把原地址的网页内容调优使其适合手机屏幕浏览</p>
+<p>由于手机屏幕大小的关系，直接浏览网页内容的时候会造成许多不便，因此有些公司提供了转码功能，把网页内容通过相关手段转为适合手机屏幕浏览的样式。例如百度、腾讯、搜狗等公司都有提供在线转码服务。</p>
+<p>3.在线翻译<br>在线翻译：通过 URL地址翻译对应文本的内容。提供此功能的百度、有道等。<br>有道翻译某处SSRF可通网易内网：<br><a target="_blank" rel="noopener" href="http://www.anquan.us/static/bugs/wooyun-2016-0198176.html">http://www.anquan.us/static/bugs/wooyun-2016-0198176.html</a></p>
+<p>4.图片加载与下载<br>图片加载与下载：通过 URL地址加载或下载图片<br>图片加载远程图片地址此功能用到的地方很多，但大多都是比较隐秘，比如在有些公司中的加载自家图片服务器上的图片用于展示。（此处可能会有人有疑问，为什么加载图片服务器上的图片也会有问题，直接使用img标签不就好了，没错是这样，但是开发者为了有更好的用户体验通常对图片做些微小调整例如加水印、压缩等，就必须要把图片下载到服务器的本地，所以就可能造成SSRF问题）。</p>
+<p>二. 从URL关键字中寻找</p>
+<pre><code>Share、wap、url、link、src、source、target、u、3g、display、sourceURL、imageURL、domain</code></pre>
+<p>三. 通用的SSRF实例</p>
+<pre><code>Weblogic配置不当，天生ssrf漏洞
+Discuz x2.5/x3.0/x3.1/x3.2 ssrf漏洞</code></pre>
+<p>SSRF漏洞的验证</p>
+<p><a target="_blank" rel="noopener" href="http://www.douban.com/***/service?image=http://www.baidu.com/img/bd_logo1.png">http://www.douban.com/***/service?image=http://www.baidu.com/img/bd_logo1.png</a></p>
+<pre><code>我们先验证，请求是否是服务器端发出的，可以右键图片，使用新窗口打开图片，如果浏览器上地址栏是http://www.baidu.com/img/bd_logo1.png，说明不存在SSRF漏洞。
+
+可以在Firebug 或者burpsuite抓包工具，查看请求数据包中是否包含http://www.baidu.com/img/bd_logo1.png这个请求。由于SSRF是服务端发起的请求，因此在加载这张图片的时候本地浏览器中不应该存在图片的请求。
+
+在验证完是由服务端发起的请求之后，此处就有可能存在SSRF，接下来需要验证此URL是否可以来请求对应的内网地址。首先我们要获取内网存在HTTP服务且存在favicon.ico文件地址，才能验证是否是SSRF。</code></pre>
+<p>此处找内网地址可以通过从漏洞平台中的历史漏洞寻找泄露的内网地址过滤绕过</p>
+<p>@：<br><a target="_blank" rel="noopener" href="http://www.baidu.com@10.10.10.10与http/?/10.10.10.10">http://www.baidu.com@10.10.10.10与http?/10.10.10.10</a> 请求是相同的</p>
+<p>过滤绕过<br>IP地址转换成十进制：<br>127.0.0.1=2130706433<br><img src="https://img-blog.csdnimg.cn/20190704200442980.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MTMzNzE3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>xip.io<br>xip.io127.0.0.1.xip.io –&gt;127.0.0.1<br><a target="_blank" rel="noopener" href="http://www.127.0.0.1.xip.io/">www.127.0.0.1.xip.io</a> –&gt;127.0.0.1<br>Haha.127.0.0.1.xip.io –&gt;127.0.0.1<br>Haha.xixi.127.0.0.1.xip.io –&gt;127.0.0.1</p>
+<p>修复方案</p>
+<pre><code>统一错误信息，避免用户可以根据错误信息来判断远程服务器端口状态
+限制请求的端口为HTTP常用的端口，比如 80,443,8080,8088等
+黑名单内网IP。
+禁用不需要的协议，仅仅允许HTTP和HTTPS.</code></pre>
+<p>相关资源</p>
+<pre><code>[安全科普]SSRF攻击实例解析
+乌云多数已修复SSRF漏洞可被绕过
+利用 Gopher 协议拓展攻击面
+SSRF libcurl protocol wrappers利用分析</code></pre>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37133717/article/details/94647789">https://blog.csdn.net/qq_37133717/article/details/94647789</a></p>
+
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
                 <source type="audio/mpeg" src="">
@@ -83,7 +133,7 @@
     </div>
     
         <div class='side'>
-				
+			<ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E5%AE%B9"><span class="toc-number">1.</span> <span class="toc-text">内容</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">2.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SSRF%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">5.</span> <span class="toc-text">SSRF可以做什么</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SSRF%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98"><span class="toc-number">6.</span> <span class="toc-text">SSRF漏洞挖掘</span></a></li></ol>	
         </div>
     
 </div>
