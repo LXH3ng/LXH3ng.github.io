@@ -4,6 +4,58 @@
   
     
     <entry>
+      <title>Web：JSONP注入</title>
+      <link href="2021/05/29/web-jsonp-zhu-ru/"/>
+      <url>2021/05/29/web-jsonp-zhu-ru/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Web：ssrf漏洞</title>
+      <link href="2021/05/28/web-ssrf-lou-dong/"/>
+      <url>2021/05/28/web-ssrf-lou-dong/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Web：csrf漏洞</title>
+      <link href="2021/05/27/web-csrf-lou-dong/"/>
+      <url>2021/05/27/web-csrf-lou-dong/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Web：XXE漏洞</title>
+      <link href="2021/05/26/web-xxe-lou-dong/"/>
+      <url>2021/05/26/web-xxe-lou-dong/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web:越权漏洞</title>
       <link href="2021/05/25/web-yue-quan-lou-dong/"/>
       <url>2021/05/25/web-yue-quan-lou-dong/</url>
