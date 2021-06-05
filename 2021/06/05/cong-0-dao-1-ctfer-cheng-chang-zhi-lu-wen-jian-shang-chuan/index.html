@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>《从0到1：CTFer成长之路》:文件上传 - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="&amp;lt;?php
+header(&#34;Content-Type:text/html; charset=utf-8&#34;);
+// 每5分钟会清除一次目录下上传的文件
+require_once(&#39;pclzip,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">《从0到1：CTFer成长之路》:文件上传</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">《从0到1：CTFer成长之路》:文件上传</h1>
+        <div class="stuff">
+            <span>六月 05, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E3%80%8A%E4%BB%8E0%E5%88%B01%EF%BC%9ACTFer%E6%88%90%E9%95%BF%E4%B9%8B%E8%B7%AF%E3%80%8B/" rel="tag">《从0到1：CTFer成长之路》</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <pre><code>&lt;?php
+header("Content-Type:text/html; charset=utf-8");
+// 每5分钟会清除一次目录下上传的文件
+require_once('pclzip.lib.php');
+
+if(!$_FILES){
+    show_source(__FILE__);
+}else{
+    $file = $_FILES['file'];
+
+    if(!$file){
+        exit("请勿上传空文件");
+    }
+    $name = $file['name'];
+
+    $dir = 'upload/';
+    $ext = strtolower(substr(strrchr($name, '.'), 1));
+    $path = $dir.$name;
+
+    function check_dir($dir){
+        $handle = opendir($dir);
+        while(($f = readdir($handle)) !== false){
+            if(!in_array($f, array('.', '..'))){
+                if(is_dir($dir.$f)){
+                    check_dir($dir.$f.'/');
+                 }else{
+                    $ext = strtolower(substr(strrchr($f, '.'), 1));
+                    if(!in_array($ext, array('jpg', 'gif', 'png'))){
+                        unlink($dir.$f);
+                    }
+                }
+
+            }
+        }
+    }
+
+    if(!is_dir($dir)){
+        mkdir($dir);
+    }
+
+    $temp_dir = $dir.md5(time(). rand(1000,9999));
+    if(!is_dir($temp_dir)){
+        mkdir($temp_dir);
+    }
+
+    if(in_array($ext, array('zip', 'jpg', 'gif', 'png'))){
+        if($ext == 'zip'){
+            $archive = new PclZip($file['tmp_name']);
+            foreach($archive-&gt;listContent() as $value){
+                $filename = $value["filename"];
+                if(preg_match('/\.php$/', $filename)){
+                     exit("压缩包内不允许含有php文件!");
+                 }
+            }
+            if ($archive-&gt;extract(PCLZIP_OPT_PATH, $temp_dir, PCLZIP_OPT_REPLACE_NEWER) == 0) {
+                check_dir($dir);
+                   exit("解压失败");
+            }
+
+            check_dir($dir);
+            exit('上传成功!');
+        }else{
+            move_uploaded_file($file['tmp_name'], $temp_dir.'/'.$file['name']);
+            check_dir($dir);
+            exit('上传成功!');
+        }
+    }else{
+        exit('仅允许上传zip、jpg、gif、png文件!');
+    }
+}</code></pre>
+<p>正则表达式过滤了以.php结尾的文件</p>
+<p>仅允许上传zip、jpg、gif、png文件</p>
+<p>apache的解析漏洞。即构造xxxx.php.xxx，只要最后的xxx不能被解析，会继续向左解析，因此php可以成功被解析</p>
+<pre><code>if ($archive-&gt;extract(PCLZIP_OPT_PATH, $temp_dir, PCLZIP_OPT_REPLACE_NEWER) == 0) {
+                check_dir($dir);
+                   exit("解压失败");
+            }</code></pre>
+<pre><code>在压缩包解压失败后，会先删除目录下的非法文件后再退出，所以构造特殊压缩包（解压到一伴退出）方法在此处不可用。从代码中可知，check_dir方法只会递归检测upload目录下的所有文件，根据书中内容可知pclzip存在目录穿越问题。如果将解压出的文件穿越到非upload目录，check__dir方法就无法删除该文件。zip压缩包被解压到/upload/随机md5/目录下，所以需要穿越两个目录。
+</code></pre>
+<p>首先就是下载010 Editor，然后破解，这些可以网上查。<br>然后就是使用了。左上角file，然后new file，打开zip：<br><img src="https://img-blog.csdnimg.cn/20201011142253801.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JmcmRlcg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>如果没有下面的那个，需要手动打开：<br><img src="https://img-blog.csdnimg.cn/20201011142334385.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JmcmRlcg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>这时候我们会看到，命名我的zip里只有一个文件，但是却显示2个：<br><img src="https://img-blog.csdnimg.cn/20201011142403699.png#pic_center" alt="在这里插入图片描述"></p>
+<p>这时候，我们需要修改第二个：<img src="https://img-blog.csdnimg.cn/20201011142436547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JmcmRlcg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p>注意ushort deFileName…那里，那个20就是你文件名字的长度。<br>然后我们改成要构造的名字：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201011142543519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JmcmRlcg==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p>然后在localhost访问即可</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
