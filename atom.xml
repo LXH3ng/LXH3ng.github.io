@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-07T15:02:30.090Z</updated>
+  <updated>2021-06-08T13:45:09.534Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HITCON：2017-SSRFme</title>
+    <link href="http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/"/>
+    <id>http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/</id>
+    <published>2021-06-08T12:32:49.000Z</published>
+    <updated>2021-06-08T13:45:09.534Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;pre&gt;&lt;code&gt;117.21.200.165 &amp;lt;?php
+    if (isset($_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;])) {
+        $http_x_headers = explode(&#39;,&#39;,</summary>
+        
+      
+    
+    
+    
+    
+    <category term="HITCON" scheme="http://lxh3ng.github.io/tags/HITCON/"/>
+    
+  </entry>
   
   <entry>
     <title>i春秋:Web-SQLi</title>
@@ -442,19 +467,6 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《从0到1：CTFer成长之路》：Web-Upload</title>
-    <link href="http://lxh3ng.github.io/2021/05/17/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-upload/"/>
-    <id>http://lxh3ng.github.io/2021/05/17/cong-0-dao-1-ctfer-cheng-chang-zhi-lu-web-upload/</id>
-    <published>2021-05-17T14:55:06.000Z</published>
-    <updated>2021-05-17T14:55:06.379Z</updated>
-    
-    
-    
-    
     
   </entry>
   
