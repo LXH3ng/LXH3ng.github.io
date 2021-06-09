@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-08T14:00:24.657Z</updated>
+  <updated>2021-06-09T13:19:19.940Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,83 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>极客大挑战:2019-SecretFile</title>
+    <link href="http://lxh3ng.github.io/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/"/>
+    <id>http://lxh3ng.github.io/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/</id>
+    <published>2021-06-09T13:12:20.000Z</published>
+    <updated>2021-06-09T13:19:19.940Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;F12&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/image-20210609211655223.png&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="文件包含" scheme="http://lxh3ng.github.io/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HCTF:2018-WarmUp</title>
+    <link href="http://lxh3ng.github.io/2021/06/09/hctf-2018-warmup/"/>
+    <id>http://lxh3ng.github.io/2021/06/09/hctf-2018-warmup/</id>
+    <published>2021-06-09T08:19:54.000Z</published>
+    <updated>2021-06-09T12:59:58.976Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/06/09/hctf-2018-warmup/image-20210609162122575.png&quot; alt=&quot;image-20210609162122575&quot;&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; &amp;lt;?php
+   </summary>
+        
+      
+    
+    
+    
+    
+    <category term="代码审计" scheme="http://lxh3ng.github.io/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HITCON:2017-SqlSoHard</title>
+    <link href="http://lxh3ng.github.io/2021/06/08/hitcon-2017-sqlsohard/"/>
+    <id>http://lxh3ng.github.io/2021/06/08/hitcon-2017-sqlsohard/</id>
+    <published>2021-06-08T14:04:48.000Z</published>
+    <updated>2021-06-09T08:16:38.041Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;不是很懂过后再来看&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;from random import randint
+import requests
+
+# payload = &quot;union&quot;
+payload =</summary>
+        
+      
+    
+    
+    
+    
+    <category term="HITCON" scheme="http://lxh3ng.github.io/tags/HITCON/"/>
+    
+  </entry>
   
   <entry>
     <title>HITCON：2017-SSRFme</title>
@@ -399,74 +476,6 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>Web:文件包含漏洞</title>
-    <link href="http://lxh3ng.github.io/2021/05/20/web-wen-jian-bao-han-lou-dong/"/>
-    <id>http://lxh3ng.github.io/2021/05/20/web-wen-jian-bao-han-lou-dong/</id>
-    <published>2021-05-20T14:10:31.000Z</published>
-    <updated>2021-05-28T11:26:00.269Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;文件包含原理&quot;&gt;&lt;a href=&quot;#文件包含原理&quot; class=&quot;headerlink&quot; title=&quot;文件包含原理&quot;&gt;&lt;/a&gt;文件包含原理&lt;/h3&gt;&lt;h4 id=&quot;1-文件包含&quot;&gt;&lt;a href=&quot;#1-文件包含&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-HelloWorld</title>
-    <link href="http://lxh3ng.github.io/2021/05/19/i-chun-qiu-web-helloworld/"/>
-    <id>http://lxh3ng.github.io/2021/05/19/i-chun-qiu-web-helloworld/</id>
-    <published>2021-05-19T13:20:03.000Z</published>
-    <updated>2021-05-28T11:25:55.322Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://www.freesion.com/images/522/35569c24a4261ead1f06bac02613ff22.png&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-Blog</title>
-    <link href="http://lxh3ng.github.io/2021/05/18/i-chun-qiu-web-blog/"/>
-    <id>http://lxh3ng.github.io/2021/05/18/i-chun-qiu-web-blog/</id>
-    <published>2021-05-18T15:25:01.000Z</published>
-    <updated>2021-05-18T15:33:52.801Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/05/18/i-chun-qiu-web-blog/af732d2efa39b352f28282731713236.png&quot; alt=&quot;af732d2efa39b352f28282731713236&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
     
   </entry>
   
