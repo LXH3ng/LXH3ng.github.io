@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-09T13:19:19.940Z</updated>
+  <updated>2021-06-09T14:58:02.942Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Web:LFI漏洞</title>
+    <link href="http://lxh3ng.github.io/2021/06/09/web-lfi-lou-dong/"/>
+    <id>http://lxh3ng.github.io/2021/06/09/web-lfi-lou-dong/</id>
+    <published>2021-06-09T14:42:59.000Z</published>
+    <updated>2021-06-09T14:58:02.942Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;0x01-基本本地文件包含&quot;&gt;&lt;a href=&quot;#0x01-基本本地文件包含&quot; class=&quot;headerlink&quot; title=&quot;0x01 基本本地文件包含&quot;&gt;&lt;/a&gt;0x01</summary>
+        
+      
+    
+    
+    
+    
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>极客大挑战:2019-SecretFile</title>
@@ -94,11 +117,11 @@ payload =</summary>
   </entry>
   
   <entry>
-    <title>HITCON：2017-SSRFme</title>
+    <title>HITCON:2017-SSRFme</title>
     <link href="http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/"/>
     <id>http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/</id>
     <published>2021-06-08T12:32:49.000Z</published>
-    <updated>2021-06-08T14:00:24.657Z</updated>
+    <updated>2021-06-09T14:39:57.695Z</updated>
     
     
       
@@ -284,11 +307,11 @@ echo</summary>
   </entry>
   
   <entry>
-    <title>Web：JSONP注入</title>
+    <title>Web:JSONP注入</title>
     <link href="http://lxh3ng.github.io/2021/05/29/web-jsonp-zhu-ru/"/>
     <id>http://lxh3ng.github.io/2021/05/29/web-jsonp-zhu-ru/</id>
     <published>2021-05-29T11:31:48.000Z</published>
-    <updated>2021-06-05T15:04:29.285Z</updated>
+    <updated>2021-06-09T14:43:46.451Z</updated>
     
     
       
@@ -303,14 +326,16 @@ echo</summary>
     
     
     
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
   </entry>
   
   <entry>
-    <title>Web：ssrf漏洞</title>
+    <title>Web:ssrf漏洞</title>
     <link href="http://lxh3ng.github.io/2021/05/28/web-ssrf-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/28/web-ssrf-lou-dong/</id>
     <published>2021-05-28T11:31:08.000Z</published>
-    <updated>2021-05-29T17:00:03.444Z</updated>
+    <updated>2021-06-09T14:44:00.086Z</updated>
     
     
       
@@ -328,14 +353,16 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
   </entry>
   
   <entry>
-    <title>Web：csrf漏洞</title>
+    <title>Web:csrf漏洞</title>
     <link href="http://lxh3ng.github.io/2021/05/27/web-csrf-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/27/web-csrf-lou-dong/</id>
     <published>2021-05-27T11:30:37.000Z</published>
-    <updated>2021-05-29T16:57:06.841Z</updated>
+    <updated>2021-06-09T14:43:39.666Z</updated>
     
     
       
@@ -350,14 +377,16 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
   </entry>
   
   <entry>
-    <title>Web：XXE漏洞</title>
+    <title>Web:XXE漏洞</title>
     <link href="http://lxh3ng.github.io/2021/05/26/web-xxe-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/26/web-xxe-lou-dong/</id>
     <published>2021-05-26T11:28:49.000Z</published>
-    <updated>2021-05-29T16:50:50.334Z</updated>
+    <updated>2021-06-09T14:44:06.523Z</updated>
     
     
       
@@ -371,6 +400,8 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
   </entry>
   
   <entry>
@@ -378,7 +409,7 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     <link href="http://lxh3ng.github.io/2021/05/25/web-yue-quan-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/25/web-yue-quan-lou-dong/</id>
     <published>2021-05-25T08:46:22.000Z</published>
-    <updated>2021-05-28T11:26:34.885Z</updated>
+    <updated>2021-06-09T14:44:45.169Z</updated>
     
     
       
@@ -393,6 +424,8 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
   </entry>
   
   <entry>
@@ -400,7 +433,7 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     <link href="http://lxh3ng.github.io/2021/05/24/web-luo-ji-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/24/web-luo-ji-lou-dong/</id>
     <published>2021-05-24T04:23:35.000Z</published>
-    <updated>2021-05-28T11:26:22.410Z</updated>
+    <updated>2021-06-09T14:44:22.444Z</updated>
     
     
       
@@ -414,6 +447,8 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
   </entry>
   
   <entry>
@@ -421,7 +456,7 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     <link href="http://lxh3ng.github.io/2021/05/23/web-ming-ling-zhi-xing-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/23/web-ming-ling-zhi-xing-lou-dong/</id>
     <published>2021-05-23T15:30:39.000Z</published>
-    <updated>2021-05-28T11:26:18.385Z</updated>
+    <updated>2021-06-09T14:44:28.300Z</updated>
     
     
       
@@ -435,6 +470,8 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
+    
   </entry>
   
   <entry>
@@ -442,7 +479,7 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     <link href="http://lxh3ng.github.io/2021/05/22/web-dai-ma-zhi-xing-lou-dong/"/>
     <id>http://lxh3ng.github.io/2021/05/22/web-dai-ma-zhi-xing-lou-dong/</id>
     <published>2021-05-22T14:46:17.000Z</published>
-    <updated>2021-05-28T11:26:14.497Z</updated>
+    <updated>2021-06-09T14:44:15.633Z</updated>
     
     
       
@@ -456,26 +493,7 @@ SSRF漏洞原理概述&lt;/code&gt;&lt;/pre&gt;
     
     
     
-  </entry>
-  
-  <entry>
-    <title>Web:目录遍历漏洞</title>
-    <link href="http://lxh3ng.github.io/2021/05/21/web-mu-lu-bian-li-lou-dong/"/>
-    <id>http://lxh3ng.github.io/2021/05/21/web-mu-lu-bian-li-lou-dong/</id>
-    <published>2021-05-21T14:50:15.000Z</published>
-    <updated>2021-05-28T11:26:10.943Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;什么是目录遍历？&quot;&gt;&lt;a href=&quot;#什么是目录遍历？&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
+    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
     
   </entry>
   
