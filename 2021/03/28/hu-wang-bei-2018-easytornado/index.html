@@ -76,18 +76,18 @@ filehash=,">
 <p>利用这个脚本计算出filehash的值</p>
 <pre class=" language-python"><code class="language-python"><span class="token keyword">import</span> hashlib
 
-<span class="token keyword">def</span> <span class="token function">md5</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">:</span>
+filename <span class="token operator">=</span> <span class="token string">'/fllllllllllllag'</span>
+cookie_secret <span class="token operator">=</span><span class="token string">"789f66a0-648f-4006-a8e3-698a753015cf"</span>
+
+<span class="token keyword">def</span> <span class="token function">getvalue</span><span class="token punctuation">(</span>string<span class="token punctuation">)</span><span class="token punctuation">:</span>
     md5 <span class="token operator">=</span> hashlib<span class="token punctuation">.</span>md5<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    md5<span class="token punctuation">.</span>update<span class="token punctuation">(</span>s<span class="token punctuation">)</span>
-    <span class="token keyword">return</span> md5<span class="token punctuation">.</span>hexdigests<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    md5<span class="token punctuation">.</span>update<span class="token punctuation">(</span>string<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> md5<span class="token punctuation">.</span>hexdigest<span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-<span class="token keyword">def</span> <span class="token function">filehash</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    filename <span class="token operator">=</span> <span class="token string">'/fllllllllllllag'</span>
-    cookie_secret <span class="token operator">=</span> <span class="token string">'这里填hash'</span>
-    <span class="token keyword">print</span><span class="token punctuation">(</span>md5<span class="token punctuation">(</span>cookie_secret<span class="token operator">+</span>md5<span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">merge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>getvalue<span class="token punctuation">(</span>cookie_secret <span class="token operator">+</span> getvalue<span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-    filehash<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+merge<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
 <p>cookie_secret</p>
 <pre><code>2e3ee5f8-f039-4130-b0c3-0a1d6ce7676c</code></pre>
 <pre><code>728ec3dc0db938043d73b1028a911254</code></pre>
@@ -97,7 +97,7 @@ filehash=,">
 <p>md5加密一次：</p>
 <pre><code>3bf9f6cf685a6dd8defadabfb41a03a1</code></pre>
 <p>拼接md5再加密一次</p>
-<pre><code>file?filename=/fllllllllllllag&amp;filehash=cd12e4114120fd5b2fc0cd92f8074699</code></pre>
+<pre><code>file?filename=/fllllllllllllag&amp;filehash=8fae43e45895ca18bc7a29bb9c64b1d6</code></pre>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
