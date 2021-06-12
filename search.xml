@@ -4,6 +4,32 @@
   
     
     <entry>
+      <title>HCTF:2018-admin</title>
+      <link href="2021/06/12/hctf-2018-admin/"/>
+      <url>2021/06/12/hctf-2018-admin/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/HCTF%EF%BC%9A2018-admin.assets/image-20210612203007320.png" alt="image-20210612203007320">在changepassword<img src="/HCTF%EF%BC%9A2018-admin.assets/image-20210612203245969.png" alt="image-20210612203245969"></p><p>访问用flask写的</p><pre><code>@app.route('/code')def get_code():@app.route('/index')def index():@app.route('/register', methods = ['GET', 'POST'])def register():@app.route('/login', methods = ['GET', 'POST'])def login():@app.route('/logout')def logout():@app.route('/change', methods = ['GET', 'POST'])def change():@app.route('/edit', methods = ['GET', 'POST'])def edit():</code></pre><h2 id="法一：flask-session伪造"><a href="#法一：flask-session伪造" class="headerlink" title="法一：flask session伪造"></a>法一：flask session伪造</h2><p>本地脚本解密</p><pre><code>#!/usr/bin/env python3import sysimport zlibfrom base64 import b64decodefrom flask.sessions import session_json_serializerfrom itsdangerous import base64_decodedef decryption(payload):    payload, sig = payload.rsplit(b'.', 1)    payload, timestamp = payload.rsplit(b'.', 1)    decompress = False    if payload.startswith(b'.'):        payload = payload[1:]        decompress = True    try:        payload = base64_decode(payload)    except Exception as e:        raise Exception('Could not base64 decode the payload because of '                         'an exception')    if decompress:        try:            payload = zlib.decompress(payload)        except Exception as e:            raise Exception('Could not zlib decompress the payload before '                             'decoding the payload')    return session_json_serializer.loads(payload)if __name__ == '__main__':    print(decryption(sys.argv[1].encode()))</code></pre><pre class=" language-python"><code class="language-python">SECRET_KEY <span class="token operator">=</span> os<span class="token punctuation">.</span>environ<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'SECRET_KEY'</span><span class="token punctuation">)</span> <span class="token operator">or</span> <span class="token string">'ckj123'</span></code></pre><p>然后在index.html页面发现只要session[‘name’] == ‘admin’即可以得到flag</p><h2 id="法二：Unicode欺骗"><a href="#法二：Unicode欺骗" class="headerlink" title="法二：Unicode欺骗"></a>法二：Unicode欺骗</h2><p>仔细观察路由发现在修改密码的时候先将name转成小写，难道是登陆注册的时候没有转吗？<br><img src="https://img-blog.csdnimg.cn/20190911131540626.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY3NzQwOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>跟进一下register、login</p><p><img src="https://img-blog.csdnimg.cn/20190911131548384.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY3NzQwOQ==,size_16,color_FFFFFF,t_70" alt="img"></p><p>发现都用strlower()来转小写，但是python中已经自带转小写函数lower()，看看有什么不一样的，跟进一下strlower函数</p><pre><code>def strlower(username):    username = nodeprep.prepare(username)    return username</code></pre><p>这里用的nodeprep.prepare函数，而nodeprep是从Twisted模块导入的，在requirements.txt文件中发现Twisted==10.2.0，而官网最新已经到了19.7.0(2019/9)，版本差距很大，应该会存在漏洞。</p><p>关于Unicode问题可以参考一下：<a href="https://panda1g1.github.io/2018/11/15/HCTF%20admin/">https://panda1g1.github.io/2018/11/15/HCTF%20admin/</a></p><p>关于具体编码可查 <a href="https://unicode-table.com/en/search/?q=small+capital">https://unicode-table.com/en/search/?q=small+capital</a> ，当然你也可以复制过后用站长工具转换成Unicode编码。<br><img src="https://img-blog.csdnimg.cn/20190911131601586.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY3NzQwOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>然后我们发现在使用nodeprep.prepare函数转换时过程如下：</p><p>ᴬᴰᴹᴵᴺ -&gt; ADMIN -&gt; admin</p><p>假如我们注册ᴬᴰᴹᴵᴺ用户，然后在用ᴬᴰᴹᴵᴺ用户登录，因为在login函数里使用了一次nodeprep.prepare函数，因此我们登录上去看到的用户名为ADMIN，此时我们再修改密码，又调用了一次nodeprep.prepare函数将name转换为admin，然后我们就可以改掉admin的密码，最后利用admin账号登录即可拿到flag。</p><h2 id="法三：条件竞争"><a href="#法三：条件竞争" class="headerlink" title="法三：条件竞争"></a>法三：条件竞争</h2><p><img src="https://img-blog.csdnimg.cn/20190911131634134.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY3NzQwOQ==,size_16,color_FFFFFF,t_70" alt="[外链图片转存失败(img-nsi0LaO3-1568178828389)(/images/HCTF2018-admin/12.png)]"></p><p>在session赋值时，登录、注册都是直接进行赋值，未进行安全验证，也就可能存在以下一种可能：<br>我们注册一个用户test，现在有一个进程1一直重复进行登录、改密码操作，进程2一直注销，且以admin用户和进程1所改的密码进行登录，是不是有可能当进程1进行到改密码操作时，进程2恰好注销且要进行登录，此时进程1改密码需要一个session，而进程2刚好将session[‘name’]赋值为admin，然后进程1调用此session修改密码，即修改了admin的密码。</p><p>原文链接：<a href="https://blog.csdn.net/weixin_44677409/article/details/100733581">https://blog.csdn.net/weixin_44677409/article/details/100733581</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>区块链安全</title>
+      <link href="2021/06/12/qu-kuai-lian-an-quan/"/>
+      <url>2021/06/12/qu-kuai-lian-an-quan/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>极客大挑战:2019-PHP</title>
       <link href="2021/06/11/ji-ke-da-tiao-zhan-2019-php/"/>
       <url>2021/06/11/ji-ke-da-tiao-zhan-2019-php/</url>
