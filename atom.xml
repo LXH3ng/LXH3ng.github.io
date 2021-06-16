@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-16T04:25:34.373Z</updated>
+  <updated>2021-06-16T13:57:48.186Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -17,12 +17,47 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>GXYCTF:2019-BabyUpload</title>
+    <link href="http://lxh3ng.github.io/2021/06/16/gxyctf-2019-babyupload/"/>
+    <id>http://lxh3ng.github.io/2021/06/16/gxyctf-2019-babyupload/</id>
+    <published>2021-06-16T13:41:49.000Z</published>
+    <updated>2021-06-16T13:57:48.186Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;apache&lt;/p&gt;
+&lt;p&gt;上传.htaccess&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;FilesMatch &quot;1&quot;&amp;gt;
+SetHandler</summary>
+        
+      
+    
+    
+    
+    
+    <category term="文件上传" scheme="http://lxh3ng.github.io/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Web:.htaccess文件上传后门</title>
     <link href="http://lxh3ng.github.io/2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/"/>
     <id>http://lxh3ng.github.io/2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/</id>
     <published>2021-06-16T04:23:39.000Z</published>
-    <updated>2021-06-16T04:25:34.373Z</updated>
+    <updated>2021-06-16T13:24:22.712Z</updated>
     
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;htaccess是Apache服务器中的一个配置文件，可以实现网页302重定向，自定义404页面，改变文件拓展名，允许/阻止特点的用户或者目录的访问，禁止目录列表，配置默认文档等功能。&lt;/p&gt;
+&lt;p&gt;在这个文件里面可以选择一定的后缀名以任意想要的格式进行解析，我们可以利用它</summary>
+        
+      
     
     
     
@@ -440,31 +475,6 @@ if(!$_FILES){
 header(&quot;content-type:text/html;charset=utf-8&quot;);
 show_source(__FILE__);
 echo</summary>
-        
-      
-    
-    
-    
-    
-    <category term="i春秋" scheme="http://lxh3ng.github.io/tags/i%E6%98%A5%E7%A7%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>i春秋:Web-Notebook</title>
-    <link href="http://lxh3ng.github.io/2021/06/03/i-chun-qiu-web-notebook/"/>
-    <id>http://lxh3ng.github.io/2021/06/03/i-chun-qiu-web-notebook/</id>
-    <published>2021-06-03T11:12:42.000Z</published>
-    <updated>2021-06-03T14:43:11.685Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;tips： 文件包含phpinfo是不是有新的发现&lt;/p&gt;
-&lt;p&gt;打开f12获取到PHPSESSION为ei4obnmvtlkbt57muuj4kh6f92，但为文件时则为ei4obnmvtlkbt57muuj4kh6f92。&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
         
       
     

