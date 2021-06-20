@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-20T03:19:59.555Z</updated>
+  <updated>2021-06-20T07:03:47.859Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>GWCTF:2019-我有一个数据库</title>
+    <link href="http://lxh3ng.github.io/2021/06/20/gwctf-2019-wo-you-yi-ge-shu-ju-ku/"/>
+    <id>http://lxh3ng.github.io/2021/06/20/gwctf-2019-wo-you-yi-ge-shu-ju-ku/</id>
+    <published>2021-06-20T06:43:14.000Z</published>
+    <updated>2021-06-20T07:03:47.859Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/06/20/gwctf-2019-wo-you-yi-ge-shu-ju-ku/image-20210620144400661.png&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>RoarCTF：2019-EasyJava</title>
@@ -448,34 +469,6 @@ SetHandler</summary>
     
     
     <category term="代码审计" scheme="http://lxh3ng.github.io/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HITCON:2017-SqlSoHard</title>
-    <link href="http://lxh3ng.github.io/2021/06/08/hitcon-2017-sqlsohard/"/>
-    <id>http://lxh3ng.github.io/2021/06/08/hitcon-2017-sqlsohard/</id>
-    <published>2021-06-08T14:04:48.000Z</published>
-    <updated>2021-06-09T08:16:38.041Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;不是很懂过后再来看&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;from random import randint
-import requests
-
-# payload = &quot;union&quot;
-payload =</summary>
-        
-      
-    
-    
-    
-    
-    <category term="HITCON" scheme="http://lxh3ng.github.io/tags/HITCON/"/>
     
   </entry>
   
