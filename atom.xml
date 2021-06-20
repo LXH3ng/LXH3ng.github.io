@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-19T13:51:27.637Z</updated>
+  <updated>2021-06-20T03:19:59.555Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RoarCTF：2019-EasyJava</title>
+    <link href="http://lxh3ng.github.io/2021/06/20/roarctf-2019-easyjava/"/>
+    <id>http://lxh3ng.github.io/2021/06/20/roarctf-2019-easyjava/</id>
+    <published>2021-06-20T02:37:26.000Z</published>
+    <updated>2021-06-20T03:19:59.555Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;WEB-INF-web-xml泄露&quot;&gt;&lt;a href=&quot;#WEB-INF-web-xml泄露&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>GXYCTF:2019-禁止套娃</title>
@@ -448,31 +469,6 @@ import requests
 
 # payload = &quot;union&quot;
 payload =</summary>
-        
-      
-    
-    
-    
-    
-    <category term="HITCON" scheme="http://lxh3ng.github.io/tags/HITCON/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HITCON:2017-SSRFme</title>
-    <link href="http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/"/>
-    <id>http://lxh3ng.github.io/2021/06/08/hitcon-2017-ssrfme/</id>
-    <published>2021-06-08T12:32:49.000Z</published>
-    <updated>2021-06-09T14:39:57.695Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;pre&gt;&lt;code&gt;&amp;lt;?php
-    if (isset($_SERVER[&#39;HTTP_X_FORWARDED_FOR&#39;])) {
-        $http_x_headers = explode(&#39;,&#39;,</summary>
         
       
     
