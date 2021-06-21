@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-20T07:03:47.859Z</updated>
+  <updated>2021-06-21T11:54:26.484Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,53 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PHP：preg_replace()函数应用</title>
+    <link href="http://lxh3ng.github.io/2021/06/21/php-preg-replace-han-shu-ying-yong/"/>
+    <id>http://lxh3ng.github.io/2021/06/21/php-preg-replace-han-shu-ying-yong/</id>
+    <published>2021-06-21T11:44:43.000Z</published>
+    <updated>2021-06-21T11:54:26.484Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://www.cnblogs.com/crxis/p/7714636.html&quot;&gt;https://www.cnblogs.com/crxis/p/7714636.html&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="PHP" scheme="http://lxh3ng.github.io/tags/PHP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>BJDCTF:2020-ZJCTF，不过如此</title>
+    <link href="http://lxh3ng.github.io/2021/06/21/bjdctf-2020-zjctf-bu-guo-ru-ci/"/>
+    <id>http://lxh3ng.github.io/2021/06/21/bjdctf-2020-zjctf-bu-guo-ru-ci/</id>
+    <published>2021-06-21T10:08:58.000Z</published>
+    <updated>2021-06-21T11:54:16.298Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;pre class=&quot; language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token delimiter&quot;&gt;&amp;lt;?php&lt;/span&gt;
+
+&lt;span class=&quot;token</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>GWCTF:2019-我有一个数据库</title>
@@ -420,55 +467,6 @@ SetHandler</summary>
     
     
     <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>极客大挑战:2019-SecretFile</title>
-    <link href="http://lxh3ng.github.io/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/"/>
-    <id>http://lxh3ng.github.io/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/</id>
-    <published>2021-06-09T13:12:20.000Z</published>
-    <updated>2021-06-09T13:19:19.940Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;F12&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/image-20210609211655223.png&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="文件包含" scheme="http://lxh3ng.github.io/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HCTF:2018-WarmUp</title>
-    <link href="http://lxh3ng.github.io/2021/06/09/hctf-2018-warmup/"/>
-    <id>http://lxh3ng.github.io/2021/06/09/hctf-2018-warmup/</id>
-    <published>2021-06-09T08:19:54.000Z</published>
-    <updated>2021-06-09T12:59:58.976Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/06/09/hctf-2018-warmup/image-20210609162122575.png&quot; alt=&quot;image-20210609162122575&quot;&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt; &amp;lt;?php
-   </summary>
-        
-      
-    
-    
-    
-    
-    <category term="代码审计" scheme="http://lxh3ng.github.io/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
     
   </entry>
   
