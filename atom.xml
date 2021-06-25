@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-25T08:24:46.034Z</updated>
+  <updated>2021-06-25T08:41:10.804Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>NCTF:2019-FakeXMLcookbook</title>
+    <link href="http://lxh3ng.github.io/2021/06/25/nctf-2019-fakexmlcookbook/"/>
+    <id>http://lxh3ng.github.io/2021/06/25/nctf-2019-fakexmlcookbook/</id>
+    <published>2021-06-25T08:31:12.000Z</published>
+    <updated>2021-06-25T08:41:10.804Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/06/25/nctf-2019-fakexmlcookbook/image-20210625163322248.png&quot; alt=&quot;image-20210625163322248&quot;&gt;&lt;/p&gt;
+&lt;p&gt;XXE攻击&lt;/p&gt;
+&lt;pre</summary>
+        
+      
+    
+    
+    
+    
+    <category term="XXE" scheme="http://lxh3ng.github.io/tags/XXE/"/>
+    
+  </entry>
   
   <entry>
     <title>网鼎杯:2020-PhpWeb</title>
@@ -30,28 +55,6 @@
         
     <summary type="html">&lt;p&gt;拦截抓包&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;/2021/06/24/wang-ding-bei-2020-phpweb/image-20210625161138837.png&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>安洵杯:2019-EasyWeb</title>
-    <link href="http://lxh3ng.github.io/2021/06/23/an-xun-bei-2019-easyweb/"/>
-    <id>http://lxh3ng.github.io/2021/06/23/an-xun-bei-2019-easyweb/</id>
-    <published>2021-06-23T02:43:26.000Z</published>
-    <updated>2021-06-23T05:12:18.681Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;pre&gt;&lt;code&gt;http://fb65bb1a-49d3-4476-acca-dcf2d1c5eff9.node3.buuoj.cn/index.php?img=TXpVek5UTTFNbVUzTURabE5qYz0&amp;amp;cmd=&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;co</summary>
         
       
     
