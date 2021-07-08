@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-06-30T11:07:55.435Z</updated>
+  <updated>2021-07-08T01:00:28.364Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>BSidesCF:2020-HaveABadDay</title>
+    <link href="http://lxh3ng.github.io/2021/07/02/bsidescf-2020-haveabadday/"/>
+    <id>http://lxh3ng.github.io/2021/07/02/bsidescf-2020-haveabadday/</id>
+    <published>2021-07-02T00:32:23.000Z</published>
+    <updated>2021-07-08T01:00:28.364Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/07/02/bsidescf-2020-haveabadday/image-20210708083329054.png&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="文件包含" scheme="http://lxh3ng.github.io/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"/>
+    
+  </entry>
   
   <entry>
     <title>De1CTF:2019-SSRFMe</title>
@@ -442,29 +465,6 @@ SetHandler</summary>
     
     
     <category term="PHP弱类型" scheme="http://lxh3ng.github.io/tags/PHP%E5%BC%B1%E7%B1%BB%E5%9E%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HCTF:2018-admin</title>
-    <link href="http://lxh3ng.github.io/2021/06/12/hctf-2018-admin/"/>
-    <id>http://lxh3ng.github.io/2021/06/12/hctf-2018-admin/</id>
-    <published>2021-06-12T12:26:25.000Z</published>
-    <updated>2021-06-14T15:29:44.305Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/06/12/hctf-2018-admin/image-20210612203007320.png&quot; alt=&quot;image-20210612203007320&quot;&gt;&lt;/p&gt;
-&lt;p&gt;在changepassword&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
-        
-      
-    
-    
-    
     
   </entry>
   
