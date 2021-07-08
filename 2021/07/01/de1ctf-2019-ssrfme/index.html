@@ -10,7 +10,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    
+    <meta name="description" content="#! /usr/bin/env python 
+#encoding=utf-8 
+from flask import Flask 
+from flask import request 
+import,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -52,7 +56,113 @@
 
         </div>
         <div class="content markdown">
-            
+            <pre class=" language-python"><code class="language-python"><span class="token comment" spellcheck="true">#! /usr/bin/env python </span>
+<span class="token comment" spellcheck="true">#encoding=utf-8 </span>
+<span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask 
+<span class="token keyword">from</span> flask <span class="token keyword">import</span> request 
+<span class="token keyword">import</span> socket 
+<span class="token keyword">import</span> hashlib 
+<span class="token keyword">import</span> urllib 
+<span class="token keyword">import</span> sys 
+<span class="token keyword">import</span> os 
+<span class="token keyword">import</span> json 
+reload<span class="token punctuation">(</span>sys<span class="token punctuation">)</span> 
+sys<span class="token punctuation">.</span>setdefaultencoding<span class="token punctuation">(</span><span class="token string">'latin1'</span><span class="token punctuation">)</span> 
+
+app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span> 
+secert_key <span class="token operator">=</span> os<span class="token punctuation">.</span>urandom<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span> 
+
+<span class="token keyword">class</span> <span class="token class-name">Task</span><span class="token punctuation">:</span> 
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> action<span class="token punctuation">,</span> param<span class="token punctuation">,</span> sign<span class="token punctuation">,</span> ip<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    self<span class="token punctuation">.</span>action <span class="token operator">=</span> action 
+    self<span class="token punctuation">.</span>param <span class="token operator">=</span> param 
+    self<span class="token punctuation">.</span>sign <span class="token operator">=</span> sign 
+    self<span class="token punctuation">.</span>sandbox <span class="token operator">=</span> md5<span class="token punctuation">(</span>ip<span class="token punctuation">)</span> 
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">not</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>exists<span class="token punctuation">(</span>self<span class="token punctuation">.</span>sandbox<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token comment" spellcheck="true">#SandBox For Remote_Addr </span>
+        os<span class="token punctuation">.</span>mkdir<span class="token punctuation">(</span>self<span class="token punctuation">.</span>sandbox<span class="token punctuation">)</span> 
+
+    <span class="token keyword">def</span> <span class="token function">Exec</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+        result <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> 
+        result<span class="token punctuation">[</span><span class="token string">'code'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">500</span> 
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>self<span class="token punctuation">.</span>checkSign<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+            <span class="token keyword">if</span> <span class="token string">"scan"</span> <span class="token keyword">in</span> self<span class="token punctuation">.</span>action<span class="token punctuation">:</span> 
+                tmpfile <span class="token operator">=</span> open<span class="token punctuation">(</span><span class="token string">"./%s/result.txt"</span> <span class="token operator">%</span> self<span class="token punctuation">.</span>sandbox<span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span> 
+                resp <span class="token operator">=</span> scan<span class="token punctuation">(</span>self<span class="token punctuation">.</span>param<span class="token punctuation">)</span> 
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>resp <span class="token operator">==</span> <span class="token string">"Connection Timeout"</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+                    result<span class="token punctuation">[</span><span class="token string">'data'</span><span class="token punctuation">]</span> <span class="token operator">=</span> resp 
+                <span class="token keyword">else</span><span class="token punctuation">:</span> 
+                    <span class="token keyword">print</span> resp
+                    tmpfile<span class="token punctuation">.</span>write<span class="token punctuation">(</span>resp<span class="token punctuation">)</span>
+                    tmpfile<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+                result<span class="token punctuation">[</span><span class="token string">'code'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">200</span> 
+            <span class="token keyword">if</span> <span class="token string">"read"</span> <span class="token keyword">in</span> self<span class="token punctuation">.</span>action<span class="token punctuation">:</span> 
+                f <span class="token operator">=</span> open<span class="token punctuation">(</span><span class="token string">"./%s/result.txt"</span> <span class="token operator">%</span> self<span class="token punctuation">.</span>sandbox<span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">)</span> 
+                result<span class="token punctuation">[</span><span class="token string">'code'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">200</span> 
+                result<span class="token punctuation">[</span><span class="token string">'data'</span><span class="token punctuation">]</span> <span class="token operator">=</span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+            <span class="token keyword">if</span> result<span class="token punctuation">[</span><span class="token string">'code'</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">500</span><span class="token punctuation">:</span> 
+                result<span class="token punctuation">[</span><span class="token string">'data'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"Action Error"</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span> 
+            result<span class="token punctuation">[</span><span class="token string">'code'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">500</span> 
+            result<span class="token punctuation">[</span><span class="token string">'msg'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"Sign Error"</span> 
+        <span class="token keyword">return</span> result 
+
+    <span class="token keyword">def</span> <span class="token function">checkSign</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>getSign<span class="token punctuation">(</span>self<span class="token punctuation">.</span>action<span class="token punctuation">,</span> self<span class="token punctuation">.</span>param<span class="token punctuation">)</span> <span class="token operator">==</span> self<span class="token punctuation">.</span>sign<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+            <span class="token keyword">return</span> <span class="token boolean">True</span> 
+        <span class="token keyword">else</span><span class="token punctuation">:</span> 
+            <span class="token keyword">return</span> <span class="token boolean">False</span> 
+
+<span class="token comment" spellcheck="true">#generate Sign For Action Scan. @app.route("/geneSign", methods=['GET', 'POST'])</span>
+<span class="token keyword">def</span> <span class="token function">geneSign</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    param <span class="token operator">=</span> urllib<span class="token punctuation">.</span>unquote<span class="token punctuation">(</span>request<span class="token punctuation">.</span>args<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"param"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+    action <span class="token operator">=</span> <span class="token string">"scan"</span> 
+    <span class="token keyword">return</span> getSign<span class="token punctuation">(</span>action<span class="token punctuation">,</span> param<span class="token punctuation">)</span> 
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/De1ta'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'GET'</span><span class="token punctuation">,</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> 
+<span class="token keyword">def</span> <span class="token function">challenge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    action <span class="token operator">=</span> urllib<span class="token punctuation">.</span>unquote<span class="token punctuation">(</span>request<span class="token punctuation">.</span>cookies<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"action"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+    param <span class="token operator">=</span> urllib<span class="token punctuation">.</span>unquote<span class="token punctuation">(</span>request<span class="token punctuation">.</span>args<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"param"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+    sign <span class="token operator">=</span> urllib<span class="token punctuation">.</span>unquote<span class="token punctuation">(</span>request<span class="token punctuation">.</span>cookies<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"sign"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+    ip <span class="token operator">=</span> request<span class="token punctuation">.</span>remote_addr 
+    <span class="token keyword">if</span><span class="token punctuation">(</span>waf<span class="token punctuation">(</span>param<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+        <span class="token keyword">return</span> <span class="token string">"No Hacker!!!!"</span> 
+    task <span class="token operator">=</span> Task<span class="token punctuation">(</span>action<span class="token punctuation">,</span> param<span class="token punctuation">,</span> sign<span class="token punctuation">,</span> ip<span class="token punctuation">)</span> 
+    <span class="token keyword">return</span> json<span class="token punctuation">.</span>dumps<span class="token punctuation">(</span>task<span class="token punctuation">.</span>Exec<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    <span class="token keyword">return</span> open<span class="token punctuation">(</span><span class="token string">"code.txt"</span><span class="token punctuation">,</span><span class="token string">"r"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+
+<span class="token keyword">def</span> <span class="token function">scan</span><span class="token punctuation">(</span>param<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    socket<span class="token punctuation">.</span>setdefaulttimeout<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> 
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> urllib<span class="token punctuation">.</span>urlopen<span class="token punctuation">(</span>param<span class="token punctuation">)</span><span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token number">50</span><span class="token punctuation">]</span> 
+    <span class="token keyword">except</span><span class="token punctuation">:</span> 
+        <span class="token keyword">return</span> <span class="token string">"Connection Timeout"</span> 
+
+<span class="token keyword">def</span> <span class="token function">getSign</span><span class="token punctuation">(</span>action<span class="token punctuation">,</span> param<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    <span class="token keyword">return</span> hashlib<span class="token punctuation">.</span>md5<span class="token punctuation">(</span>secert_key <span class="token operator">+</span> param <span class="token operator">+</span> action<span class="token punctuation">)</span><span class="token punctuation">.</span>hexdigest<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+
+<span class="token keyword">def</span> <span class="token function">md5</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    <span class="token keyword">return</span> hashlib<span class="token punctuation">.</span>md5<span class="token punctuation">(</span>content<span class="token punctuation">)</span><span class="token punctuation">.</span>hexdigest<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+
+<span class="token keyword">def</span> <span class="token function">waf</span><span class="token punctuation">(</span>param<span class="token punctuation">)</span><span class="token punctuation">:</span> 
+    check<span class="token operator">=</span>param<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>lower<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+    <span class="token keyword">if</span> check<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">"gopher"</span><span class="token punctuation">)</span> <span class="token operator">or</span> check<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">"file"</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">True</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span> 
+        <span class="token keyword">return</span> <span class="token boolean">False</span> 
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span> 
+    app<span class="token punctuation">.</span>debug <span class="token operator">=</span> <span class="token boolean">False</span> 
+    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">80</span><span class="token punctuation">)</span>
+</code></pre>
+<p><img src="/2021/07/01/de1ctf-2019-ssrfme/image-20210708101543887.png" alt="image-20210708101543887"></p>
+<p>ddb9a99ee5bc0c633c83429eaa500fd7</p>
+<p><img src="/2021/07/01/de1ctf-2019-ssrfme/image-20210708101628948.png" alt="image-20210708101628948"></p>
+<p>c41a6ae35d06f1fcf3fd74ff476257a1</p>
+<p><img src="/2021/07/01/de1ctf-2019-ssrfme/image-20210708102212134.png" alt="image-20210708102212134"></p>
+
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
                 <source type="audio/mpeg" src="">
