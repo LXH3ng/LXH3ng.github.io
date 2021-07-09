@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>ASIS:2019-UnicornShop</title>
+      <link href="2021/07/09/asis-2019-unicornshop/"/>
+      <url>2021/07/09/asis-2019-unicornshop/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165333232.png" alt="image-20210709165333232"></p><p>在purchase输入 1 3</p><p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165354072.png" alt="image-20210709165354072"></p><p>在purchase输入 1 10</p><p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165411956.png" alt="image-20210709165411956"></p><p>发现只能输入一个字符</p><p>利用UTF-8编码安全转换问题找一个大于1337的字符</p><p><a href="https://www.compart.com/en/unicode/">https://www.compart.com/en/unicode/</a></p><p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709170804114.png" alt="image-20210709170804114"></p><p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709170918673.png" alt="image-20210709170918673"></p><p>它的UTF-8编码:</p><p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709171017362.png" alt="image-20210709171017362"></p><p>所以在purchase输入4 %E1%8D%BC</p><p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165306391.png" alt="image-20210709165306391"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Unicode安全 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>BSidesCF:2020-HaveABadDay</title>
       <link href="2021/07/02/bsidescf-2020-haveabadday/"/>
       <url>2021/07/02/bsidescf-2020-haveabadday/</url>

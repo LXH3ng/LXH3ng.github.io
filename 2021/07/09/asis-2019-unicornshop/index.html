@@ -5,12 +5,19 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>H3ng</title>
+    <title>ASIS:2019-UnicornShop - H3ng</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    
+    <meta name="description" content="
+在purchase输入 1 3
+
+在purchase输入 1 10
+
+发现只能输入一个字符
+利用UTF-8编码安全转换问题找一个大于1337的字符
+https://www.compart.com/,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -25,27 +32,88 @@
 <body class="loading">
     <span id="config-title" style="display:none">H3ng</span>
     <div id="loader"></div>
-    <div id="single" class="page">
-    <div id="top">
-        <a class="iconfont icon-left image-icon" href="javascript:history.back()"></a>
-    </div>
-    <div class="section">
-        <div class="article">
-            <div class="main">
-                <div class="content">
-                
-                    <div class="set">		
-  <h2>标签</h2>
-  <a href="/tags/Bugku/" style="font-size: 31.6px; color: #868686">Bugku</a> <a href="/tags/HITCON/" style="font-size: 18.4px; color: #989898">HITCON</a> <a href="/tags/PHP/" style="font-size: 18.4px; color: #989898">PHP</a> <a href="/tags/PHP%E5%BC%B1%E7%B1%BB%E5%9E%8B/" style="font-size: 14px; color: #9e9e9e">PHP弱类型</a> <a href="/tags/Unicode%E5%AE%89%E5%85%A8/" style="font-size: 14px; color: #9e9e9e">Unicode安全</a> <a href="/tags/XXE/" style="font-size: 14px; color: #9e9e9e">XXE</a> <a href="/tags/i%E6%98%A5%E7%A7%8B/" style="font-size: 36px; color: #808080">i春秋</a> <a href="/tags/php/" style="font-size: 14px; color: #9e9e9e">php</a> <a href="/tags/ssti/" style="font-size: 14px; color: #9e9e9e">ssti</a> <a href="/tags/tornado/" style="font-size: 14px; color: #9e9e9e">tornado</a> <a href="/tags/%E3%80%8A%E4%BB%8E0%E5%88%B01%EF%BC%9ACTFer%E6%88%90%E9%95%BF%E4%B9%8B%E8%B7%AF%E3%80%8B/" style="font-size: 22.8px; color: #929292">《从0到1：CTFer成长之路》</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" style="font-size: 14px; color: #9e9e9e">代码审计</a> <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 18.4px; color: #989898">反序列化</a> <a href="/tags/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" style="font-size: 14px; color: #9e9e9e">命令执行</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 18.4px; color: #989898">文件上传</a> <a href="/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/" style="font-size: 18.4px; color: #989898">文件包含</a> <a href="/tags/%E6%B3%A8%E5%85%A5/" style="font-size: 14px; color: #9e9e9e">注入</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" style="font-size: 27.2px; color: #8c8c8c">漏洞利用</a>
-</div>
-
-                
-                </div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">ASIS:2019-UnicornShop</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
             </div>
+            <div id="qr"></div>
         </div>
     </div>
+    <div class="scrollbar"></div>
 </div>
 
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">ASIS:2019-UnicornShop</h1>
+        <div class="stuff">
+            <span>七月 09, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Unicode%E5%AE%89%E5%85%A8/" rel="tag">Unicode安全</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165333232.png" alt="image-20210709165333232"></p>
+<p>在purchase输入 1 3</p>
+<p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165354072.png" alt="image-20210709165354072"></p>
+<p>在purchase输入 1 10</p>
+<p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165411956.png" alt="image-20210709165411956"></p>
+<p>发现只能输入一个字符</p>
+<p>利用UTF-8编码安全转换问题找一个大于1337的字符</p>
+<p><a target="_blank" rel="noopener" href="https://www.compart.com/en/unicode/">https://www.compart.com/en/unicode/</a></p>
+<p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709170804114.png" alt="image-20210709170804114"></p>
+<p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709170918673.png" alt="image-20210709170918673"></p>
+<p>它的UTF-8编码:</p>
+<p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709171017362.png" alt="image-20210709171017362"></p>
+<p>所以在purchase输入4 %E1%8D%BC</p>
+<p><img src="/2021/07/09/asis-2019-unicornshop/image-20210709165306391.png" alt="image-20210709165306391"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
 
 
