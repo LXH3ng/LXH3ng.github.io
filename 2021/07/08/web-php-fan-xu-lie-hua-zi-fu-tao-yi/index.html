@@ -5,12 +5,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>标签: 文件包含 - H3ng</title>
+    <title>Web:PHP反序列化字符逃逸 - H3ng</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="H3ng,"> 
-    
+    <meta name="description" content="写的很好就转载了:https://www.cnblogs.com/Sumarua/
+这段时间遇到几个关于反序列化的字符逃逸的程序，今天来分享一下经验。
+&amp;lt;?php
+function filte,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -25,127 +28,107 @@
 <body class="loading">
     <span id="config-title" style="display:none">H3ng</span>
     <div id="loader"></div>
-    <div class="nav">
-    <ul id="menu-menu" class="menu">
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="//" title="首页" target="_blank" rel="noopener">首页</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/categories/" title="分类" target="_blank" rel="noopener">分类</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" title="标签" target="_blank" rel="noopener">标签</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/archives/" title="归档" target="_blank" rel="noopener">归档</a>
-        </li>
-        
-        <li class="pview menu-item menu-item-type-post_type menu-item-object-page">
-            <a href="/about/" title="关于" target="_blank" rel="noopener">关于</a>
-        </li>
-        
-    </ul>
-	<span class="target"></span>
-	<center>
-	<div class="hitokoto">
-		<span class="typed" id="hitokoto" data-st="true"></span>
-	</div>
-	</center>
-	
-	<p class="footerlinks">
-		<a href="#" class="iconfont icon-null"></a>
-		
-            <a href="/" title="facebook" class="iconfont icon-facebook" target="_blank" rel="noopener"> </a>
-        
-            <a href="/" title="twitter" class="iconfont icon-twitter" target="_blank" rel="noopener"> </a>
-        
-            <a href="/" title="github" class="iconfont icon-github" target="_blank" rel="noopener"> </a>
-        
-            <a href="/H3ng025319" title="wechat" class="iconfont icon-wechat" target="_blank" rel="noopener"> </a>
-        
-            <a href="/1490375647@qq.com" title="email" class="iconfont icon-email" target="_blank" rel="noopener"> </a>
-        
-		<a href="#" class="iconfont icon-null"></a>
-	</p>
-	
-    <p id="copyright">
-        &copy; 2021 H3ng.
-        <span> | </span>Powered by <a href="https://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
-        <span> | </span>Theme <a href="https://github.com/Fechin/hexo-theme-diaspora" title="Diaspora" target="_blank" rel="noopener">Diaspora</a> by Fechin
-		
-		<span> | </span><a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">H3ng</a>
-		
-    </p>
-</div>
-
-<div id="container">
-    
-<div id="screen">
-    <div id="mark">
-        <div class="layer" data-depth="0.4">
-            <img src="/img/1.jpg" id="cover" crossorigin="anonymous" width="1920" height="1080">
-        </div>
-    </div>
-    <div id="vibrant">
-        <svg viewBox="0 0 2880 1620" height="100%" preserveAspectRatio="xMaxYMax slice">
-            <polygon opacity="0.7" points="2000,1620 0,1620 0,0 600,0 "/>
-        </svg>
-        <div></div>
-    </div>
-    <div id="header">
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://LXH3ng.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Web:PHP反序列化字符逃逸</h3>
+    <div class="social">
         <div>
-            <a class="image-logo" href="/"></a>
-			
-            <div class="iconfont icon-menu switchmenu"></div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
         </div>
     </div>
-    
-    <div id="post0">
-        <p>七月 02, 2021</p>
-        <h2><a href="/2021/07/02/bsidescf-2020-haveabadday/" title="BSidesCF:2020-HaveABadDay" class="posttitle">BSidesCF:2020-HaveABadDay</a></h2>
-        <p class="summary">
-?category=php://filter/convert.base64-encode/resource=in...</p>
-    </div>
-    
+    <div class="scrollbar"></div>
 </div>
 
-    <div id="primary">
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Web:PHP反序列化字符逃逸</h1>
+        <div class="stuff">
+            <span>七月 08, 2021</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E9%80%83%E9%80%B8/" rel="tag">反序列化字符逃逸</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>写的很好就转载了:<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Sumarua/">https://www.cnblogs.com/Sumarua/</a></p>
+<p>这段时间遇到几个关于反序列化的字符逃逸的程序，今天来分享一下经验。</p>
+<pre><code>&lt;?php
+function filter($str){
+    return str_replace('bb', 'ccc', $str);
+}
+class A{
+    public $name='aaaa';
+    public $pass='123456';
+}
+$AA=new A();
+$res=filter(serialize($AA));
+
+$c=unserialize($res);
+echo $c-&gt;pass;
+
+?&gt;</code></pre>
+<p>以上面代码为例，如何在不直接修改$pass值的情况下间接修改$pass的值。</p>
+<p>代码的流程为：</p>
+<p>先序列化代码，然后将里面不希望出现的字符替换成自定义的字符串。然后进行反序列化，最后输出pass变量。</p>
+<p>要解决上面这个问题，先来看一下php序列化代码的特征。</p>
+<p><img src="https://s1.ax1x.com/2020/05/21/YqFpH1.png" alt="1"></p>
+<p>在反序列化的时候php会根据s所指定的字符长度去读取后边的字符。</p>
+<p>如果指定的长度错误则反序列化就会失败。</p>
+<p><img src="https://s1.ax1x.com/2020/05/21/YqFeud.png" alt="2"></p>
+<p>此时的name所读取的数据为aaaa”而正常的语法是需要用”;去闭合当前的变量，而因为长度错误所以此时php把闭合的双引号当做了字符串，所以下一个字符就成了分号，没能闭合导致抛出了错误。</p>
+<p>把精力回到开头所说的代码，根据刚才讲的，如果我们将name变量中添加bb则程序会报错。</p>
+<p><img src="https://s1.ax1x.com/2020/05/21/YqF1C8.png" alt="3"><br> 查看过滤前后的代码能发现，应该是6位长度的name变量在过滤后变成了7位，根据反序列化读取变量的原则来讲，此时的name能读取到的是aaaacc，末尾处的那个c是读取不到的，这就形成了一个字符串的逃逸。当我们添加多个bb，每添加一个bb我们就能逃逸一个字符，那我们将逃逸的字符串的长度填充成我们要反序列化的代码的话那就可以控制反序列化的结果以及类里面的变量值了。</p>
+<p><img src="https://s1.ax1x.com/2020/05/21/YqFtDs.png" alt="4"></p>
+<p>填充如上图数量的bb即可修改pass的值。</p>
+<p>具体分析如下：<br> <img src="https://s1.ax1x.com/2020/05/21/YqklZR.png" alt="5"></p>
+<p>逃逸或者说被“顶”出来的payload就会被当做当前类的属性被执行。<br> <img src="https://s1.ax1x.com/2020/05/21/YqktzD.png" alt="6"></p>
+<p> 转载<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Sumarua/">https://www.cnblogs.com/Sumarua/</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='//music/1.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
         
-<div class="post">
-    <a href="/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/" title="极客大挑战:2019-SecretFile">
-        <img src="/img/2.jpg" class="cover" width="680" height="440">
-    </a>
-    <div class="else">
-        <p>六月 09, 2021</p>
-        <h3><a href="/2021/06/09/ji-ke-da-tiao-zhan-2019-secretfile/" title="极客大挑战:2019-SecretFile" class="posttitle">极客大挑战:2019-SecretFile</a></h3>
-        <p>F12
-
-Archive_room.php
-
-点中间就会
-
-burp抓包
-
-访问这个secret
-&lt;html&gt;
-    &lt;title&g...</p>
-    </div>
-</div>
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
 
 
     </div>
     
+        <div class='side'>
+				
+        </div>
+    
 </div>
-<div id="preview"></div>
-
-	<center><a rel="nofollow" style="color: #666;" href="http://www.beian.miit.gov.cn" target="_blank">H3ng</a></center>
 
 
-
+    </div>
+</div>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
 
 
