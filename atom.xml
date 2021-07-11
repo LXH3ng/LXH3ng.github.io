@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-07-09T16:58:14.542Z</updated>
+  <updated>2021-07-11T17:04:56.723Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -17,11 +17,79 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>0CTF:2016-PiaPiaPia</title>
+    <link href="http://lxh3ng.github.io/2021/07/12/0ctf-2016-piapiapia/"/>
+    <id>http://lxh3ng.github.io/2021/07/12/0ctf-2016-piapiapia/</id>
+    <published>2021-07-12T14:04:09.000Z</published>
+    <updated>2021-07-11T17:04:56.723Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;扫描到了&lt;a href=&quot;http://www.zip下载下来/&quot;&gt;www.zip下载下来&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/0CTF%EF%BC%9A2016-PiaPiaPia.assets/image-20210711221607725.png&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="反序列化字符逃逸" scheme="http://lxh3ng.github.io/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E9%80%83%E9%80%B8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>WesternCTF:2018-Shrine</title>
+    <link href="http://lxh3ng.github.io/2021/07/07/westernctf-2018-shrine/"/>
+    <id>http://lxh3ng.github.io/2021/07/07/westernctf-2018-shrine/</id>
+    <published>2021-07-07T06:42:17.000Z</published>
+    <updated>2021-07-11T09:34:38.300Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;pre class=&quot; language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; flask
+&lt;span class=&quot;token</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>CISCN:2019-LoveMath</title>
+    <link href="http://lxh3ng.github.io/2021/07/06/ciscn-2019-lovemath/"/>
+    <id>http://lxh3ng.github.io/2021/07/06/ciscn-2019-lovemath/</id>
+    <published>2021-07-05T16:46:09.000Z</published>
+    <updated>2021-07-10T14:14:17.119Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;pre class=&quot; language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token delimiter&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;token</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>Web:服务器模板注入攻击</title>
-    <link href="http://lxh3ng.github.io/2021/07/15/web-fu-wu-qi-mo-ban-zhu-ru-gong-ji/"/>
-    <id>http://lxh3ng.github.io/2021/07/15/web-fu-wu-qi-mo-ban-zhu-ru-gong-ji/</id>
-    <published>2021-07-14T16:41:55.000Z</published>
-    <updated>2021-07-09T16:58:14.542Z</updated>
+    <link href="http://lxh3ng.github.io/2021/07/05/web-fu-wu-qi-mo-ban-zhu-ru-gong-ji/"/>
+    <id>http://lxh3ng.github.io/2021/07/05/web-fu-wu-qi-mo-ban-zhu-ru-gong-ji/</id>
+    <published>2021-07-04T16:41:55.000Z</published>
+    <updated>2021-07-09T17:00:51.659Z</updated>
     
     
       
@@ -37,28 +105,6 @@
     
     
     <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CISCN:2019-LoveMath</title>
-    <link href="http://lxh3ng.github.io/2021/07/06/ciscn-2019-lovemath/"/>
-    <id>http://lxh3ng.github.io/2021/07/06/ciscn-2019-lovemath/</id>
-    <published>2021-07-05T16:46:09.000Z</published>
-    <updated>2021-07-09T16:52:50.041Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;pre class=&quot; language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token delimiter&quot;&gt;&amp;lt;?php&lt;/span&gt;
-&lt;span class=&quot;token</summary>
-        
-      
-    
-    
-    
     
   </entry>
   
@@ -419,56 +465,6 @@
     
     
     <category term="注入" scheme="http://lxh3ng.github.io/tags/%E6%B3%A8%E5%85%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>GXYCTF:2019-BabyUpload</title>
-    <link href="http://lxh3ng.github.io/2021/06/16/gxyctf-2019-babyupload/"/>
-    <id>http://lxh3ng.github.io/2021/06/16/gxyctf-2019-babyupload/</id>
-    <published>2021-06-16T13:41:49.000Z</published>
-    <updated>2021-06-16T13:57:48.186Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;apache&lt;/p&gt;
-&lt;p&gt;上传.htaccess&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;FilesMatch &quot;1&quot;&amp;gt;
-SetHandler</summary>
-        
-      
-    
-    
-    
-    
-    <category term="文件上传" scheme="http://lxh3ng.github.io/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Web:.htaccess文件上传后门</title>
-    <link href="http://lxh3ng.github.io/2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/"/>
-    <id>http://lxh3ng.github.io/2021/06/16/web.htaccess-wen-jian-shang-chuan-hou-men/</id>
-    <published>2021-06-16T04:23:39.000Z</published>
-    <updated>2021-06-16T13:24:22.712Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;htaccess是Apache服务器中的一个配置文件，可以实现网页302重定向，自定义404页面，改变文件拓展名，允许/阻止特点的用户或者目录的访问，禁止目录列表，配置默认文档等功能。&lt;/p&gt;
-&lt;p&gt;在这个文件里面可以选择一定的后缀名以任意想要的格式进行解析，我们可以利用它</summary>
-        
-      
-    
-    
-    
-    
-    <category term="漏洞利用" scheme="http://lxh3ng.github.io/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/"/>
     
   </entry>
   

