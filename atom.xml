@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-07-11T17:04:56.723Z</updated>
+  <updated>2021-07-12T15:08:17.908Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>网鼎杯:2020-Nmap</title>
+    <link href="http://lxh3ng.github.io/2021/07/12/wang-ding-bei-2020-nmap/"/>
+    <id>http://lxh3ng.github.io/2021/07/12/wang-ding-bei-2020-nmap/</id>
+    <published>2021-07-12T14:58:44.000Z</published>
+    <updated>2021-07-12T15:08:17.908Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;这题和Buuctf:2018-OnlineTool类似直接用payload&lt;/p&gt;
+&lt;pre class=&quot; language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&#39; &amp;lt;?=</summary>
+        
+      
+    
+    
+    
+    
+    <category term="nmap" scheme="http://lxh3ng.github.io/tags/nmap/"/>
+    
+  </entry>
   
   <entry>
     <title>0CTF:2016-PiaPiaPia</title>
@@ -442,27 +466,6 @@
         
         
     <summary type="html">&lt;h3 id=&quot;WEB-INF-web-xml泄露&quot;&gt;&lt;a href=&quot;#WEB-INF-web-xml泄露&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>GXYCTF:2019-禁止套娃</title>
-    <link href="http://lxh3ng.github.io/2021/06/19/gxyctf-2019-jin-zhi-tao-wa/"/>
-    <id>http://lxh3ng.github.io/2021/06/19/gxyctf-2019-jin-zhi-tao-wa/</id>
-    <published>2021-06-19T12:45:16.000Z</published>
-    <updated>2021-06-19T13:51:27.637Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;PHP-localeconv-函数&quot;&gt;&lt;a href=&quot;#PHP-localeconv-函数&quot; class=&quot;headerlink&quot; title=&quot;PHP localeconv() 函数&quot;&gt;&lt;/a&gt;PHP localeconv() 函数&lt;/h2&gt;&lt;h2</summary>
         
       
     
