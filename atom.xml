@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-07-12T15:08:17.908Z</updated>
+  <updated>2021-07-13T07:34:54.602Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -17,26 +17,25 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>网鼎杯:2020-Nmap</title>
-    <link href="http://lxh3ng.github.io/2021/07/12/wang-ding-bei-2020-nmap/"/>
-    <id>http://lxh3ng.github.io/2021/07/12/wang-ding-bei-2020-nmap/</id>
-    <published>2021-07-12T14:58:44.000Z</published>
-    <updated>2021-07-12T15:08:17.908Z</updated>
+    <title>MRCTF:2020-PYWebsite</title>
+    <link href="http://lxh3ng.github.io/2021/07/13/mrctf-2020-pywebsite/"/>
+    <id>http://lxh3ng.github.io/2021/07/13/mrctf-2020-pywebsite/</id>
+    <published>2021-07-13T06:10:37.000Z</published>
+    <updated>2021-07-13T07:34:54.602Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;这题和Buuctf:2018-OnlineTool类似直接用payload&lt;/p&gt;
-&lt;pre class=&quot; language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&#39; &amp;lt;?=</summary>
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/07/13/mrctf-2020-pywebsite/image-20210713141120949.png&quot; alt=&quot;image-20210713141120949&quot;&gt;&lt;/p&gt;
+&lt;p&gt;点击购买跳出一个微信二维码&lt;/p&gt;
+&lt;p&gt;&lt;img</summary>
         
       
     
     
     
-    
-    <category term="nmap" scheme="http://lxh3ng.github.io/tags/nmap/"/>
     
   </entry>
   
@@ -65,11 +64,35 @@
   </entry>
   
   <entry>
+    <title>网鼎杯:2020-Nmap</title>
+    <link href="http://lxh3ng.github.io/2021/07/11/wang-ding-bei-2020-nmap/"/>
+    <id>http://lxh3ng.github.io/2021/07/11/wang-ding-bei-2020-nmap/</id>
+    <published>2021-07-11T14:58:44.000Z</published>
+    <updated>2021-07-12T15:22:38.980Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;这题和Buuctf:2018-OnlineTool类似直接用payload&lt;/p&gt;
+&lt;pre class=&quot; language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token string&quot;&gt;&#39; &amp;lt;?=</summary>
+        
+      
+    
+    
+    
+    
+    <category term="nmap" scheme="http://lxh3ng.github.io/tags/nmap/"/>
+    
+  </entry>
+  
+  <entry>
     <title>SWPU:2019-Web1</title>
-    <link href="http://lxh3ng.github.io/2021/07/12/swpu-2019-web1/"/>
-    <id>http://lxh3ng.github.io/2021/07/12/swpu-2019-web1/</id>
-    <published>2021-07-12T09:28:36.000Z</published>
-    <updated>2021-07-12T14:48:42.922Z</updated>
+    <link href="http://lxh3ng.github.io/2021/07/10/swpu-2019-web1/"/>
+    <id>http://lxh3ng.github.io/2021/07/10/swpu-2019-web1/</id>
+    <published>2021-07-10T09:28:36.000Z</published>
+    <updated>2021-07-12T15:22:30.596Z</updated>
     
     
       
@@ -78,7 +101,7 @@
         
     <summary type="html">&lt;p&gt;一个登录界面&lt;/p&gt;
 &lt;p&gt;随便注册用户登录以后&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2021/07/12/swpu-2019-web1/1.png&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2021/07/10/swpu-2019-web1/1.png&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
 &lt;p&gt;输入1‘&lt;/p&gt;
 &lt;p&gt;&lt;img</summary>
         
@@ -445,27 +468,6 @@
         
         
     <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/06/20/gwctf-2019-wo-you-yi-ge-shu-ju-ku/image-20210620144400661.png&quot;</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>RoarCTF:2019-EasyJava</title>
-    <link href="http://lxh3ng.github.io/2021/06/20/roarctf-2019-easyjava/"/>
-    <id>http://lxh3ng.github.io/2021/06/20/roarctf-2019-easyjava/</id>
-    <published>2021-06-20T02:37:26.000Z</published>
-    <updated>2021-06-20T07:07:30.274Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;WEB-INF-web-xml泄露&quot;&gt;&lt;a href=&quot;#WEB-INF-web-xml泄露&quot; class=&quot;headerlink&quot;</summary>
         
       
     
