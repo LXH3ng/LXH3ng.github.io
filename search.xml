@@ -4,13 +4,19 @@
   
     
     <entry>
-      <title>CISCN：2019-Web11</title>
+      <title>CISCN:2019-Web11</title>
       <link href="2021/07/16/ciscn-2019-web11/"/>
       <url>2021/07/16/ciscn-2019-web11/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<p><img src="/CISCN%EF%BC%9A2019-Web11.assets/image-20210716231720622.png" alt="image-20210716231720622"></p>]]></content>
       
       
+      
+        <tags>
+            
+            <tag> ssti </tag>
+            
+        </tags>
       
     </entry>
     
