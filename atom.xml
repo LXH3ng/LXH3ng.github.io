@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-07-14T17:20:19.021Z</updated>
+  <updated>2021-07-16T10:32:49.279Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MRCTF:2020-Ezpop</title>
+    <link href="http://lxh3ng.github.io/2021/07/16/mrctf-2020-ezpop/"/>
+    <id>http://lxh3ng.github.io/2021/07/16/mrctf-2020-ezpop/</id>
+    <published>2021-07-16T10:31:40.000Z</published>
+    <updated>2021-07-16T10:32:49.279Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;pre class=&quot; language-PHP&quot;&gt;&lt;code class=&quot;language-PHP&quot;&gt; &lt;?php
+//flag is in flag.php
+//WTF IS THIS?
+//Learn From</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>NPUCTF：2020-ReadlezPHP</title>
@@ -452,30 +476,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>PHP:preg_replace()函数应用</title>
-    <link href="http://lxh3ng.github.io/2021/06/21/php-preg-replace-han-shu-ying-yong/"/>
-    <id>http://lxh3ng.github.io/2021/06/21/php-preg-replace-han-shu-ying-yong/</id>
-    <published>2021-06-21T11:44:43.000Z</published>
-    <updated>2021-06-21T13:43:54.543Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://www.cnblogs.com/crxis/p/7714636.html&quot;&gt;https://www.cnblogs.com/crxis/p/7714636.html&lt;/a&gt;&lt;/p&gt;
-&lt;pre class=&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="PHP" scheme="http://lxh3ng.github.io/tags/PHP/"/>
     
   </entry>
   
