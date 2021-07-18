@@ -18,9 +18,9 @@
     
 <link rel="stylesheet" href="/css/diaspora.css">
 
-<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 5.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 <body class="loading">
     <span id="config-title" style="display:none">H3ng</span>
@@ -105,19 +105,45 @@
     </div>
     
     <div id="post0">
-        <p>三月 15, 2021</p>
-        <h2><a href="/2021/03/15/xctf-web-php-include/" title="XCTF:Web-php_include" class="posttitle">XCTF:Web-php_include</a></h2>
-        <p class="summary">源码
-&lt;?php
-show_source(__FILE__);
-echo $_GET['hello'];
-$...</p>
+        <p>三月 17, 2021</p>
+        <h2><a href="/2021/03/17/xctf-web-supersqli/" title="XCTF:Web-supersqli" class="posttitle">XCTF:Web-supersqli</a></h2>
+        <p class="summary">点击提交查询发现可能存在SQL注入漏洞
+输入1’发现不回显，然后1’ #显示正常，应该是存在sql注入了
+orde...</p>
     </div>
     
 </div>
 
     <div id="primary">
         
+<div class="post">
+    <a href="/2021/03/17/xctf-web-supersqli/" title="XCTF:Web-supersqli">
+        <img src="/img/1.jpg" class="cover" width="680" height="440">
+    </a>
+    <div class="else">
+        <p>三月 17, 2021</p>
+        <h3><a href="/2021/03/17/xctf-web-supersqli/" title="XCTF:Web-supersqli" class="posttitle">XCTF:Web-supersqli</a></h3>
+        <p>点击提交查询发现可能存在SQL注入漏洞
+输入1’发现不回显，然后1’ #显示正常，应该是存在sql注入了
+order by 2的时候是正常回显了，orde...</p>
+    </div>
+</div>
+
+
+<div class="post">
+    <a href="/2021/03/17/xctf-web-php2/" title="XCTF:Web-PHP2">
+        <img src="/img/2.jpg" class="cover" width="680" height="440">
+    </a>
+    <div class="else">
+        <p>三月 17, 2021</p>
+        <h3><a href="/2021/03/17/xctf-web-php2/" title="XCTF:Web-PHP2" class="posttitle">XCTF:Web-PHP2</a></h3>
+        <p>访问index.phps看到
+not allowed!
+"); exit(); } $_GET[id] = urldecode($_GET[id]); i...</p>
+    </div>
+</div>
+
+
 <div class="post">
     <a href="/2021/03/15/xctf-web-php-include/" title="XCTF:Web-php_include">
         <img src="/img/2.jpg" class="cover" width="680" height="440">
@@ -137,7 +163,7 @@ $page=$_GET['page'];
 
 <div class="post">
     <a href="/2021/03/15/xctf-web-php-rce/" title="XCTF:web-php_rce">
-        <img src="/img/3.jpg" class="cover" width="680" height="440">
+        <img src="/img/2.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>三月 15, 2021</p>
@@ -149,7 +175,7 @@ $page=$_GET['page'];
 
 <div class="post">
     <a href="/2021/03/14/xctf-web-training-www-robots/" title="XCTF:web-training-WWW-Robots">
-        <img src="/img/4.jpg" class="cover" width="680" height="440">
+        <img src="/img/5.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>三月 14, 2021</p>
@@ -162,7 +188,7 @@ In this little training challenge, you are going to learn about the Robo...</p>
 
 <div class="post">
     <a href="/2021/03/14/xctf-web-baby-web/" title="XCTF:web-baby_web">
-        <img src="/img/1.jpg" class="cover" width="680" height="440">
+        <img src="/img/5.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>三月 14, 2021</p>
@@ -180,7 +206,7 @@ In this little training challenge, you are going to learn about the Robo...</p>
 
 <div class="post">
     <a href="/2021/03/06/dvwa-xss/" title="DVWA:XSS">
-        <img src="/img/5.jpg" class="cover" width="680" height="440">
+        <img src="/img/4.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>三月 06, 2021</p>
@@ -192,7 +218,7 @@ In this little training challenge, you are going to learn about the Robo...</p>
 
 <div class="post">
     <a href="/2021/02/26/dvwa/" title="DVWA">
-        <img src="/img/2.jpg" class="cover" width="680" height="440">
+        <img src="/img/3.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>二月 26, 2021</p>
@@ -219,7 +245,7 @@ In this little training challenge, you are going to learn about the Robo...</p>
 
 <div class="post">
     <a href="/2021/02/16/sql-sqlilabs-less-54-65-challenges-you-xian-ji-hui-de-zhu-ru/" title="SQL:sqlilabs less-54-65:challenges-有限机会的注入11">
-        <img src="/img/5.jpg" class="cover" width="680" height="440">
+        <img src="/img/1.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>二月 16, 2021</p>
@@ -245,7 +271,7 @@ In this little training challenge, you are going to learn about the Robo...</p>
 
 <div class="post">
     <a href="/2021/02/10/sql-background-9-order-by-hou-zhu-ru-yuan-li/" title="SQL:background-9:order by后注入原理">
-        <img src="/img/1.jpg" class="cover" width="680" height="440">
+        <img src="/img/2.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>二月 10, 2021</p>
@@ -272,7 +298,7 @@ if(isset($id)){
 
 <div class="post">
     <a href="/2021/01/30/sql-sqlilabs-less-38-45-dui-die-zhu-ru/" title="SQL:sqlilabs less-38-45:堆叠注入">
-        <img src="/img/4.jpg" class="cover" width="680" height="440">
+        <img src="/img/2.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>一月 30, 2021</p>
@@ -288,7 +314,7 @@ $id=$_GET['id'];...</p>
 
 <div class="post">
     <a href="/2021/01/29/sql-background-8-dui-die-zhu-ru-yuan-li/" title="SQL:background-8:堆叠注入原理">
-        <img src="/img/4.jpg" class="cover" width="680" height="440">
+        <img src="/img/3.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>一月 29, 2021</p>
@@ -300,7 +326,7 @@ $id=$_GET['id'];...</p>
 
 <div class="post">
     <a href="/2021/01/25/sql-sqlilabs-less-32-37-kuan-zi-jie-zhu-ru/" title="SQL:sqlilabs-less-32-37-宽字节注入">
-        <img src="/img/2.jpg" class="cover" width="680" height="440">
+        <img src="/img/1.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>一月 25, 2021</p>
@@ -315,7 +341,7 @@ function check_addslashes($string)
 
 <div class="post">
     <a href="/2021/01/24/sql-background-7-kuan-zi-jie-zhu-ru-yuan-li/" title="SQL:background-7:宽字节注入原理">
-        <img src="/img/3.jpg" class="cover" width="680" height="440">
+        <img src="/img/2.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>一月 24, 2021</p>
@@ -327,37 +353,12 @@ function check_addslashes($string)
 
 <div class="post">
     <a href="/2021/01/21/sql-sqlilabs-less-29-31-hpp-can-shu-wu-ran-gong-ji/" title="SQL:sqlilabs less-29-31:HPP参数污染攻击">
-        <img src="/img/2.jpg" class="cover" width="680" height="440">
+        <img src="/img/1.jpg" class="cover" width="680" height="440">
     </a>
     <div class="else">
         <p>一月 21, 2021</p>
         <h3><a href="/2021/01/21/sql-sqlilabs-less-29-31-hpp-can-shu-wu-ran-gong-ji/" title="SQL:sqlilabs less-29-31:HPP参数污染攻击" class="posttitle">SQL:sqlilabs less-29-31:HPP参数污染攻击</a></h3>
         <p>介绍preg_match()函数：(https://www.runoob.com/php/php-preg_match.html)preg_match 函...</p>
-    </div>
-</div>
-
-
-<div class="post">
-    <a href="/2021/01/21/sql-background-6-fu-wu-qi-liang-ceng-jia-gou-jie-shao/" title="SQL:background-6:服务器两层架构介绍">
-        <img src="/img/5.jpg" class="cover" width="680" height="440">
-    </a>
-    <div class="else">
-        <p>一月 21, 2021</p>
-        <h3><a href="/2021/01/21/sql-background-6-fu-wu-qi-liang-ceng-jia-gou-jie-shao/" title="SQL:background-6:服务器两层架构介绍" class="posttitle">SQL:background-6:服务器两层架构介绍</a></h3>
-        <p>服务器端有两个部分：第一部分为tomcat为引擎的jsp型服务器，第二部分为apache为引擎的php服务器，真正提供web服务的是php服务器。工作流程...</p>
-    </div>
-</div>
-
-
-<div class="post">
-    <a href="/2020/12/27/sql-sqlilabs-less-23-28-rao-guo-zhu-shi-fu-guo-lu/" title="SQL:sqlilabs less-23-28:绕过注释进行注入">
-        <img src="/img/4.jpg" class="cover" width="680" height="440">
-    </a>
-    <div class="else">
-        <p>十二月 27, 2020</p>
-        <h3><a href="/2020/12/27/sql-sqlilabs-less-23-28-rao-guo-zhu-shi-fu-guo-lu/" title="SQL:sqlilabs less-23-28:绕过注释进行注入" class="posttitle">SQL:sqlilabs less-23-28:绕过注释进行注入</a></h3>
-        <p>介绍preg_replace() 函数：preg_replace 函数执行一个正则表达式的搜索和替换。
-语法mixed preg_replace ( mi...</p>
     </div>
 </div>
 

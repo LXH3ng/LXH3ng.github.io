@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-07-18T14:46:56.901Z</updated>
+  <updated>2021-07-18T20:05:06.310Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -17,19 +17,69 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>NCTF:2019-TrueXMLcookbook</title>
+    <link href="http://lxh3ng.github.io/2021/07/19/nctf-2019-truexmlcookbook/"/>
+    <id>http://lxh3ng.github.io/2021/07/19/nctf-2019-truexmlcookbook/</id>
+    <published>2021-07-18T18:19:25.000Z</published>
+    <updated>2021-07-18T20:05:06.310Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/07/19/nctf-2019-truexmlcookbook/image-20210719040125956.png&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;题目提示XXE&lt;/p&gt;
+&lt;p&gt;exp:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml</summary>
+        
+      
+    
+    
+    
+    
+    <category term="xxe" scheme="http://lxh3ng.github.io/tags/xxe/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GYCTF:2020-FlaskAPP</title>
+    <link href="http://lxh3ng.github.io/2021/07/18/gyctf-2020-flaskapp/"/>
+    <id>http://lxh3ng.github.io/2021/07/18/gyctf-2020-flaskapp/</id>
+    <published>2021-07-17T17:46:02.000Z</published>
+    <updated>2021-07-18T18:12:27.804Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;在text_decode = base64.b64decode(text.encode())处的报错读取到部分源码:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2021/07/18/gyctf-2020-flaskapp/image-20210719015136254.png&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ssti" scheme="http://lxh3ng.github.io/tags/ssti/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CISCN:2019-Web11</title>
-    <link href="http://lxh3ng.github.io/2021/07/16/ciscn-2019-web11/"/>
-    <id>http://lxh3ng.github.io/2021/07/16/ciscn-2019-web11/</id>
-    <published>2021-07-16T15:16:43.000Z</published>
-    <updated>2021-07-18T14:46:56.901Z</updated>
+    <link href="http://lxh3ng.github.io/2021/07/17/ciscn-2019-web11/"/>
+    <id>http://lxh3ng.github.io/2021/07/17/ciscn-2019-web11/</id>
+    <published>2021-07-17T15:16:43.000Z</published>
+    <updated>2021-07-18T18:12:17.559Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/CISCN%EF%BC%9A2019-Web11.assets/image-20210716231720622.png&quot; alt=&quot;image-20210716231720622&quot;&gt;&lt;/p&gt;
-&lt;pre class=&quot;</summary>
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/07/17/ciscn-2019-web11/1.png&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
+&lt;pre class=&quot; language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;X&lt;span class=&quot;token</summary>
         
       
     
@@ -427,53 +477,6 @@
         
         
     <summary type="html">&lt;pre class=&quot; language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot; spellcheck=&quot;true&quot;&gt;#! /usr/bin/env python</summary>
-        
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>NCTF:2019-FakeXMLcookbook</title>
-    <link href="http://lxh3ng.github.io/2021/06/25/nctf-2019-fakexmlcookbook/"/>
-    <id>http://lxh3ng.github.io/2021/06/25/nctf-2019-fakexmlcookbook/</id>
-    <published>2021-06-25T08:31:12.000Z</published>
-    <updated>2021-06-25T08:41:10.804Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2021/06/25/nctf-2019-fakexmlcookbook/image-20210625163322248.png&quot; alt=&quot;image-20210625163322248&quot;&gt;&lt;/p&gt;
-&lt;p&gt;XXE攻击&lt;/p&gt;
-&lt;pre</summary>
-        
-      
-    
-    
-    
-    
-    <category term="XXE" scheme="http://lxh3ng.github.io/tags/XXE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>网鼎杯:2020-PhpWeb</title>
-    <link href="http://lxh3ng.github.io/2021/06/24/wang-ding-bei-2020-phpweb/"/>
-    <id>http://lxh3ng.github.io/2021/06/24/wang-ding-bei-2020-phpweb/</id>
-    <published>2021-06-24T08:06:29.000Z</published>
-    <updated>2021-06-25T08:24:46.034Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;拦截抓包&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2021/06/24/wang-ding-bei-2020-phpweb/image-20210625161138837.png&quot;</summary>
         
       
     

