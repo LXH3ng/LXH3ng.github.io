@@ -6,7 +6,7 @@
   <link href="http://lxh3ng.github.io/atom.xml" rel="self"/>
   
   <link href="http://lxh3ng.github.io/"/>
-  <updated>2021-07-18T20:05:06.310Z</updated>
+  <updated>2021-07-19T13:52:31.509Z</updated>
   <id>http://lxh3ng.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>BJDCTF:2020-EasySearch</title>
+    <link href="http://lxh3ng.github.io/2021/07/19/bjdctf-2020-easysearch/"/>
+    <id>http://lxh3ng.github.io/2021/07/19/bjdctf-2020-easysearch/</id>
+    <published>2021-07-19T10:56:35.000Z</published>
+    <updated>2021-07-19T13:52:31.509Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;ApacheSSI远程命令执行漏洞&quot;&gt;&lt;a href=&quot;#ApacheSSI远程命令执行漏洞&quot; class=&quot;headerlink&quot; title=&quot;ApacheSSI远程命令执行漏洞&quot;&gt;&lt;/a&gt;ApacheSSI远程命令执行漏洞&lt;/h2&gt;&lt;p&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ApacheSSI远程命令执行漏洞" scheme="http://lxh3ng.github.io/tags/ApacheSSI%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
   
   <entry>
     <title>NCTF:2019-TrueXMLcookbook</title>
@@ -461,27 +484,6 @@
     
     
     <category term="文件包含" scheme="http://lxh3ng.github.io/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>De1CTF:2019-SSRFMe</title>
-    <link href="http://lxh3ng.github.io/2021/07/01/de1ctf-2019-ssrfme/"/>
-    <id>http://lxh3ng.github.io/2021/07/01/de1ctf-2019-ssrfme/</id>
-    <published>2021-07-01T00:23:02.000Z</published>
-    <updated>2021-07-08T02:23:22.250Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;pre class=&quot; language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot; spellcheck=&quot;true&quot;&gt;#! /usr/bin/env python</summary>
-        
-      
-    
-    
-    
     
   </entry>
   
